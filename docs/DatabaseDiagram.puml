@@ -67,13 +67,6 @@ entity "EstadoInvitacion" {
   * nombre : VARCHAR(20)
 }
 
-entity "EventoParticipante" {
-  * evento_participante_id : INTEGER
-  --
-  * evento_id : INTEGER
-  * participante_id : INTEGER
-}
-
 entity "EstadoEvento" {
   * estado_evento_id : INTEGER
   --
@@ -86,12 +79,13 @@ entity "Privacidad" {
   * nombre : VARCHAR(20)
 }
 
-entity "Participante" {
+entity "UsuarioRolEvento" {
   * participante_id : INTEGER
   --
   * nombre : VARCHAR(20)
   * usuario_id : INTEGER
   * rol_id : INTEGER
+  * evento_id : INTEGER
 }
 
 entity "Rol" {
@@ -121,7 +115,7 @@ Notificacion ||--|| Invitacion : notificacion_id
 
 ' Relaciones 1:m
 Invitacion }|--|| EstadoInvitacion : estado_invitacion_id
-NotificacionCliente }|--|| Cliente : usuario_id 
+NotificacionCliente }|--|| Cliente : cliente_id
 NotificacionCliente }|--|| Notificacion : notificacion_id
 Notificacion }|--|| Evento : evento_id
 Recurso }|--|| TipoRecurso : tipo_recurso_id
@@ -129,9 +123,8 @@ Recurso }|--|| Evento : evento_id
 Ubicacion ||--|| Evento : evento_id
 Evento }|--|| EstadoEvento : estado_evento_id
 Evento }|--|| Privacidad : privacidad_id
-EventoParticipante }|--|| Evento : evento_id
-EventoParticipante }|--|| Participante : participante_id
-Participante }|--|| Usuario : usuario_id
-Participante }|--|| Rol : rol_id
+UsuarioRolEvento }|--|| Usuario : usuario_id
+UsuarioRolEvento }|--|| Rol : rol_id
+UsuarioRolEvento }|--|| Evento : evento_id
 
 @enduml
