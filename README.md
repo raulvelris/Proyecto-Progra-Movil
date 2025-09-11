@@ -16,7 +16,7 @@ Mucho texto...
 
 ## Diagrama de Despliegue
 
-Mucho texto...
+![Diagrama de despliegue](images/diagrama_de_despliegue.jpg)   
 
 ## Requerimientos No Funcionales
 
