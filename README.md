@@ -8,6 +8,7 @@ Este aplicativo móvil es...
 - [Diagrama de Despliegue](#diagrama-de-despliegue)
 - [Requerimientos No Funcionales](#requerimientos-no-funcionales)
 - [Diagrama de Casos de Uso](#diagrama-de-casos-de-uso)
+- [Prototipos](#prototipos)
 
 ## Configuración del Ambiente de Desarrollo
 
@@ -83,4 +84,6 @@ A continuación, se detallan los casos de uso:
 
 Y el diagrama de clases es el siguiente:
 
-![Casos de Uso](images/DatabaseDiagram.png)                                                                  
+![Casos de Uso](images/DatabaseDiagram.png)       
+
+## Prototipos
