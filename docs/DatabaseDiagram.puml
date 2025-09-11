@@ -1,0 +1,137 @@
+@startuml
+!theme plain
+
+entity "Cliente" {
+  * cliente_id : INTEGER
+  --
+  * nombre : VARCHAR(50)
+  * apellido : VARCHAR(50)
+  * fotoperfil : VARCHAR(200)
+  * usuario_id : INTEGER
+}
+
+entity "Usuario" {
+  * usuario_id : INTEGER
+  --
+  * clave : VARCHAR(20)
+  * correo : VARCHAR(30)
+  * isActive : BOOLEAN
+}
+
+entity "Evento" {
+  * evento_id : INTEGER
+  --
+  * titulo : VARCHAR(30)
+  * descripcion : VARCHAR(300)
+  * fechahora : DATETIME
+  * imagen : VARCHAR(200)
+  * estado_evento : INTEGER
+  * privacidad : INTEGER
+}
+
+entity "Invitacion" {
+  * invitacion_id : INTEGER
+  --
+  * confirmacion : BOOLEAN
+  * estado_invitacion_id : INTEGER
+  * notificacion_id : INTEGER
+}
+
+entity "Notificacion" {
+  * notificacion_id : INTEGER
+  --
+  * mensaje : VARCHAR(200)
+  * fechahora : DATETIME
+  * evento_id : INTEGER
+}
+
+entity "NotificacionCliente" {
+  * notificacion_usuario_id : INTEGER
+  --
+  * notificacion_id : INTEGER
+  * destinatario_id : INTEGER
+}
+
+entity "Ubicacion" {
+  * ubicacion_id : INTEGER
+  --
+  * direccion : VARCHAR(200)
+  * latitud : DOUBLE
+  * longitud : DOUBLE
+  * evento_id : INTEGER
+}
+
+entity "EstadoInvitacion" {
+  * estado_id : INTEGER
+  --
+  * nombre : VARCHAR(20)
+}
+
+entity "EventoParticipante" {
+  * evento_participante_id : INTEGER
+  --
+  * evento_id : INTEGER
+  * participante_id : INTEGER
+}
+
+entity "EstadoEvento" {
+  * estado_evento_id : INTEGER
+  --
+  * nombre : VARCHAR(20)
+}
+
+entity "Privacidad" {
+  * privacidad_id : INTEGER
+  --
+  * nombre : VARCHAR(20)
+}
+
+entity "Participante" {
+  * participante_id : INTEGER
+  --
+  * nombre : VARCHAR(20)
+  * usuario_id : INTEGER
+  * rol_id : INTEGER
+}
+
+entity "Rol" {
+  * rol_id : INTEGER
+  --
+  * nombre : VARCHAR(20)
+}
+
+entity "Recurso" {
+  * archivo_compartido_id : INTEGER
+  --
+  * nombre : VARCHAR(20)
+  * url : VARCHAR(200)
+  * tipo_recurso : INTEGER
+  * evento_id : INTEGER
+}
+
+entity "TipoRecurso" {
+  * tipo_recurso_id : INTEGER
+  --
+  * nombre : VARCHAR(20)
+}
+
+' Relaciones 1:1
+Cliente ||--|| Usuario : usuario_id
+Notificacion ||--|| Invitacion : notificacion_id 
+
+' Relaciones 1:m
+Invitacion }|--|| EstadoInvitacion : estado_invitacion_id
+NotificacionCliente }|--|| Cliente : usuario_id 
+NotificacionCliente }|--|| Notificacion : notificacion_id
+Notificacion }|--|| Evento : evento_id
+Recurso }|--|| TipoRecurso : tipo_recurso_id
+Recurso }|--|| Evento : evento_id
+Ubicacion ||--|| Evento : evento_id
+Evento }|--|| EstadoEvento : estado_evento_id
+Evento }|--|| Privacidad : privacidad_id
+EventoParticipante }|--|| Evento : evento_id
+EventoParticipante }|--|| Participante : participante_id
+Participante }|--|| Usuario : usuario_id
+Participante }|--|| Rol : rol_id
+
+@enduml

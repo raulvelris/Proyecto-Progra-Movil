@@ -1,3 +1,13 @@
+El siguiente diagrama de casos de uso representa las principales interacciones dentro del Sistema de Gestión de Eventos. En este sistema, los clientes pueden registrarse, iniciar sesión, acceder al detalle de los eventos, administrar su perfil y cerrar sesión.
+
+El asistente, como especialización del cliente, tiene la posibilidad de explorar eventos públicos, consultar notificaciones y gestionar los eventos a los que está inscrito. Por su parte, el organizador cuenta con funcionalidades adicionales que le permiten crear y administrar sus propios eventos, incluyendo la edición y eliminación de los mismos, así como la gestión de recursos e invitados.
+
+Estas funcionalidades en conjunto aseguran una experiencia completa tanto para los asistentes como para los organizadores, facilitando la creación, consulta y participación en eventos dentro de la plataforma móvil.
+
+![Casos de Uso](images/UserCases.png)
+
+A continuación, se detallan los casos de uso:
+
 | Código | Nombre                        | Actor       | Descripción                                                                                                                                  |
 | ------ | ----------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
 | UC1    | Registrarse                   | Usuario     | Permite a los usuarios crear una nueva cuenta en el sistema y activarla para poder acceder a sus funcionalidades.                            |
@@ -11,3 +21,7 @@
 | UC9    | Administrar un evento         | Organizador | Permite al organizador gestionar los recursos e invitados de un evento específico.                                                           |
 | UC10   | Administrar perfil            | Usuario     | Permite al usuario consultar y actualizar su información personal.                                                                           |
 | UC11   | Cerrar sesión                 | Usuario     | Permite al usuario cerrar su sesión de manera segura en la aplicación.                                                                       |
+
+Y el diagrama de clases es el siguiente:
+
+![Casos de Uso](images/DatabaseDiagram.png)

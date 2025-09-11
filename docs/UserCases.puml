@@ -1,0 +1,51 @@
+@startuml
+left to right direction
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor #EAF4FF
+  BorderColor #4682B4
+  ArrowColor #4682B4
+}
+
+actor Cliente as C
+actor Asistente as A
+actor Organizador as O
+
+A --|> C
+O --|> C
+
+rectangle "Sistema de Gestión de Eventos" {
+  
+  (Registrarse) as UC01
+  (Iniciar sesión) as UC02
+  (Explorar eventos públicos) as UC03
+  (Consultar notificaciones) as UC04
+  (Consultar eventos asistidos) as UC05
+  (Crear evento) as UC06
+  (Consultar eventos creados) as UC07
+  (Acceder al detalle del evento) as UC08
+  (Gestionar recursos) as UC09
+  (Gestionar invitados) as UC10
+  (Administrar perfil) as UC11
+  (Cerrar sesión) as UC12
+}
+
+' Casos de uso del Usuario (generales)
+C --> UC01
+C --> UC02
+C --> UC08
+C --> UC11
+C --> UC12
+
+' Casos de uso específicos del Asistente
+A --> UC03
+A --> UC04
+A --> UC05
+
+' Casos de uso específicos del Organizador
+O --> UC06
+O --> UC07
+O --> UC09
+O --> UC10
+
+@enduml
