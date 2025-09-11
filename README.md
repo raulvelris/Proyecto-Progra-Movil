@@ -84,6 +84,6 @@ A continuación, se detallan los casos de uso:
 
 Y el diagrama de clases es el siguiente:
 
-![Casos de Uso](images/DatabaseDiagram.png)       
+![Casos de Uso](images/DatabaseD.png)       
 
 ## Prototipos

@@ -115,7 +115,7 @@ Notificacion ||--|| Invitacion : notificacion_id
 
 ' Relaciones 1:m
 Invitacion }|--|| EstadoInvitacion : estado_invitacion_id
-NotificacionCliente }|--|| Cliente : cliente_id
+NotificacionCliente }|--|| Cliente : usuario_id 
 NotificacionCliente }|--|| Notificacion : notificacion_id
 Notificacion }|--|| Evento : evento_id
 Recurso }|--|| TipoRecurso : tipo_recurso_id
