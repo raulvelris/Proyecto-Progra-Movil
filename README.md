@@ -167,7 +167,7 @@ A continuación, se muestran los mockups realizados en figma por cada caso de us
 
 
 ### 2. Caso de uso: Consultar notificaciones
-| ![Prototipo de Consultar notificaciones](images/ConsultarNotificaciones0.png) |
+| ![Prototipo de Consultar notificaciones](images/ConsultarNotificaciones3.png) |
 |:--:|
  *Figura 10: Prototipo de Consultar notificaciones* |     
 
