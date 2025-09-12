@@ -87,3 +87,37 @@ Y el diagrama de clases es el siguiente:
 ![Diagrama de base de datos](images/DatabaseD.png)       
 
 ## Prototipos
+
+A continuación, se muestran los mockups realizados en figma por cada caso de uso del Sistema de Gestión de Eventos "EventMaster":
+
+### 1. Caso de uso: Crear evento
+![Prototipo de Crear evento](images/CrearEvento.png)   
+
+### 2. Caso de uso: Consultar notificaciones
+![Prototipo de Consultar notificaciones](images/ConsultarNotificaciones.png)
+
+### 3. Caso de uso: Consultar eventos creados
+![Prototipo de Consultar eventos creados]()
+
+### 4. Caso de uso: Acceder al detalle del evento
+![Prototipo de Acceder al detalle del evento]()
+
+### 5. Caso de uso: Administrar un evento
+![Prototipo de Administrar un evento]()
+
+### 6. Caso de uso: Consultar eventos asistidos
+![Prototipo de Consultar eventos asistidos](images/ConsultarEventosAsistidos.png)
+
+### 7. Caso de uso: Registrarse
+![Prototipo]()
+
+### 8. Caso de uso: Iniciar sesión
+![Prototipo de Iniciar sesión](images/IniciarSesion.png)
+
+### 9. Caso de uso: Explorar eventos públicos
+![Prototipo de Explorar eventos públicos](images/ExplorarEventosPublicos.png)
+
+### 10 y 11. Caso de uso: Administrar perfil / Cerrar sesión
+![Prototipo de Administrar perfil / Cerrar sesión](images/AdministrarPerfilYCerrarSesion.png)
+
+
