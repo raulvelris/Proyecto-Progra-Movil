@@ -42,7 +42,7 @@ Para **EventMaster**, Flutter será la base del **cliente móvil**: pantallas de
 
 Ruby on Rails es un framework web basado en el patrón **MVC** que acelera el desarrollo mediante convenciones y buenas prácticas. Facilita la creación de **APIs REST** de forma estructurada y mantenible.
 
-En **EventMaster**, Rails implementará la API: autenticación **JWT**, gestión de usuarios, eventos y manejará notificaciones (p. ej., cambios de horario o ubicación de un evento).
+En **EventMaster**, Rails implementará la API: autenticación **JWT**, gestión de usuarios, eventos y manejará tanto las invitaciones como notificaciones (cambios realizados por el organizador).
 
 ---
 
