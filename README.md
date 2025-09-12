@@ -15,8 +15,9 @@ Este aplicativo móvil es...
 Paso a paso que se usará en el proyecto.
 
 ### Android Studio
-![Android Studio](images/android-studio.png)
-*Figura 1: Descripción de Android Studio*
+| ![Android Studio](images/android-studio.png) |
+|:--:|
+| *Figura 1: Descripción de Android Studio* |
 
 Android Studio es el entorno de desarrollo oficial para crear aplicaciones Android. Ofrece un editor de código inteligente, diseño visual de interfaces, emuladores de dispositivos y un sistema de compilación basado en Gradle.
 
@@ -25,8 +26,9 @@ En **EventMaster**, lo usaremos para emular el dispositivo móvil y probar la ap
 ---
 
 ### Flutter
-![Flutter](images/flutter.jpg)
-*Figura 2: Descripción de Flutter*
+| ![Flutter](images/flutter.jpg) |
+|:--:|
+| *Figura 2: Descripción de Flutter* |
 
 Flutter es un framework de desarrollo de código abierto creado por Google para construir aplicaciones nativas multiplataforma (Android, iOS, web y escritorio) usando un solo código base. Utiliza el lenguaje **Dart** y destaca por su alto rendimiento y su sistema de widgets personalizables.
 
@@ -35,8 +37,9 @@ Para **EventMaster**, Flutter será la base del **cliente móvil**: pantallas de
 ---
 
 ### Ruby on Rails
-![Ruby on Rails](images/rails.png)
-*Figura 3: Descripción de Ruby on Rails*
+| ![Ruby on Rails](images/rails.png) |
+|:--:|
+| *Figura 3: Descripción de Ruby on Rails* |
 
 Ruby on Rails es un framework web basado en el patrón **MVC** que acelera el desarrollo mediante convenciones y buenas prácticas. Facilita la creación de **APIs REST** de forma estructurada y mantenible.
 
@@ -45,8 +48,9 @@ En **EventMaster**, Rails implementará la API: autenticación **JWT**, gestión
 ---
 
 ### SQLite
-![SQLite](images/sqlite.png)
-*Figura 4: Descripción de SQLite*
+| ![SQLite](images/sqlite.png) |
+|:--:|
+| *Figura 4: Descripción de SQLite* |
 
 SQLite es un motor de base de datos relacional, ligero y autónomo, que almacena los datos en un único archivo local. No requiere servidor y es ideal para entornos de desarrollo y pruebas.
 
@@ -56,19 +60,20 @@ Para **EventMaster**, lo usaremos en desarrollo para persistir información de u
 
 ## Prototipo (Figma)
 
-![Prototipo Figma](images/figma-prototipo.png)
-*Figura 5: Prototipo de la app en Figma*
+| ![Prototipo Figma](images/figma-prototipo.png) |
+|:--:|
+| *Figura 5: Prototipo de la app en Figma* |
 
 Usamos **Figma** para diseñar y validar la **UI/UX** de EventMaster antes del desarrollo.  
 El prototipo incluye los flujos principales:
 
-- Registrarse
-- Iniciar Sesion
-- Crear Evento
-- Visualizar Eventos Gestionados
-- Eliminar Evento
-- Editar Perfil
-- Visualizaciones de Eventos
+- Registrarse  
+- Iniciar sesión  
+- Crear evento  
+- Ver eventos gestionados  
+- Eliminar evento  
+- Editar perfil  
+- Explorar eventos
 
 ## Diagrama de Despliegue
 
