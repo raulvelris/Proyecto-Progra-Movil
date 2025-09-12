@@ -81,9 +81,8 @@ entity "Privacidad" {
 }
 
 entity "UsuarioRolEvento" {
-  * participante_id : INTEGER
+  * usuario_rol_evento_id : INTEGER
   --
-  * nombre : VARCHAR(20)
   * usuario_id : INTEGER
   * rol_id : INTEGER
   * evento_id : INTEGER
@@ -116,7 +115,7 @@ Notificacion ||--|| Invitacion : notificacion_id
 
 ' Relaciones 1:m
 Invitacion }|--|| EstadoInvitacion : estado_invitacion_id
-NotificacionCliente }|--|| Cliente : usuario_id 
+NotificacionCliente }|--|| Cliente : cliente_id
 NotificacionCliente }|--|| Notificacion : notificacion_id
 Notificacion }|--|| Evento : evento_id
 Recurso }|--|| TipoRecurso : tipo_recurso_id
