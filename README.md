@@ -43,7 +43,7 @@ Para **EventMaster**, Flutter será la base del **cliente móvil**: pantallas de
 
 Ruby on Rails es un framework web basado en el patrón **MVC** que acelera el desarrollo mediante convenciones y buenas prácticas. Facilita la creación de **APIs REST** de forma estructurada y mantenible.
 
-En **EventMaster**, Rails implementará la API: autenticación **JWT**, gestión de usuarios, eventos, órdenes/entradas y endpoints para **validación de tickets por QR**. También manejará notificaciones (p. ej., cambios de horario o ubicación de un evento).
+En **EventMaster**, Rails implementará la API: autenticación **JWT**, gestión de usuarios, eventos, órdenes/entradas y manejará notificaciones (p. ej., cambios de horario o ubicación de un evento).
 
 ---
 
@@ -54,7 +54,7 @@ En **EventMaster**, Rails implementará la API: autenticación **JWT**, gestión
 
 SQLite es un motor de base de datos relacional, ligero y autónomo, que almacena los datos en un único archivo local. No requiere servidor y es ideal para entornos de desarrollo y pruebas.
 
-Para **EventMaster**, lo usaremos en desarrollo para persistir información de usuarios, eventos y tickets. En producción, la migración a un motor como **PostgreSQL** es recomendable para mayor concurrencia y escalabilidad.
+Para **EventMaster**, lo usaremos en desarrollo para persistir información de usuarios y eventos. En producción, la migración a un motor como **PostgreSQL** es recomendable para mayor concurrencia y escalabilidad.
 
 ---
 
