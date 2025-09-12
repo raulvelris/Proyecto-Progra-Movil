@@ -23,7 +23,8 @@ entity "Evento" {
   --
   * titulo : VARCHAR(30)
   * descripcion : VARCHAR(300)
-  * fechahora : DATETIME
+  * fechaInicio : DATETIME
+  * fechaFin : DATETIME
   * imagen : VARCHAR(200)
   * estado_evento : INTEGER
   * privacidad : INTEGER
