@@ -32,8 +32,7 @@ En **EventMaster**, lo usaremos para emular el dispositivo móvil y probar la ap
 
 Flutter es un framework de desarrollo de código abierto creado por Google para construir aplicaciones nativas multiplataforma (Android, iOS, web y escritorio) usando un solo código base. Utiliza el lenguaje **Dart** y destaca por su alto rendimiento y su sistema de widgets personalizables.
 
-Para **EventMaster**, Flutter será la base del **cliente móvil**: pantallas de exploración de eventos, compra de tickets, billetera de entradas y lector de **códigos QR** para validación en puerta.
-
+Para **EventMaster**, Flutter será la base del **cliente móvil**: pantallas de exploración de eventos
 ---
 
 ### Ruby on Rails
@@ -43,7 +42,7 @@ Para **EventMaster**, Flutter será la base del **cliente móvil**: pantallas de
 
 Ruby on Rails es un framework web basado en el patrón **MVC** que acelera el desarrollo mediante convenciones y buenas prácticas. Facilita la creación de **APIs REST** de forma estructurada y mantenible.
 
-En **EventMaster**, Rails implementará la API: autenticación **JWT**, gestión de usuarios, eventos, órdenes/entradas y manejará notificaciones (p. ej., cambios de horario o ubicación de un evento).
+En **EventMaster**, Rails implementará la API: autenticación **JWT**, gestión de usuarios, eventos y manejará notificaciones (p. ej., cambios de horario o ubicación de un evento).
 
 ---
 
