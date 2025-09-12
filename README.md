@@ -173,7 +173,7 @@ A continuación, se muestran los mockups realizados en figma por cada caso de us
 
 
 ### 3. Caso de uso: Consultar eventos creados
-![Prototipo de Consultar eventos creados - Parte 1](images/ConsultarEventosCreados1.png) |
+![Prototipo de Consultar eventos creados - Parte 1](images/ConsultarEventosCreados0.png) |
 |:--:|
 | *Figura 11: Prototipo de Consultar eventos creados - Parte 1* | 
 
