@@ -25,7 +25,7 @@ En **EventMaster**, lo usaremos para emular el dispositivo móvil y probar la ap
 ---
 
 ### Flutter
-![Flutter](images/flutter.png)
+![Flutter](images/flutter.jpg)
 *Figura 2: Descripción de Flutter*
 
 Flutter es un framework de desarrollo de código abierto creado por Google para construir aplicaciones nativas multiplataforma (Android, iOS, web y escritorio) usando un solo código base. Utiliza el lenguaje **Dart** y destaca por su alto rendimiento y su sistema de widgets personalizables.
