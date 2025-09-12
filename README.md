@@ -1,6 +1,12 @@
-<h1 align="center">EventMaster</h1>
+<h1 align="center">Sistema de Gestión de Eventos: Event Master</h1>
 
-Este aplicativo móvil es...
+EventMaster es un aplicativo móvil diseñado para optimizar la organización y gestión de eventos de manera práctica, intuitiva y segura. La plataforma integra herramientas organizativas con funciones sociales, permitiendo a los usuarios explorar eventos de interés, confirmar su asistencia, crear y gestionar eventos, invitar contactos y recibir notificaciones en tiempo real, todo desde un mismo entorno digital.
+
+Los organizadores podrán administrar sus eventos de forma integral: registrar información clave como nombre, descripción, fecha, hora y ubicación, definir el nivel de privacidad y compartir recursos relevantes. Estos recursos incluyen la posibilidad de subir archivos (PDF, imágenes, listas) o añadir enlaces externos que faciliten la participación de los asistentes.
+
+Para una mejor experiencia, EventMaster incorpora un sistema de notificaciones instantáneas, que mantiene informados a los usuarios sobre invitaciones y cambios en la programación. Además, la integración con servicios de mapas permite visualizar de forma precisa la localización de los eventos, mejorando la orientación y logística de los participantes.
+
+Con una interfaz amigable, accesible y moderna, EventMaster busca ser una plataforma versátil para distintos tipos de eventos —desde reuniones personales hasta actividades corporativas o comunitarias—, ofreciendo una experiencia más organizada, colaborativa y eficiente para organizadores e invitados.
 
 ## Índice
 
@@ -155,7 +161,7 @@ A continuación, se muestran los mockups realizados en figma por cada caso de us
 ![Prototipo de Consultar notificaciones](images/ConsultarNotificaciones.png)
 
 ### 3. Caso de uso: Consultar eventos creados
-![Prototipo de Consultar eventos creados]()
+![Prototipo de Consultar eventos creados](images/ConsultarEventosCreados.png)
 
 ### 4. Caso de uso: Acceder al detalle del evento
 ![Prototipo de Acceder al detalle del evento]()
@@ -167,7 +173,7 @@ A continuación, se muestran los mockups realizados en figma por cada caso de us
 ![Prototipo de Consultar eventos asistidos](images/ConsultarEventosAsistidos.png)
 
 ### 7. Caso de uso: Registrarse
-![Prototipo]()
+![Prototipo](images/Registrarse.png)
 
 ### 8. Caso de uso: Iniciar sesión
 ![Prototipo de Iniciar sesión](images/IniciarSesion.png)
