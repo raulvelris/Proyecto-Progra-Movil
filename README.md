@@ -12,7 +12,46 @@ Este aplicativo móvil es...
 
 ## Configuración del Ambiente de Desarrollo
 
-Mucho texto...
+Paso a paso que se usará en el proyecto.
+
+### Android Studio
+![Android Studio](images/android-studio.png)
+*Figura 1: Descripción de Android Studio*
+
+Android Studio es el entorno de desarrollo oficial para crear aplicaciones Android. Ofrece un editor de código inteligente, diseño visual de interfaces, emuladores de dispositivos y un sistema de compilación basado en Gradle.
+
+En **EventMaster**, lo usaremos para emular el dispositivo móvil y probar la app sin necesidad de exportarla. Además, al momento de generar builds, Android Studio nos proveerá los SDK y herramientas necesarios.
+
+---
+
+### Flutter
+![Flutter](images/flutter.png)
+*Figura 2: Descripción de Flutter*
+
+Flutter es un framework de desarrollo de código abierto creado por Google para construir aplicaciones nativas multiplataforma (Android, iOS, web y escritorio) usando un solo código base. Utiliza el lenguaje **Dart** y destaca por su alto rendimiento y su sistema de widgets personalizables.
+
+Para **EventMaster**, Flutter será la base del **cliente móvil**: pantallas de exploración de eventos, compra de tickets, billetera de entradas y lector de **códigos QR** para validación en puerta.
+
+---
+
+### Ruby on Rails
+![Ruby on Rails](images/rails.png)
+*Figura 3: Descripción de Ruby on Rails*
+
+Ruby on Rails es un framework web basado en el patrón **MVC** que acelera el desarrollo mediante convenciones y buenas prácticas. Facilita la creación de **APIs REST** de forma estructurada y mantenible.
+
+En **EventMaster**, Rails implementará la API: autenticación **JWT**, gestión de usuarios, eventos, órdenes/entradas y endpoints para **validación de tickets por QR**. También manejará notificaciones (p. ej., cambios de horario o ubicación de un evento).
+
+---
+
+### SQLite
+![SQLite](images/sqlite.png)
+*Figura 4: Descripción de SQLite*
+
+SQLite es un motor de base de datos relacional, ligero y autónomo, que almacena los datos en un único archivo local. No requiere servidor y es ideal para entornos de desarrollo y pruebas.
+
+Para **EventMaster**, lo usaremos en desarrollo para persistir información de usuarios, eventos y tickets. En producción, la migración a un motor como **PostgreSQL** es recomendable para mayor concurrencia y escalabilidad.
+
 
 ## Diagrama de Despliegue
 
