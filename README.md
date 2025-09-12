@@ -35,25 +35,23 @@ Flutter es un framework de desarrollo de código abierto creado por Google para 
 Para **EventMaster**, Flutter será la base del **cliente móvil**: pantallas de exploración de eventos
 ---
 
-### Ruby on Rails
+### Express
 | ![Ruby on Rails](images/rails.png) |
 |:--:|
-| *Figura 3: Descripción de Ruby on Rails* |
+| *Figura 3: Descripción de Ruby on Express* |
 
-Ruby on Rails es un framework web basado en el patrón **MVC** que acelera el desarrollo mediante convenciones y buenas prácticas. Facilita la creación de **APIs REST** de forma estructurada y mantenible.
-
-En **EventMaster**, Rails implementará la API: autenticación **JWT**, gestión de usuarios, eventos y manejará tanto las invitaciones como notificaciones (cambios realizados por el organizador).
+**Express** es un framework minimalista para Node.js que usaremos para la **API REST** de EventMaster.  
+Responsabilidades: autenticación **JWT**, gestión de usuarios y eventos y incluiremos middlewares para logging, manejo de errores y CORS.
 
 ---
 
-### SQLite
+### PostgreSQL
 | ![SQLite](images/sqlite.png) |
 |:--:|
-| *Figura 4: Descripción de SQLite* |
+| *Figura 4: Descripción de PostgreSQL* |
 
-SQLite es un motor de base de datos relacional, ligero y autónomo, que almacena los datos en un único archivo local. No requiere servidor y es ideal para entornos de desarrollo y pruebas.
-
-Para **EventMaster**, lo usaremos en desarrollo para persistir información de usuarios y eventos. En producción, la migración a un motor como **PostgreSQL** es recomendable para mayor concurrencia y escalabilidad.
+**PostgreSQL** es un motor de base de datos relacional robusto y escalable.  
+Se usará para persistir usuarios y eventos. Recomendado para producción por su **concurrencia** y soporte de **JSONB** para datos semiestructurados.
 
 ---
 
