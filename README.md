@@ -38,7 +38,7 @@ Para **EventMaster**, Flutter será la base del **cliente móvil**: pantallas de
 ### Express
 | ![Ruby on Rails](images/rails.png) |
 |:--:|
-| *Figura 3: Descripción de Ruby on Express* |
+| *Figura 3: Descripción de Express* |
 
 **Express** es un framework minimalista para Node.js que usaremos para la **API REST** de EventMaster.  
 Responsabilidades: autenticación **JWT**, gestión de usuarios y eventos y incluiremos middlewares para logging, manejo de errores y CORS.
