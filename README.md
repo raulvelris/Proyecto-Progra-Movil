@@ -80,7 +80,7 @@ El prototipo incluye los flujos principales:
 
 ## Diagrama de Despliegue
 
-| ![Diagrama de despliegue](images/diagrama_de_despliegue.jpg) |
+| ![Diagrama de despliegue](images/diagrama_de_despliegue.png) |
 |:--:|
 | *Figura 6: Diagrama de despliegue de EventMaster* |  
 
