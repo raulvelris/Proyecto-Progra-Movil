@@ -12,7 +12,65 @@ Este aplicativo móvil es...
 
 ## Configuración del Ambiente de Desarrollo
 
-Mucho texto...
+Paso a paso que se usará en el proyecto.
+
+### Android Studio
+| ![Android Studio](images/android-studio.png) |
+|:--:|
+| *Figura 1: Descripción de Android Studio* |
+
+Android Studio es el entorno de desarrollo oficial para crear aplicaciones Android. Ofrece un editor de código inteligente, diseño visual de interfaces, emuladores de dispositivos y un sistema de compilación basado en Gradle.
+
+En **EventMaster**, lo usaremos para emular el dispositivo móvil y probar la app sin necesidad de exportarla. Además, al momento de generar builds, Android Studio nos proveerá los SDK y herramientas necesarios.
+
+---
+
+### Flutter
+| ![Flutter](images/flutter.jpg) |
+|:--:|
+| *Figura 2: Descripción de Flutter* |
+
+Flutter es un framework de desarrollo de código abierto creado por Google para construir aplicaciones nativas multiplataforma (Android, iOS, web y escritorio) usando un solo código base. Utiliza el lenguaje **Dart** y destaca por su alto rendimiento y su sistema de widgets personalizables.
+
+Para **EventMaster**, Flutter será la base del **cliente móvil**: pantallas de exploración de eventos
+---
+
+### Express
+| ![Ruby on Rails](images/rails.png) |
+|:--:|
+| *Figura 3: Descripción de Express* |
+
+**Express** es un framework minimalista para Node.js que usaremos para la **API REST** de EventMaster.  
+Responsabilidades: autenticación **JWT**, gestión de usuarios y eventos y incluiremos middlewares para logging, manejo de errores y CORS.
+
+---
+
+### PostgreSQL
+| ![SQLite](images/sqlite.png) |
+|:--:|
+| *Figura 4: Descripción de PostgreSQL* |
+
+**PostgreSQL** es un motor de base de datos relacional robusto y escalable.  
+Se usará para persistir usuarios y eventos. Recomendado para producción por su **concurrencia** y soporte de **JSONB** para datos semiestructurados.
+
+---
+
+## Prototipo (Figma)
+
+| ![Prototipo Figma](images/figma-prototipo.png) |
+|:--:|
+| *Figura 5: Prototipo de la app en Figma* |
+
+Usamos **Figma** para diseñar y validar la **UI/UX** de EventMaster antes del desarrollo.  
+El prototipo incluye los flujos principales:
+
+- Registrarse  
+- Iniciar sesión  
+- Crear evento  
+- Ver eventos gestionados  
+- Eliminar evento  
+- Editar perfil  
+- Explorar eventos
 
 ## Diagrama de Despliegue
 
