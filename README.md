@@ -80,7 +80,9 @@ El prototipo incluye los flujos principales:
 
 ## Diagrama de Despliegue
 
-![Diagrama de despliegue](images/diagrama_de_despliegue.jpg)   
+| ![Diagrama de despliegue](images/diagrama_de_despliegue.jpg) |
+|:--:|
+| *Figura 6: Diagrama de despliegue de EventMaster* |  
 
 ## Requerimientos No Funcionales
 
@@ -128,7 +130,9 @@ El asistente, como especialización del cliente, tiene la posibilidad de explora
 
 Estas funcionalidades en conjunto aseguran una experiencia completa tanto para los asistentes como para los organizadores, facilitando la creación, consulta y participación en eventos dentro de la plataforma móvil.
 
-![Casos de Uso](images/UserCases.png)
+| ![Casos de Uso](images/UserCases.png) |
+|:--:|
+| *Figura 7: Diagrama de casos de uso de EventMaster* |  
 
 A continuación, se detallan los casos de uso:
 
@@ -146,42 +150,74 @@ A continuación, se detallan los casos de uso:
 | UC10   | Administrar perfil            | Cliente     | Permite al usuario consultar y actualizar su información personal.                                                                           |
 | UC11   | Cerrar sesión                 | Cliente     | Permite al usuario cerrar su sesión de manera segura en la aplicación.                                                                       |
 
-Y el diagrama de clases es el siguiente:
+Y el diagrama de base de datos es el siguiente:
 
-![Diagrama de base de datos](images/DatabaseD.png)       
+| ![Diagrama de base de datos](images/DatabaseD.png) |  
+|:--:|
+| *Figura 8: Diagrama de base de datos de EventMaster* |       
 
 ## Prototipos
 
 A continuación, se muestran los mockups realizados en figma por cada caso de uso del Sistema de Gestión de Eventos "EventMaster":
 
 ### 1. Caso de uso: Crear evento
-![Prototipo de Crear evento](images/CrearEvento.png)   
+| ![Prototipo de Crear evento](images/CrearEvento.png) |
+|:--:|
+| *Figura 9: Prototipo de Crear evento* |    
+
 
 ### 2. Caso de uso: Consultar notificaciones
-![Prototipo de Consultar notificaciones](images/ConsultarNotificaciones.png)
+| ![Prototipo de Consultar notificaciones](images/ConsultarNotificaciones.png) |
+|:--:|
+ *Figura 10: Prototipo de Consultar notificaciones* |     
+
 
 ### 3. Caso de uso: Consultar eventos creados
-![Prototipo de Consultar eventos creados](images/ConsultarEventosCreados.png)
+![Prototipo de Consultar eventos creados - Parte 1](images/ConsultarEventosCreados1.png) |
+|:--:|
+| *Figura 11: Prototipo de Consultar eventos creados - Parte 1* | 
 
-### 4. Caso de uso: Acceder al detalle del evento
-![Prototipo de Acceder al detalle del evento]()
+![Prototipo de Consultar eventos creados - Parte 2](images/ConsultarEventosCreados2.png) 
+|:--:|
+| *Figura 12: Prototipo de Consultar eventos creados - Parte 2* |    
 
-### 5. Caso de uso: Administrar un evento
-![Prototipo de Administrar un evento]()
+### 4 y 5. Caso de uso: Acceder al detalle del evento / Administrar un evento 
+| ![Prototipo de Acceder al detalle del evento - Parte 1](images/DetalleYAdministrar1.png) |
+|:--:|
+| *Figura 13: Prototipo de Acceder al detalle del evento / Administrar un evento - Parte 1* | 
+
+| ![Prototipo de Acceder al detalle del evento - Parte 2](images/DetalleYAdministrar2.png) |
+|:--:|
+| *Figura 14: Prototipo de Acceder al detalle del evento / Administrar un evento - Parte 2* | 
+
+| ![Prototipo de Acceder al detalle del evento - Parte 3](images/DetalleYAdministrar3.png) |
+|:--:|
+| *Figura 15: Prototipo de Acceder al detalle del evento / Administrar un evento - Parte 3* | 
 
 ### 6. Caso de uso: Consultar eventos asistidos
-![Prototipo de Consultar eventos asistidos](images/ConsultarEventosAsistidos.png)
+| ![Prototipo de Consultar eventos asistidos](images/ConsultarEventosAsistidos.png) |
+|:--:|
+| *Figura 16: Prototipo de Consultar eventos asistidos* | 
+
 
 ### 7. Caso de uso: Registrarse
-![Prototipo](images/Registrarse.png)
+| ![Prototipo](images/Registrarse.png) |  
+|:--:|
+| *Figura 17: Prototipo de Registrarse* | 
 
 ### 8. Caso de uso: Iniciar sesión
-![Prototipo de Iniciar sesión](images/IniciarSesion.png)
+| ![Prototipo de Iniciar sesión](images/IniciarSesion.png) |
+|:--:|
+| *Figura 18: Prototipo de Iniciar sesión* | 
 
 ### 9. Caso de uso: Explorar eventos públicos
-![Prototipo de Explorar eventos públicos](images/ExplorarEventosPublicos.png)
+| ![Prototipo de Explorar eventos públicos](images/ExplorarEventosPublicos.png) |
+|:--:|
+| *Figura 19: Prototipo de Explorar eventos públicos* | 
 
 ### 10 y 11. Caso de uso: Administrar perfil / Cerrar sesión
-![Prototipo de Administrar perfil / Cerrar sesión](images/AdministrarPerfilYCerrarSesion.png)
+| ![Prototipo de Administrar perfil / Cerrar sesión](images/AdministrarPerfilYCerrarSesion.png) |
+|:--:|
+| *Figura 20: Prototipo de Administrar perfil / Cerrar sesión* | 
 
 
