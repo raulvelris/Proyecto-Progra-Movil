@@ -52,6 +52,23 @@ SQLite es un motor de base de datos relacional, ligero y autónomo, que almacena
 
 Para **EventMaster**, lo usaremos en desarrollo para persistir información de usuarios, eventos y tickets. En producción, la migración a un motor como **PostgreSQL** es recomendable para mayor concurrencia y escalabilidad.
 
+---
+
+## Prototipo (Figma)
+
+![Prototipo Figma](images/figma-prototipo.png)
+*Figura 5: Prototipo de la app en Figma*
+
+Usamos **Figma** para diseñar y validar la **UI/UX** de EventMaster antes del desarrollo.  
+El prototipo incluye los flujos principales:
+
+- Registrarse
+- Iniciar Sesion
+- Crear Evento
+- Visualizar Eventos Gestionados
+- Eliminar Evento
+- Editar Perfil
+- Visualizaciones de Eventos
 
 ## Diagrama de Despliegue
 
