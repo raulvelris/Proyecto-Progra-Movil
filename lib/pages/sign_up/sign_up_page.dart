@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class SignInPage extends StatelessWidget {
-  const SignInPage({super.key});
+class SignUpPage extends StatelessWidget {
+  const SignUpPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Iniciar sesión'),
+        title: const Text('Registrarse'),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () => Get.back(),
@@ -21,6 +21,20 @@ class SignInPage extends StatelessWidget {
           children: [
             TextFormField(
               decoration: const InputDecoration(
+                labelText: 'Nombre',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              decoration: const InputDecoration(
+                labelText: 'Apellido',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              decoration: const InputDecoration(
                 labelText: 'Correo electrónico',
                 border: OutlineInputBorder(),
               ),
@@ -30,6 +44,14 @@ class SignInPage extends StatelessWidget {
               obscureText: true,
               decoration: const InputDecoration(
                 labelText: 'Contraseña',
+                border: OutlineInputBorder(),
+              ),
+            ),
+            const SizedBox(height: 16),
+            TextFormField(
+              obscureText: true,
+              decoration: const InputDecoration(
+                labelText: 'Confirmar contraseña',
                 border: OutlineInputBorder(),
               ),
             ),
@@ -45,7 +67,7 @@ class SignInPage extends StatelessWidget {
                   foregroundColor: Theme.of(context).colorScheme.onPrimary,
                   padding: const EdgeInsets.symmetric(vertical: 16),
                 ),
-                child: const Text('Iniciar sesión'),
+                child: const Text('Registrarse'),
               ),
             ),
           ],
