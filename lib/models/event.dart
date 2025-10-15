@@ -1,5 +1,5 @@
-import '/models/location.dart';
-import '/models/resource.dart';
+import 'location.dart';
+import 'resource.dart';
 
 class Event {
   final int eventId;
@@ -7,7 +7,7 @@ class Event {
   final String description;
   final DateTime startDate;
   final DateTime endDate;
-  final String image;
+  final String image; // Puede ser URL
   final int eventStatus;
   final int privacy;
   final Location? location;
@@ -38,11 +38,35 @@ class Event {
       image: json['imagen'],
       eventStatus: json['estado_evento'],
       privacy: json['privacidad'],
-      location: json['ubicacion'] != null ? Location.fromJson(json['ubicacion']) : null,
-      resources: json['recursos'] != null 
-          ? (json['recursos'] as List).map((r) => Resource.fromJson(r)).toList()
+      location: json['ubicacion'] != null
+          ? Location.fromJson(json['ubicacion'])
+          : null,
+      resources: json['recursos'] != null
+          ? (json['recursos'] as List)
+              .map((r) => Resource.fromJson(r))
+              .toList()
           : [],
       isAttending: json['isAsistido'] ?? false,
+    );
+  }
+
+  /// Para poder mover entre "públicos" y "asistidos"
+  Event copyWith({
+    bool? isAttending,
+    List<Resource>? resources,
+  }) {
+    return Event(
+      eventId: eventId,
+      title: title,
+      description: description,
+      startDate: startDate,
+      endDate: endDate,
+      image: image,
+      eventStatus: eventStatus,
+      privacy: privacy,
+      location: location,
+      resources: resources ?? this.resources,
+      isAttending: isAttending ?? this.isAttending,
     );
   }
 }

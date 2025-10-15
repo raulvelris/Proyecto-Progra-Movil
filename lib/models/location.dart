@@ -17,8 +17,8 @@ class Location {
     return Location(
       locationId: json['ubicacion_id'],
       address: json['direccion'],
-      latitude: json['latitud'],
-      longitude: json['longitud'],
+      latitude: (json['lat'] as num).toDouble(),
+      longitude: (json['lng'] as num).toDouble(),
       eventId: json['evento_id'],
     );
   }

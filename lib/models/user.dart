@@ -5,7 +5,7 @@ class User {
   final bool isActive;
   final Client? client;
 
-  User({
+  const User({
     required this.userId,
     required this.password,
     required this.email,
@@ -31,7 +31,7 @@ class Client {
   final String profilePicture;
   final int userId;
 
-  Client({
+  const Client({
     required this.clientId,
     required this.firstName,
     required this.lastName,
