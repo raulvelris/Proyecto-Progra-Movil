@@ -1,4 +1,4 @@
-@startuml
+@startuml DatabaseDiagram
 !theme plain
 
 entity "Cliente" {
@@ -16,6 +16,9 @@ entity "Usuario" {
   * clave : VARCHAR(20)
   * correo : VARCHAR(30)
   * isActive : BOOLEAN
+  * activation_token : VARCHAR(50)
+  * token_expires_at: DATETIME
+  * google_id : VARCHAR(100)
 }
 
 entity "Evento" {
@@ -33,7 +36,7 @@ entity "Evento" {
 entity "Invitacion" {
   * invitacion_id : INTEGER
   --
-  * fechaLimite: DATETIME
+  * fechaLimite : DATETIME
 }
 
 entity "InvitacionUsuario" {
@@ -103,7 +106,7 @@ entity "Recurso" {
   --
   * nombre : VARCHAR(20)
   * url : VARCHAR(200)
-  * tipo_recurso : INTEGER
+  * tipo_recurso_id : INTEGER
   * evento_id : INTEGER
 }
 
@@ -115,16 +118,15 @@ entity "TipoRecurso" {
 
 ' Relaciones 1:1
 Cliente ||--|| Usuario : usuario_id
-Notificacion ||--|| NotificacionGeneral : notificacion_id
-Invitacion ||--|| NotificacionGeneral : notificacion_id
+NotificacionGeneral ||--|| Notificacion : notificacion_general_id
+Invitacion ||--|| Notificacion : invitacion_id
 
 ' Relaciones 1:m
 InvitacionUsuario }|--|| EstadoInvitacion : estado_invitacion_id
 InvitacionUsuario }|--|| Invitacion : invitacion_id
 InvitacionUsuario }|--|| Usuario : usuario_id
-Notificacion }|--|| Invitacion : invitacion_id
 Notificacion }|--|| Evento : evento_id
-Recurso }|--|| TipoRecurso : tipo_recurso
+Recurso }|--|| TipoRecurso : tipo_recurso_id
 Recurso }|--|| Evento : evento_id
 Ubicacion }|--|| Evento : evento_id
 Evento }|--|| EstadoEvento : estado_evento_id
