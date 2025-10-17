@@ -48,6 +48,16 @@ class EventItemListController extends GetxController {
     await loadEvents();
   }
 
+  // Agrega un evento a la lista
+  void addEvent(Event event) {
+    events.add(event);
+  }
+
+  // Elimina un evento de la lista
+  void removeEvent(Event event) {
+    events.remove(event);
+  }
+
   @override
   void onClose() {
     super.onClose();

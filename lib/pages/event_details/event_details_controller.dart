@@ -200,7 +200,7 @@ class EventDetailsController extends GetxController {
       Get.snackbar(
         'PDF listo',
         'El PDF está disponible temporalmente en la aplicación',
-        backgroundColor: Theme.of(Get.context!).colorScheme.surfaceVariant,
+        backgroundColor: Theme.of(Get.context!).colorScheme.surfaceContainerHighest,
         colorText: Theme.of(Get.context!).colorScheme.onSurfaceVariant,
         duration: const Duration(seconds: 3),
       );

@@ -14,12 +14,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentIndex = 2;
+  int _currentIndex = 2; // Pestaña "Públicos" por defecto
 
   final List<Widget> _pages = [
     const CreatedEventsPage(),
-    const AttendedEventsPage(),
-    const PublicEventsPage(),
+    AttendedEventsPage(),
+    PublicEventsPage(),
     const NotificationsPage(),
     ProfilePage(),
   ];
@@ -46,42 +46,38 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildNavItem(0, 'Creados', Icons.create),
-          _buildNavItem(1, 'Asistidos', Icons.event_available),
-          _buildNavItem(2, 'Públicos', Icons.public),
-          _buildNavItem(3, 'Avisos', Icons.notifications),
-          _buildNavItem(4, 'Perfil', Icons.person),
+          Flexible(child: _buildNavItem(0, 'Creados', Icons.create)),
+          Flexible(child: _buildNavItem(1, 'Asistidos', Icons.event_available)),
+          Flexible(child: _buildNavItem(2, 'Públicos', Icons.public)),
+          Flexible(child: _buildNavItem(3, 'Avisos', Icons.notifications)),
+          Flexible(child: _buildNavItem(4, 'Perfil', Icons.person)),
         ],
       ),
     );
   }
 
   Widget _buildNavItem(int index, String label, IconData icon) {
-    final bool isSelected = _currentIndex == index;
-    final colorScheme = Theme.of(context).colorScheme;
-    
+    final isSelected = _currentIndex == index;
+    final colors = Theme.of(context).colorScheme;
+
     return GestureDetector(
-      onTap: () {
-        setState(() {
-          _currentIndex = index;
-        });
-      },
+      onTap: () => setState(() => _currentIndex = index),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
-            icon, 
-            size: 24, 
-            color: isSelected ? colorScheme.primary : colorScheme.onSurface.withOpacity(0.6),
+            icon,
+            size: 24,
+            color: isSelected ? colors.primary : colors.onSurface.withOpacity(0.6),
           ),
           const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
-              fontSize: 12, 
-              color: isSelected ? colorScheme.primary : colorScheme.onSurface.withOpacity(0.6),
+              fontSize: 12,
+              color: isSelected ? colors.primary : colors.onSurface.withOpacity(0.6),
             ),
           ),
         ],

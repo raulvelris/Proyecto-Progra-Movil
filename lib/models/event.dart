@@ -1,5 +1,5 @@
-import '/models/location.dart';
-import '/models/resource.dart';
+import 'location.dart';
+import 'resource.dart';
 
 class Event {
   final int eventId;
@@ -7,7 +7,7 @@ class Event {
   final String description;
   final DateTime startDate;
   final DateTime endDate;
-  final String image;
+  final String image; // Puede ser URL
   final int eventStatus;
   final int privacy;
   final Location? location;
@@ -38,11 +38,41 @@ class Event {
       image: json['imagen'],
       eventStatus: json['estado_evento'],
       privacy: json['privacidad'],
-      location: json['ubicacion'] != null ? Location.fromJson(json['ubicacion']) : null,
-      resources: json['recursos'] != null 
+      location: json['ubicacion'] != null
+          ? Location.fromJson(json['ubicacion'])
+          : null,
+      resources: json['recursos'] != null
           ? (json['recursos'] as List).map((r) => Resource.fromJson(r)).toList()
           : [],
       isAttending: json['isAsistido'] ?? false,
+    );
+  }
+
+  Event copyWith({
+    int? eventId,
+    String? title,
+    String? description,
+    DateTime? startDate,
+    DateTime? endDate,
+    String? image,
+    int? eventStatus,
+    int? privacy,
+    Location? location,
+    List<Resource>? resources,
+    bool? isAttending,
+  }) {
+    return Event(
+      eventId: eventId ?? this.eventId,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      startDate: startDate ?? this.startDate,
+      endDate: endDate ?? this.endDate,
+      image: image ?? this.image,
+      eventStatus: eventStatus ?? this.eventStatus,
+      privacy: privacy ?? this.privacy,
+      location: location ?? this.location,
+      resources: resources ?? this.resources,
+      isAttending: isAttending ?? this.isAttending,
     );
   }
 }

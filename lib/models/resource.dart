@@ -1,10 +1,9 @@
 class Resource {
   final int sharedFileId;
   final String name;
-  final String url;
-  final int resourceType;
+  final String url;       // Carta PDF, trailer, etc.
+  final int resourceType; // 1:pdf 2:video ...
   final int eventId;
-  final ResourceType? resourceTypeDetail;
 
   Resource({
     required this.sharedFileId,
@@ -12,34 +11,24 @@ class Resource {
     required this.url,
     required this.resourceType,
     required this.eventId,
-    this.resourceTypeDetail,
   });
 
   factory Resource.fromJson(Map<String, dynamic> json) {
     return Resource(
-      sharedFileId: json['archivo_compartido_id'],
+      sharedFileId: json['archivo_id'],
       name: json['nombre'],
       url: json['url'],
-      resourceType: json['tipo_recurso'],
+      resourceType: json['tipo'],
       eventId: json['evento_id'],
-      resourceTypeDetail: json['tipo_recurso_detalle'] != null 
-          ? ResourceType.fromJson(json['tipo_recurso_detalle'])
-          : null,
     );
   }
-
-  bool get isPDF => resourceType == 1;
-  bool get isVideo => resourceType == 2;
 }
 
 class ResourceType {
   final int resourceTypeId;
   final String name;
 
-  ResourceType({
-    required this.resourceTypeId,
-    required this.name,
-  });
+  ResourceType({required this.resourceTypeId, required this.name});
 
   factory ResourceType.fromJson(Map<String, dynamic> json) {
     return ResourceType(

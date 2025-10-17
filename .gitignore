@@ -62,4 +62,6 @@ ios/Runner/Secrets.plist
 # Archivos de build
 /build/
 /android/app/build/
-/ios/Runner/build/
+/ios/Runner/build/lib.zip
+Proyecto-Progra-Movil/
+.env
