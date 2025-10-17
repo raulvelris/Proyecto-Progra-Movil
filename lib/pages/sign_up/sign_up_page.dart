@@ -74,7 +74,6 @@ class _SignUpPageState extends State<SignUpPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 8),
-              // Google button
               OutlinedButton(
                 onPressed: () {},
                 style: OutlinedButton.styleFrom(

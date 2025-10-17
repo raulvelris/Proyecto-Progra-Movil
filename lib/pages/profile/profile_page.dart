@@ -46,7 +46,6 @@ class ProfilePage extends StatelessWidget {
         child: Column(
           children: [
             const SizedBox(height: 20),
-            // Avatar section
             CircleAvatar(
               radius: 50,
               backgroundColor: colorScheme.primaryContainer,
@@ -61,7 +60,6 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            // Name
             Text(
               userName,
               style: TextStyle(
@@ -71,7 +69,6 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 6),
-            // Email
             Text(
               userEmail,
               style: TextStyle(
@@ -80,7 +77,6 @@ class ProfilePage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 40),
-            // Menu items
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
               child: Column(

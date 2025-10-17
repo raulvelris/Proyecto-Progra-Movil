@@ -1,6 +1,6 @@
 import 'invitation.dart';
 import 'general_notification.dart';
-import 'event.dart'; // importa tu modelo Event
+import 'event.dart';
 
 enum NotificationType {
   invitation,
@@ -14,7 +14,6 @@ class Notification {
   final NotificationType type;
   final Invitation? invitation;
   final GeneralNotification? generalNotification;
-  // Evento ya cargado 
   final Event? event;
 
   Notification({

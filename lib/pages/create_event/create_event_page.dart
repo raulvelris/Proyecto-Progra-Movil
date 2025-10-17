@@ -12,7 +12,6 @@ class CreateEventPage extends StatelessWidget {
   );
 
   CreateEventPage({super.key}) {
-    // Limpiar el formulario cuando se inicializa la página
     controller.clearForm();
   }
 

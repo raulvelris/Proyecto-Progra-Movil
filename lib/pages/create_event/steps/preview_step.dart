@@ -5,7 +5,6 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:io';
 import '../create_event_controller.dart';
 
-// Componente reutilizable para la barra de progreso
 class StepProgressBar extends StatelessWidget {
   final int currentStep;
   final int totalSteps;
@@ -34,7 +33,7 @@ class StepProgressBar extends StatelessWidget {
           widthFactor: progress,
           child: Container(
             decoration: BoxDecoration(
-              color: Color(0xFF4CAF50), // Verde más vibrante
+              color: Color(0xFF4CAF50),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -74,7 +73,6 @@ class PreviewStep extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Imagen del evento
             Obx(() => controller.imagePath.value.isNotEmpty
               ? kIsWeb
                 ? Image.network(
@@ -118,7 +116,6 @@ class PreviewStep extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Título del evento
                   Obx(() => Text(
                     controller.title.value,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -127,7 +124,6 @@ class PreviewStep extends StatelessWidget {
                   )),
                   const SizedBox(height: 16),
 
-                  // Fecha y hora de inicio
                   Row(
                     children: [
                       Icon(
@@ -158,7 +154,6 @@ class PreviewStep extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
                   
-                  // Fecha y hora de fin
                   Row(
                     children: [
                       Icon(
@@ -189,7 +184,6 @@ class PreviewStep extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
 
-                  // Ubicación
                   Row(
                     children: [
                       Icon(
@@ -208,7 +202,6 @@ class PreviewStep extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
 
-                  // Mapa
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: SizedBox(
@@ -232,7 +225,6 @@ class PreviewStep extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
 
-                  // Descripción
                   Text(
                     'Descripción del evento',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(

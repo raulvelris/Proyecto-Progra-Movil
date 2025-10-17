@@ -40,7 +40,6 @@ class WelcomePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24),
-              // Título
               Center(
                 child: Text(
                   'Bienvenido a EventMaster',
@@ -53,7 +52,6 @@ class WelcomePage extends StatelessWidget {
                 ),
               ),
               const Spacer(flex: 3),
-              // Botones
               Column(
                 children: [
                   SizedBox(

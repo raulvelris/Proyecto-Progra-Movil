@@ -30,7 +30,6 @@ class _SplashPageState extends State<SplashPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              // Logo tipo insignia
               SizedBox(
                 width: 140,
                 height: 140,
@@ -51,7 +50,6 @@ class _SplashPageState extends State<SplashPage> {
               ),
               const SizedBox(height: 24),
 
-              // Texto con degradado
               ShaderMask(
                 shaderCallback: (bounds) => LinearGradient(
                   colors: [Color(0xFFE85C53), colorScheme.onSurface],

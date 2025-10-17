@@ -12,7 +12,7 @@ class AttendedEventsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(
       context,
-    ).colorScheme; // Para los colores del AppBar
+    ).colorScheme;
 
     return Obx(() {
       final items = controller.attendedEvents;

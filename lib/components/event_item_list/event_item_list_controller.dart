@@ -11,7 +11,6 @@ class EventItemListController extends GetxController {
   final String eventType;
 
   EventItemListController({this.eventType = 'public'}) {
-    // Inicializa el servicio como singleton si no existe
     if (!Get.isRegistered<EventService>()) {
       Get.put(EventService(), permanent: true);
     }

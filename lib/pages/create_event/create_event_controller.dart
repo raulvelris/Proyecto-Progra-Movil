@@ -14,11 +14,9 @@ class CreateEventController extends GetxController {
     _eventService = Get.find<EventService>();
   }
 
-  // Paso 1: Imagen
   final RxString imagePath = ''.obs;
   final Rx<Uint8List?> imageBytes = Rx<Uint8List?>(null);
 
-  // Paso 2: Detalles
   final RxInt currentStep = 0.obs;
   final RxString title = ''.obs;
   final RxString eventType = ''.obs;

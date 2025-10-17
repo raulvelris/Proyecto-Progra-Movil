@@ -74,7 +74,6 @@ class _SignInPageState extends State<SignInPage> {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const SizedBox(height: 40),
-              // Google button
               OutlinedButton(
                 onPressed: () {},
                 style: OutlinedButton.styleFrom(
@@ -125,7 +124,6 @@ class _SignInPageState extends State<SignInPage> {
                 ),
               ),
               const SizedBox(height: 32),
-              // Divider with "o"
               Row(
                 children: [
                   Expanded(
@@ -175,7 +173,6 @@ class _SignInPageState extends State<SignInPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              // Contraseña field
               Align(
                 alignment: Alignment.centerLeft,
                 child: Text(
@@ -197,7 +194,6 @@ class _SignInPageState extends State<SignInPage> {
                 ),
               ),
               const SizedBox(height: 28),
-              // Iniciar sesión button
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(

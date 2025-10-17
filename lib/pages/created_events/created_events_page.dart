@@ -40,7 +40,7 @@ class CreatedEventsPage extends StatelessWidget {
                   }
                 },
                 backgroundColor: colorScheme.primary,
-                child: const Icon(Icons.add),
+                child: Icon(Icons.add, color: colorScheme.onPrimary),
               ),
             ),
           ),

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../create_event_controller.dart';
 
-// Componente reutilizable para la barra de progreso
 class StepProgressBar extends StatelessWidget {
   final int currentStep;
   final int totalSteps;
@@ -31,7 +30,7 @@ class StepProgressBar extends StatelessWidget {
           widthFactor: progress,
           child: Container(
             decoration: BoxDecoration(
-              color: Color(0xFF4CAF50), // Verde más vibrante
+              color: Color(0xFF4CAF50),
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -72,7 +71,6 @@ class DetailsFormStep extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Título del evento
             TextField(
               controller: TextEditingController(text: controller.title.value),
               onChanged: (value) => controller.title.value = value,
@@ -84,7 +82,6 @@ class DetailsFormStep extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Tipo de evento (Público/Privado)
             DropdownButtonFormField<String>(
               decoration: const InputDecoration(
                 labelText: 'Tipo de evento',
@@ -108,7 +105,6 @@ class DetailsFormStep extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Descripción del evento
             TextField(
               controller: TextEditingController(text: controller.description.value),
               onChanged: (value) => controller.description.value = value,
@@ -121,14 +117,12 @@ class DetailsFormStep extends StatelessWidget {
             ),
             const SizedBox(height: 32),
 
-            // Sección de horario
             Text('Horario del evento',
                 style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                 )),
             const SizedBox(height: 24),
             
-            // Fecha y hora de inicio
             Row(
               children: [
                 Expanded(
@@ -194,7 +188,6 @@ class DetailsFormStep extends StatelessWidget {
             ),
             const SizedBox(height: 16),
 
-            // Fecha y hora de fin
             Row(
               children: [
                 Expanded(
@@ -269,7 +262,6 @@ class DetailsFormStep extends StatelessWidget {
             ),
             const SizedBox(height: 32),
 
-            // Ubicación
             TextField(
               controller: TextEditingController(text: controller.location.value),
               onChanged: (value) => controller.location.value = value,

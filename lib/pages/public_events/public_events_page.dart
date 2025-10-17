@@ -16,14 +16,14 @@ class _PublicEventsPageState extends State<PublicEventsPage> {
   @override
   void initState() {
     super.initState();
-    controller.ensureSeeded(); // carga una sola vez
+    controller.ensureSeeded();
   }
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(
       context,
-    ).colorScheme; // para los colores del AppBar
+    ).colorScheme;
 
     return Obx(() {
       final items = controller.publicEvents;

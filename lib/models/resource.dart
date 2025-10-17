@@ -28,6 +28,17 @@ class Resource {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'archivo_id': sharedFileId,
+      'nombre': name,
+      'url': url,
+      'tipo': resourceType,
+      'evento_id': eventId,
+      'tipo_recurso_detalle': resourceTypeDetail?.toJson(),
+    };
+  }
+
   bool get isPDF => resourceType == 1;
   bool get isVideo => resourceType == 2;
 }
@@ -43,5 +54,12 @@ class ResourceType {
       resourceTypeId: json['tipo_recurso_id'],
       name: json['nombre'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'tipo_recurso_id': resourceTypeId,
+      'nombre': name,
+    };
   }
 }

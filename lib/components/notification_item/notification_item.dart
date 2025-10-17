@@ -30,7 +30,6 @@ class NotificationItem extends material.StatelessWidget {
     final event = notification.event;
     final eventCtrl = event != null ? EventItemController(event: event) : null;
 
-    // Determinar estado de la invitación
     final invitationStatus = notification.invitation?.status;
 
     return material.Card(
@@ -111,7 +110,6 @@ class NotificationItem extends material.StatelessWidget {
                   ),
                 ],
               ),
-            // Si ya fue aceptada o rechazada, mostrar texto
             if (isInvitation &&
                 invitationStatus != null &&
                 invitationStatus != InvitationStatus.pending)

@@ -7,7 +7,7 @@ class Event {
   final String description;
   final DateTime startDate;
   final DateTime endDate;
-  final String image; // Puede ser URL
+  final String image;
   final int eventStatus;
   final int privacy;
   final Location? location;

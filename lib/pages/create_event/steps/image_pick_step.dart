@@ -5,7 +5,6 @@ import 'package:image_picker/image_picker.dart';
 import '../create_event_controller.dart';
 import 'dart:typed_data';
 
-// Componente reutilizable para la barra de progreso
 class StepProgressBar extends StatelessWidget {
   final int currentStep;
   final int totalSteps;
@@ -60,7 +59,6 @@ class ImagePickStep extends StatelessWidget {
       );
       if (image != null) {
         controller.imagePath.value = image.path;
-        // Leer los bytes de la imagen
         controller.imageBytes.value = await image.readAsBytes();
       } else {
         Get.snackbar(

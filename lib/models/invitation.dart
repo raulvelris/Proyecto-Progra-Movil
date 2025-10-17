@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 
-// Enum para el estado de la invitación
 enum InvitationStatus {
-  pending,   // Pendiente
-  accepted,  // Aceptada
-  declined,  // Rechazada
+  pending,
+  accepted,
+  declined,
 }
 
 class Invitation {
@@ -15,7 +14,7 @@ class Invitation {
   Invitation({
     required this.notificacionId,
     required this.fechaLimite,
-    this.status = InvitationStatus.pending, // por defecto pendiente
+    this.status = InvitationStatus.pending,
   });
 
   factory Invitation.fromJson(Map<String, dynamic> json) {

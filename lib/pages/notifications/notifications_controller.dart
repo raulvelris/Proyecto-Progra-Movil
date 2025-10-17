@@ -56,14 +56,12 @@ class NotificationsController extends GetxController {
     }
   }
 
-  // Actualiza el estado de la invitación y la mueve al final de la lista
   void _updateInvitationStatus(int invitationId, InvitationStatus status) {
     final index = notifications.indexWhere((n) => n.notificacionId == invitationId);
     if (index != -1) {
       final notification = notifications[index];
       if (notification.invitation != null) {
         notification.invitation!.status = status;
-        // mover al final
         final updated = notifications.removeAt(index);
         notifications.add(updated);
         notifications.refresh();
