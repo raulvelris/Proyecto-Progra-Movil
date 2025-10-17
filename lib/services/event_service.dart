@@ -1,7 +1,10 @@
-import '/models/location.dart';
-import '/models/resource.dart';
+import 'dart:async';
 import '../models/event.dart';
+import '../models/location.dart';
+import '../models/resource.dart';
 
+/// Servicio “mock” que expone SIEMPRE la misma lista base.
+/// No muta estado; el estado vivo lo lleva el controlador.
 class EventService {
   static const String baseUrl = 'https://tu-api.com/api';
 
@@ -98,40 +101,62 @@ class EventService {
           longitude: -77.0300,
           eventId: 2,
         ),
-        isAttending: false,
+      ],
+      isAttending: false,
+    ),
+    Event(
+      eventId: 2,
+      title: 'Festival de Música Electrónica',
+      description: 'El mejor festival de música electrónica del año.',
+      startDate: DateTime(2025, 10, 15, 18, 0),
+      endDate: DateTime(2025, 10, 16, 6, 0),
+      image:
+          'https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=1400&auto=format&fit=crop',
+      eventStatus: 1,
+      privacy: 1,
+      location: Location(
+        locationId: 2,
+        address: 'Costa Verde, Miraflores',
+        latitude: -12.1260,
+        longitude: -77.0300,
+        eventId: 2,
       ),
-      Event(
+      isAttending: false,
+    ),
+    Event(
+      eventId: 3,
+      title: 'Conferencia de Tecnología',
+      description:
+          'Charlas sobre IA, nube y buenas prácticas. Networking con cafecito y stickers.',
+      startDate: DateTime(2025, 8, 20, 9, 0),
+      endDate: DateTime(2025, 8, 20, 17, 0),
+      image:
+          'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1400&auto=format&fit=crop',
+      eventStatus: 1,
+      privacy: 1,
+      location: Location(
+        locationId: 3,
+        address: 'Centro de Convenciones, San Isidro',
+        latitude: -12.0975,
+        longitude: -77.0350,
         eventId: 3,
-        title: 'Conferencia de Tecnología',
-        description: 'Evento sobre las últimas tendencias tecnológicas',
-        startDate: DateTime(2026, 8, 20, 9, 0),
-        endDate: DateTime(2026, 8, 20, 17, 0),
-        image: 'assets/images/event_tech.jpg',
-        eventStatus: 1,
-        privacy: 1,
-        location: Location(
-          locationId: 3,
-          address: 'Centro de Convenciones, San Isidro',
-          latitude: -12.0975,
-          longitude: -77.0350,
-          eventId: 3,
-        ),
-        isAttending: true,
       ),
-    ];
+      isAttending: false,
+    ),
+  ];
+
+  Future<List<Event>> getPublicEvents() async {
+    await Future.delayed(const Duration(milliseconds: 200));
+    // Copia nueva para evitar aliasing
+    return _all.map((e) => e.copyWith()).toList();
   }
 
-  Event _createDefaultEvent() {
-    return Event(
-      eventId: 0,
-      title: 'Evento no encontrado',
-      description: 'El evento solicitado no está disponible',
-      startDate: DateTime.now(),
-      endDate: DateTime.now().add(const Duration(hours: 2)),
-      image: '',
-      eventStatus: 0,
-      privacy: 0,
-      isAttending: false,
-    );
+  /// Útil para el controlador cuando necesita rehacer un evento por id.
+  Event? findById(int id) {
+    try {
+      return _all.firstWhere((e) => e.eventId == id).copyWith();
+    } catch (_) {
+      return null;
+    }
   }
 }

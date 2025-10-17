@@ -1,5 +1,5 @@
-import '/models/location.dart';
-import '/models/resource.dart';
+import 'location.dart';
+import 'resource.dart';
 
 class Event {
   final int eventId;
@@ -7,7 +7,7 @@ class Event {
   final String description;
   final DateTime startDate;
   final DateTime endDate;
-  final String image;
+  final String image; // Puede ser URL
   final int eventStatus;
   final int privacy;
   final Location? location;
