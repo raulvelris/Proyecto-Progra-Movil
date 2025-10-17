@@ -33,24 +33,28 @@ entity "Evento" {
 entity "Invitacion" {
   * invitacion_id : INTEGER
   --
-  * confirmacion : BOOLEAN
+  * fechaLimite: DATETIME
+}
+
+entity "InvitacionUsuario" {
+  * invitacion_usuario_id : INTEGER
+  --
+  * invitacion_id : INTEGER
+  * usuario_id : INTEGER
   * estado_invitacion_id : INTEGER
-  * notificacion_id : INTEGER
 }
 
 entity "Notificacion" {
   * notificacion_id : INTEGER
   --
-  * mensaje : VARCHAR(200)
   * fechahora : DATETIME
   * evento_id : INTEGER
 }
 
-entity "NotificacionCliente" {
-  * notificacion_usuario_id : INTEGER
+entity "NotificacionGeneral" {
+  * notificacion_general_id : INTEGER
   --
-  * notificacion_id : INTEGER
-  * destinatario_id : INTEGER
+  * mensaje : VARCHAR(50)
 }
 
 entity "Ubicacion" {
@@ -111,16 +115,18 @@ entity "TipoRecurso" {
 
 ' Relaciones 1:1
 Cliente ||--|| Usuario : usuario_id
-Notificacion ||--|| Invitacion : notificacion_id 
+Notificacion ||--|| NotificacionGeneral : notificacion_id
+Invitacion ||--|| NotificacionGeneral : notificacion_id
 
 ' Relaciones 1:m
-Invitacion }|--|| EstadoInvitacion : estado_invitacion_id
-NotificacionCliente }|--|| Cliente : cliente_id
-NotificacionCliente }|--|| Notificacion : notificacion_id
+InvitacionUsuario }|--|| EstadoInvitacion : estado_invitacion_id
+InvitacionUsuario }|--|| Invitacion : invitacion_id
+InvitacionUsuario }|--|| Usuario : usuario_id
+Notificacion }|--|| Invitacion : invitacion_id
 Notificacion }|--|| Evento : evento_id
-Recurso }|--|| TipoRecurso : tipo_recurso_id
+Recurso }|--|| TipoRecurso : tipo_recurso
 Recurso }|--|| Evento : evento_id
-Ubicacion ||--|| Evento : evento_id
+Ubicacion }|--|| Evento : evento_id
 Evento }|--|| EstadoEvento : estado_evento_id
 Evento }|--|| Privacidad : privacidad_id
 UsuarioRolEvento }|--|| Usuario : usuario_id

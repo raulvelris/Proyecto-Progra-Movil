@@ -59,7 +59,9 @@ class Event {
       'estado_evento': eventStatus,
       'privacidad': privacy,
       'ubicacion': location?.toJson(),
-      'recursos': resources.isNotEmpty ? resources.map((r) => r.toJson()).toList() : [],
+      'recursos': resources.isNotEmpty
+          ? resources.map((r) => r.toJson()).toList()
+          : [],
       'isAsistido': isAttending,
     };
   }

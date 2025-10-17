@@ -37,8 +37,9 @@ class EventService {
   Future<void> _saveCreatedEventsToStorage() async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final eventsJson =
-          json.encode(_createdEvents.map((e) => e.toJson()).toList());
+      final eventsJson = json.encode(
+        _createdEvents.map((e) => e.toJson()).toList(),
+      );
       await prefs.setString(_createdEventsKey, eventsJson);
     } catch (_) {}
   }
@@ -181,7 +182,10 @@ class EventService {
 
   int _getNextCreatedEventId() {
     if (_createdEvents.isEmpty) return 1000;
-    return _createdEvents.map((e) => e.eventId).reduce((a, b) => a > b ? a : b) + 1;
+    return _createdEvents
+            .map((e) => e.eventId)
+            .reduce((a, b) => a > b ? a : b) +
+        1;
   }
 
   Event _createDefaultEvent() {

@@ -35,20 +35,18 @@ class CreateEventController extends GetxController {
     'Privado',
   ];
 
-  @override
-  void onInit() {
-    super.onInit();
-    startDate.listen((newStartDate) {
-      if (endDate.value.isBefore(newStartDate)) {
-        endDate.value = DateTime(
-          newStartDate.year,
-          newStartDate.month,
-          newStartDate.day,
-          endTime.value.hour,
-          endTime.value.minute,
-        );
-      }
-    });
+  void clearForm() {
+    imagePath.value = '';
+    imageBytes.value = null;
+    currentStep.value = 0;
+    title.value = '';
+    eventType.value = '';
+    description.value = '';
+    location.value = '';
+    startDate.value = DateTime.now();
+    startTime.value = DateTime.now();
+    endDate.value = DateTime.now().add(const Duration(hours: 2));
+    endTime.value = DateTime.now().add(const Duration(hours: 2));
   }
 
   bool get canMoveNext {

@@ -6,9 +6,15 @@ import 'steps/details_form_step.dart';
 import 'steps/preview_step.dart';
 
 class CreateEventPage extends StatelessWidget {
-  final CreateEventController controller = Get.put(CreateEventController(), permanent: true);
+  final CreateEventController controller = Get.put(
+    CreateEventController(),
+    permanent: true,
+  );
 
-  CreateEventPage({super.key});
+  CreateEventPage({super.key}) {
+    // Limpiar el formulario cuando se inicializa la página
+    controller.clearForm();
+  }
 
   @override
   Widget build(BuildContext context) {
