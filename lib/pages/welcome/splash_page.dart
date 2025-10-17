@@ -21,8 +21,6 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    const coral = Color(0xFFE85C53);
-
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
