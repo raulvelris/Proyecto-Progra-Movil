@@ -7,13 +7,13 @@ class EventService {
 
   Future<Event> getEventById(int eventId) async {
     await Future.delayed(const Duration(milliseconds: 500));
-    
+
     final events = await _getMockEvents();
     final event = events.firstWhere(
       (e) => e.eventId == eventId,
       orElse: () => _createDefaultEvent(),
     );
-    
+
     return event;
   }
 
@@ -49,9 +49,10 @@ class EventService {
       Event(
         eventId: 1,
         title: 'Baile de los Brainrots',
-        description: '¡Por primera vez en Perú y como parte de su gira en Latinoamérica, llega el espectacular CONCIERTO OFICIAL EN ESPAÑOL de los BRAINROTS ITALIANOS! Llega a UMA para disfrutar de unas increíbles funciones por el DÍA DEL NIÑO junto a una mega producción internacional con un espectacular escenografía y grandes musicales EN VIVO! ¡Podremos conocer en vivo a Baterina Capuchina, Traialero Tralala, Tun Tun Sahur, Capuchino Asesino, y muchos más Brainrots EN DIRECTO! ¡Los esperamos en el Concierto Infantil Oficial del Día del Niño!',
-        startDate: DateTime(2025, 9, 11, 20, 0),
-        endDate: DateTime(2025, 9, 11, 23, 0),
+        description:
+            '¡Por primera vez en Perú y como parte de su gira en Latinoamérica, llega el espectacular CONCIERTO OFICIAL EN ESPAÑOL de los BRAINROTS ITALIANOS! Llega a UMA para disfrutar de unas increíbles funciones por el DÍA DEL NIÑO junto a una mega producción internacional con un espectacular escenografía y grandes musicales EN VIVO! ¡Podremos conocer en vivo a Baterina Capuchina, Traialero Tralala, Tun Tun Sahur, Capuchino Asesino, y muchos más Brainrots EN DIRECTO! ¡Los esperamos en el Concierto Infantil Oficial del Día del Niño!',
+        startDate: DateTime(2026, 9, 11, 20, 0),
+        endDate: DateTime(2026, 9, 11, 23, 0),
         image: 'assets/images/event_brainrots.jpg',
         eventStatus: 1,
         privacy: 1,
@@ -66,7 +67,8 @@ class EventService {
           Resource(
             sharedFileId: 1,
             name: 'Agenda',
-            url: 'https://www.ulima.edu.pe/sites/default/files/career/files/malla_ing_sistemas_2025_1.pdf',
+            url:
+                'https://www.ulima.edu.pe/sites/default/files/career/files/malla_ing_sistemas_2025_1.pdf',
             resourceType: 1,
             eventId: 1,
           ),
@@ -84,8 +86,8 @@ class EventService {
         eventId: 2,
         title: 'Festival de Música Electrónica',
         description: 'El mejor festival de música electrónica del año',
-        startDate: DateTime(2025, 10, 15, 18, 0),
-        endDate: DateTime(2025, 10, 16, 6, 0),
+        startDate: DateTime(2026, 10, 15, 18, 0),
+        endDate: DateTime(2026, 10, 16, 6, 0),
         image: 'assets/images/event_festival.jpg',
         eventStatus: 1,
         privacy: 1,
@@ -102,8 +104,8 @@ class EventService {
         eventId: 3,
         title: 'Conferencia de Tecnología',
         description: 'Evento sobre las últimas tendencias tecnológicas',
-        startDate: DateTime(2025, 8, 20, 9, 0),
-        endDate: DateTime(2025, 8, 20, 17, 0),
+        startDate: DateTime(2026, 8, 20, 9, 0),
+        endDate: DateTime(2026, 8, 20, 17, 0),
         image: 'assets/images/event_tech.jpg',
         eventStatus: 1,
         privacy: 1,

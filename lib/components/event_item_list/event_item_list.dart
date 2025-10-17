@@ -72,7 +72,10 @@ class EventItemList extends StatelessWidget {
         child: ListView.builder(
           itemCount: controller.events.length,
           itemBuilder: (context, index) {
-            return EventItem(event: controller.events[index]);
+            return EventItem(
+              event: controller.events[index],
+              isCreatedEvent: eventType == 'created',
+            );
           },
         ),
       );

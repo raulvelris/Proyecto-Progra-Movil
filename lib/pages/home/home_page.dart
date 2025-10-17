@@ -46,13 +46,13 @@ class _HomePageState extends State<HomePage> {
         ],
       ),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          _buildNavItem(0, 'Creados', Icons.create),
-          _buildNavItem(1, 'Asistidos', Icons.event_available),
-          _buildNavItem(2, 'Públicos', Icons.public),
-          _buildNavItem(3, 'Avisos', Icons.notifications),
-          _buildNavItem(4, 'Perfil', Icons.person),
+          Flexible(child: _buildNavItem(0, 'Creados', Icons.create)),
+          Flexible(child: _buildNavItem(1, 'Asistidos', Icons.event_available)),
+          Flexible(child: _buildNavItem(2, 'Públicos', Icons.public)),
+          Flexible(child: _buildNavItem(3, 'Avisos', Icons.notifications)),
+          Flexible(child: _buildNavItem(4, 'Perfil', Icons.person)),
         ],
       ),
     );

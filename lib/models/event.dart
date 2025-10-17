@@ -38,8 +38,10 @@ class Event {
       image: json['imagen'],
       eventStatus: json['estado_evento'],
       privacy: json['privacidad'],
-      location: json['ubicacion'] != null ? Location.fromJson(json['ubicacion']) : null,
-      resources: json['recursos'] != null 
+      location: json['ubicacion'] != null
+          ? Location.fromJson(json['ubicacion'])
+          : null,
+      resources: json['recursos'] != null
           ? (json['recursos'] as List).map((r) => Resource.fromJson(r)).toList()
           : [],
       isAttending: json['isAsistido'] ?? false,

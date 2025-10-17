@@ -22,7 +22,7 @@ class Resource {
       url: json['url'],
       resourceType: json['tipo_recurso'],
       eventId: json['evento_id'],
-      resourceTypeDetail: json['tipo_recurso_detalle'] != null 
+      resourceTypeDetail: json['tipo_recurso_detalle'] != null
           ? ResourceType.fromJson(json['tipo_recurso_detalle'])
           : null,
     );
@@ -36,10 +36,7 @@ class ResourceType {
   final int resourceTypeId;
   final String name;
 
-  ResourceType({
-    required this.resourceTypeId,
-    required this.name,
-  });
+  ResourceType({required this.resourceTypeId, required this.name});
 
   factory ResourceType.fromJson(Map<String, dynamic> json) {
     return ResourceType(
