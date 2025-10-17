@@ -7,7 +7,7 @@ class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const coral = Color(0xFFE85C53);
-    
+
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -18,7 +18,6 @@ class WelcomePage extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               const Spacer(flex: 2),
-              // Logo EM con diseño de estrella/sol
               Center(
                 child: Container(
                   width: 140,
@@ -63,7 +62,7 @@ class WelcomePage extends StatelessWidget {
                         Get.toNamed('/sign-up');
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: coral,
+                        backgroundColor: Theme.of(context).colorScheme.primary,
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
@@ -89,7 +88,7 @@ class WelcomePage extends StatelessWidget {
                       },
                       style: OutlinedButton.styleFrom(
                         side: const BorderSide(color: coral, width: 1.5),
-                        foregroundColor: coral,
+                        foregroundColor: Theme.of(context).colorScheme.primary,
                         backgroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
