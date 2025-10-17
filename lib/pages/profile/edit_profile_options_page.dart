@@ -23,43 +23,42 @@ class _EditProfilePageState extends State<EditProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    const coral = Color(0xFFFF6B6B);
-    const green = Color(0xFF4CAF50);
+    final colorScheme = Theme.of(context).colorScheme;
 
     InputDecoration field(String label) => InputDecoration(
           labelText: label,
           labelStyle: TextStyle(
-            color: Colors.grey.shade600,
+            color: colorScheme.onSurfaceVariant,
             fontSize: 13,
             fontWeight: FontWeight.w500,
           ),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: colorScheme.surface,
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+            borderSide: BorderSide(color: colorScheme.outlineVariant, width: 1),
             borderRadius: BorderRadius.circular(8),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey.shade400, width: 1),
+            borderSide: BorderSide(color: colorScheme.primary, width: 1),
             borderRadius: BorderRadius.circular(8),
           ),
           floatingLabelBehavior: FloatingLabelBehavior.never,
         );
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: colorScheme.background,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: colorScheme.surface,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
           onPressed: () => Get.back(),
         ),
-        title: const Text(
+        title: Text(
           'Editar Perfil',
           style: TextStyle(
-            color: Colors.black87,
+            color: colorScheme.onSurface,
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
@@ -70,10 +69,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
               // Guardar cambios
               Get.back();
             },
-            child: const Text(
+            child: Text(
               'GUARDAR',
               style: TextStyle(
-                color: green,
+                color: colorScheme.primary,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
                 letterSpacing: 0.5,
@@ -86,18 +85,17 @@ class _EditProfilePageState extends State<EditProfilePage> {
         child: Column(
           children: [
             const SizedBox(height: 30),
-            // Avatar section con botón de cámara
             Stack(
               children: [
                 CircleAvatar(
                   radius: 60,
-                  backgroundColor: coral.withOpacity(0.15),
-                  child: const Text(
+                  backgroundColor: colorScheme.primaryContainer,
+                  child: Text(
                     'DT',
                     style: TextStyle(
                       fontSize: 36,
                       fontWeight: FontWeight.w600,
-                      color: coral,
+                      color: colorScheme.onPrimaryContainer,
                       letterSpacing: 1,
                     ),
                   ),
@@ -112,13 +110,13 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: coral,
+                        color: colorScheme.primary,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 3),
+                        border: Border.all(color: colorScheme.surface, width: 3),
                       ),
-                      child: const Icon(
+                      child: Icon(
                         Icons.camera_alt,
-                        color: Colors.white,
+                        color: colorScheme.onPrimary,
                         size: 18,
                       ),
                     ),
@@ -127,13 +125,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
               ],
             ),
             const SizedBox(height: 40),
-            // Form fields
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Nombres y Apellidos en fila
                   Row(
                     children: [
                       Expanded(
@@ -144,7 +140,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               'Nombres',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.grey.shade700,
+                                color: colorScheme.onSurfaceVariant,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -152,7 +148,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             TextField(
                               controller: _firstNameController,
                               decoration: field('Dylan'),
-                              style: const TextStyle(fontSize: 14),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: colorScheme.onSurface,
+                              ),
                             ),
                           ],
                         ),
@@ -166,7 +165,7 @@ class _EditProfilePageState extends State<EditProfilePage> {
                               'Apellidos',
                               style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.grey.shade700,
+                                color: colorScheme.onSurfaceVariant,
                                 fontWeight: FontWeight.w500,
                               ),
                             ),
@@ -174,7 +173,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             TextField(
                               controller: _lastNameController,
                               decoration: field('Thomas'),
-                              style: const TextStyle(fontSize: 14),
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: colorScheme.onSurface,
+                              ),
                             ),
                           ],
                         ),
@@ -182,12 +184,11 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  // E-mail field
                   Text(
                     'E-mail',
                     style: TextStyle(
                       fontSize: 12,
-                      color: Colors.grey.shade700,
+                      color: colorScheme.onSurfaceVariant,
                       fontWeight: FontWeight.w500,
                     ),
                   ),
@@ -196,7 +197,10 @@ class _EditProfilePageState extends State<EditProfilePage> {
                     controller: _emailController,
                     keyboardType: TextInputType.emailAddress,
                     decoration: field('dylanthomas@server.com'),
-                    style: const TextStyle(fontSize: 14),
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: colorScheme.onSurface,
+                    ),
                   ),
                   const SizedBox(height: 40),
                 ],

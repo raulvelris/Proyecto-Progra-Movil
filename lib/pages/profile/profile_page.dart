@@ -9,7 +9,7 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const coral = Color(0xFFFF6B6B);
+    final colorScheme = Theme.of(context).colorScheme;
     
     // Extraer las iniciales del email o usar "DT" por defecto
     String getInitials(String? email) {
@@ -21,7 +21,6 @@ class ProfilePage extends StatelessWidget {
       return email.substring(0, 2).toUpperCase();
     }
 
-    // Formatear nombre desde email
     String formatName(String? email) {
       if (email == null || email.isEmpty) return 'Dylan Thomas';
       final namePart = email.split('@')[0];
@@ -37,9 +36,9 @@ class ProfilePage extends StatelessWidget {
     final userEmail = sessionService.userEmail ?? 'dylanthomas@server.com';
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: colorScheme.background,
       appBar: AppBar(
-        backgroundColor: Colors.grey.shade50,
+        backgroundColor: colorScheme.background,
         elevation: 0,
         automaticallyImplyLeading: false,
       ),
@@ -50,13 +49,13 @@ class ProfilePage extends StatelessWidget {
             // Avatar section
             CircleAvatar(
               radius: 50,
-              backgroundColor: coral.withOpacity(0.15),
+              backgroundColor: colorScheme.primaryContainer,
               child: Text(
                 initials,
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w600,
-                  color: coral,
+                  color: colorScheme.onPrimaryContainer,
                   letterSpacing: 1,
                 ),
               ),
@@ -65,10 +64,10 @@ class ProfilePage extends StatelessWidget {
             // Name
             Text(
               userName,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Colors.black87,
+                color: colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: 6),
@@ -77,16 +76,13 @@ class ProfilePage extends StatelessWidget {
               userEmail,
               style: TextStyle(
                 fontSize: 14,
-                color: Colors.grey.shade600,
+                color: colorScheme.onSurfaceVariant,
               ),
             ),
             const SizedBox(height: 40),
             // Menu items
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
-              // decoration: BoxDecoration(
-              //   color: Colors.white,
-              // ),
               child: Column(
                 children: [
                   _buildMenuItem(
@@ -95,6 +91,7 @@ class ProfilePage extends StatelessWidget {
                       Get.toNamed('/edit-profile-options');
                     },
                     showDivider: true,
+                    colorScheme: colorScheme,
                   ),
                   _buildMenuItem(
                     title: 'Cerrar sesión',
@@ -103,6 +100,7 @@ class ProfilePage extends StatelessWidget {
                       Get.offAllNamed('/welcome');
                     },
                     showDivider: true,
+                    colorScheme: colorScheme,
                   ),
                 ],
               ),
@@ -118,31 +116,38 @@ class ProfilePage extends StatelessWidget {
     required String title,
     required VoidCallback onTap,
     required bool showDivider,
+    required ColorScheme colorScheme,
   }) {
     return Column(
       children: [
         InkWell(
           onTap: onTap,
           borderRadius: BorderRadius.circular(12),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontSize: 15,
-                    color: Colors.black87,
-                    fontWeight: FontWeight.w500,
+          child: Container(
+            decoration: BoxDecoration(
+              color: colorScheme.surface,
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: colorScheme.onSurface,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-                Icon(
-                  Icons.chevron_right,
-                  color: Colors.grey.shade400,
-                  size: 24,
-                ),
-              ],
+                  Icon(
+                    Icons.chevron_right,
+                    color: colorScheme.onSurfaceVariant,
+                    size: 24,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -152,7 +157,7 @@ class ProfilePage extends StatelessWidget {
             thickness: 1,
             indent: 20,
             endIndent: 20,
-            color: Colors.grey.shade200,
+            color: colorScheme.onSurfaceVariant,
           ),
       ],
     );

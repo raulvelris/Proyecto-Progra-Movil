@@ -1,15 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'dart:math' as math;
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const coral = Color(0xFFE85C53);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: colorScheme.surface,
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -40,14 +41,14 @@ class WelcomePage extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               // Título
-              const Center(
+              Center(
                 child: Text(
                   'Bienvenido a EventMaster',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: colorScheme.onSurface,
                   ),
                 ),
               ),
@@ -62,8 +63,8 @@ class WelcomePage extends StatelessWidget {
                         Get.toNamed('/sign-up');
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Theme.of(context).colorScheme.primary,
-                        foregroundColor: Colors.white,
+                        backgroundColor: colorScheme.primary,
+                        foregroundColor: colorScheme.onPrimary,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
@@ -87,15 +88,18 @@ class WelcomePage extends StatelessWidget {
                         Get.toNamed('/sign-in');
                       },
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(color: coral, width: 1.5),
-                        foregroundColor: Theme.of(context).colorScheme.primary,
-                        backgroundColor: Colors.white,
+                        side: BorderSide(
+                          color: colorScheme.primary,
+                          width: 1.5
+                        ),
+                        foregroundColor: colorScheme.primary,
+                        backgroundColor: colorScheme.surface,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(8),
                         ),
                       ),
-                      child: const Text(
+                      child: Text(
                         'Iniciar sesión',
                         style: TextStyle(
                           fontSize: 15,
@@ -130,10 +134,10 @@ class StarBadgePainter extends CustomPainter {
     final path = Path();
 
     for (int i = 0; i < spikes * 2; i++) {
-      final angle = (i * 3.14159) / spikes;
+      final angle = (i * math.pi) / spikes;
       final radius = i.isEven ? outerRadius : innerRadius;
-      final x = center.dx + radius * 0.95 * cos(angle - 3.14159 / 2);
-      final y = center.dy + radius * 0.95 * sin(angle - 3.14159 / 2);
+      final x = center.dx + radius * 0.95 * math.cos(angle - math.pi / 2);
+      final y = center.dy + radius * 0.95 * math.sin(angle - math.pi / 2);
 
       if (i == 0) {
         path.moveTo(x, y);
@@ -148,29 +152,4 @@ class StarBadgePainter extends CustomPainter {
 
   @override
   bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-
-  double cos(double angle) => _cos(angle);
-  double sin(double angle) => _sin(angle);
-
-  double _cos(double angle) {
-    // Aproximación de coseno usando serie de Taylor
-    double result = 1.0;
-    double term = 1.0;
-    for (int i = 1; i <= 10; i++) {
-      term *= -angle * angle / ((2 * i - 1) * (2 * i));
-      result += term;
-    }
-    return result;
-  }
-
-  double _sin(double angle) {
-    // Aproximación de seno usando serie de Taylor
-    double result = angle;
-    double term = angle;
-    for (int i = 1; i <= 10; i++) {
-      term *= -angle * angle / ((2 * i) * (2 * i + 1));
-      result += term;
-    }
-    return result;
-  }
 }

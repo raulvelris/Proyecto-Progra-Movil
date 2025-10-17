@@ -21,8 +21,10 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: colorScheme.surface,
       body: SafeArea(
         child: Center(
           child: Column(
@@ -34,7 +36,7 @@ class _SplashPageState extends State<SplashPage> {
                 height: 140,
                 child: CustomPaint(
                   painter: StarBadgePainter(),
-                  child: const Center(
+                  child: Center(
                     child: Text(
                       'EM',
                       style: TextStyle(
@@ -51,8 +53,8 @@ class _SplashPageState extends State<SplashPage> {
 
               // Texto con degradado
               ShaderMask(
-                shaderCallback: (bounds) => const LinearGradient(
-                  colors: [Color(0xFFE85C53), Colors.black],
+                shaderCallback: (bounds) => LinearGradient(
+                  colors: [Color(0xFFE85C53), colorScheme.onSurface],
                   begin: Alignment.centerLeft,
                   end: Alignment.centerRight,
                 ).createShader(bounds),
@@ -62,7 +64,7 @@ class _SplashPageState extends State<SplashPage> {
                     fontSize: 32,
                     fontWeight: FontWeight.bold,
                     letterSpacing: -0.5,
-                    color: Colors.white, // se reemplaza por el degradado
+                    color: Colors.white,
                   ),
                 ),
               ),

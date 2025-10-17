@@ -37,7 +37,7 @@ class InvitationService extends GetxService {
   Future<void> updateStatus({
     required int eventId,
     required int inviteeId,
-    required InviteStatus status,
+    required InvitationStatus status,
   }) async {
     final list = invitesRx(eventId);
     final idx = list.indexWhere((i) => i.id == inviteeId);
@@ -70,7 +70,7 @@ class InvitationService extends GetxService {
       Invitee(id: 3, name: 'Camila Ramos',  email: 'camila.r@email.com'),
     ];
     for (final p in base) {
-      p.status = InviteStatus.values[rnd.nextInt(InviteStatus.values.length)];
+      p.status = InvitationStatus.values[rnd.nextInt(InvitationStatus.values.length)];
     }
     return base;
   }
