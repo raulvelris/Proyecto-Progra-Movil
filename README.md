@@ -152,7 +152,7 @@ A continuación, se detallan los casos de uso:
 
 Y el diagrama de base de datos es el siguiente:
 
-| ![Diagrama de base de datos](images/DatabaseD.png) |  
+| ![Diagrama de base de datos](images/DatabaseD2.png) |  
 |:--:|
 | *Figura 8: Diagrama de base de datos de EventMaster* |       
 
