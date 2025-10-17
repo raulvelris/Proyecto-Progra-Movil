@@ -5,13 +5,13 @@ class InviteListPage extends StatelessWidget {
 
   // Datos “fake”
   List<_Invite> get _data => const [
-        _Invite('Aaron Lobo', _InviteStatus.going),
-        _Invite('Brenda Campos', _InviteStatus.undecided),
-        _Invite('Carlos Paredes', _InviteStatus.rejected),
-        _Invite('Daniela Rivas', _InviteStatus.going),
-        _Invite('Eduardo Salas', _InviteStatus.undecided),
-        _Invite('Fiorella Ñique', _InviteStatus.rejected),
-      ];
+    _Invite('Aaron Lobo', _InviteStatus.going),
+    _Invite('Brenda Campos', _InviteStatus.undecided),
+    _Invite('Carlos Paredes', _InviteStatus.rejected),
+    _Invite('Daniela Rivas', _InviteStatus.going),
+    _Invite('Eduardo Salas', _InviteStatus.undecided),
+    _Invite('Fiorella Ñique', _InviteStatus.rejected),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +28,10 @@ class InviteListPage extends StatelessWidget {
           return ListTile(
             leading: CircleAvatar(
               backgroundColor: c.primaryContainer.withOpacity(.35),
-              child: Text(_initials(item.name), style: TextStyle(color: c.primary)),
+              child: Text(
+                _initials(item.name),
+                style: TextStyle(color: c.primary),
+              ),
             ),
             title: Text(item.name),
             trailing: badge,
@@ -61,7 +64,7 @@ class InviteListPage extends StatelessWidget {
         fg = Colors.red.shade800;
         break;
       case _InviteStatus.undecided:
-        label = 'Sin decidir';
+        label = 'Pendiente';
         bg = c.outlineVariant.withOpacity(.25);
         fg = c.onSurfaceVariant;
         break;
@@ -73,7 +76,10 @@ class InviteListPage extends StatelessWidget {
         color: bg,
         borderRadius: BorderRadius.circular(24),
       ),
-      child: Text(label, style: TextStyle(color: fg, fontWeight: FontWeight.w600)),
+      child: Text(
+        label,
+        style: TextStyle(color: fg, fontWeight: FontWeight.w600),
+      ),
     );
   }
 }

@@ -33,8 +33,8 @@ class _PublicEventsPageState extends State<PublicEventsPage> {
             title: Text(e.title),
             subtitle: Text(e.location?.address ?? ''),
             trailing: TextButton(
-              onPressed: () => controller.confirm(e.eventId),
-              child: const Text('Confirmar'),
+              onPressed: () => controller.confirm(items[i].eventId),
+              child: const Text('Asistir'), // ← antes decía 'Confirmar'
             ),
             onTap: () => Get.to(() => EventDetailsPage(eventId: e.eventId)),
           );
