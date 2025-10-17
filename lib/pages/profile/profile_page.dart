@@ -9,95 +9,152 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    const coral = Color(0xFFFF6B6B);
     
+    // Extraer las iniciales del email o usar "DT" por defecto
+    String getInitials(String? email) {
+      if (email == null || email.isEmpty) return 'DT';
+      final parts = email.split('@')[0].split('.');
+      if (parts.length >= 2) {
+        return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+      }
+      return email.substring(0, 2).toUpperCase();
+    }
+
+    // Formatear nombre desde email
+    String formatName(String? email) {
+      if (email == null || email.isEmpty) return 'Dylan Thomas';
+      final namePart = email.split('@')[0];
+      final parts = namePart.split('.');
+      if (parts.length >= 2) {
+        return '${parts[0][0].toUpperCase()}${parts[0].substring(1)} ${parts[1][0].toUpperCase()}${parts[1].substring(1)}';
+      }
+      return namePart[0].toUpperCase() + namePart.substring(1);
+    }
+
+    final initials = getInitials(sessionService.userEmail);
+    final userName = formatName(sessionService.userEmail);
+    final userEmail = sessionService.userEmail ?? 'dylanthomas@server.com';
+
     return Scaffold(
+      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        title: const Text('Mi Perfil'),
+        backgroundColor: Colors.grey.shade50,
+        elevation: 0,
         automaticallyImplyLeading: false,
-        backgroundColor: colorScheme.primary,
-        foregroundColor: colorScheme.onPrimary,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(20.0),
+      body: SingleChildScrollView(
         child: Column(
           children: [
             const SizedBox(height: 20),
+            // Avatar section
             CircleAvatar(
               radius: 50,
-              backgroundColor: colorScheme.primary,
-              child: Icon(Icons.person, size: 50, color: colorScheme.onPrimary),
+              backgroundColor: coral.withOpacity(0.15),
+              child: Text(
+                initials,
+                style: const TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.w600,
+                  color: coral,
+                  letterSpacing: 1,
+                ),
+              ),
             ),
             const SizedBox(height: 20),
+            // Name
             Text(
-              sessionService.userEmail ?? 'Usuario',
-              style: TextStyle(
-                fontSize: 20,
+              userName,
+              style: const TextStyle(
+                fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: colorScheme.onSurface,
+                color: Colors.black87,
               ),
             ),
-            const SizedBox(height: 10),
+            const SizedBox(height: 6),
+            // Email
             Text(
-              sessionService.userEmail ?? 'correo@ejemplo.com',
+              userEmail,
               style: TextStyle(
-                fontSize: 16,
-                color: colorScheme.onSurfaceVariant,
+                fontSize: 14,
+                color: Colors.grey.shade600,
               ),
             ),
-            const SizedBox(height: 30),
-            Expanded(
-              child: ListView(
+            const SizedBox(height: 40),
+            // Menu items
+            Container(
+              margin: const EdgeInsets.symmetric(horizontal: 20),
+              // decoration: BoxDecoration(
+              //   color: Colors.white,
+              // ),
+              child: Column(
                 children: [
-                  _buildProfileItem(
-                    icon: Icons.edit,
+                  _buildMenuItem(
                     title: 'Editar Perfil',
-                    onTap: () {},
-                    context: context
+                    onTap: () {
+                      Get.toNamed('/edit-profile-options');
+                    },
+                    showDivider: true,
                   ),
-                  _buildProfileItem(
-                    icon: Icons.settings,
-                    title: 'Configuración',
-                    onTap: () {},
-                    context: context
-                  ),
-                  _buildProfileItem(
-                    icon: Icons.help,
-                    title: 'Ayuda y Soporte',
-                    onTap: () {},
-                    context: context
-                  ),
-                  _buildProfileItem(
-                    icon: Icons.logout,
-                    title: 'Cerrar Sesión',
+                  _buildMenuItem(
+                    title: 'Cerrar sesión',
                     onTap: () {
                       sessionService.logout();
                       Get.offAllNamed('/welcome');
                     },
-                    context: context
+                    showDivider: true,
                   ),
                 ],
               ),
             ),
+            const SizedBox(height: 20),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildProfileItem({
-    required IconData icon,
+  Widget _buildMenuItem({
     required String title,
     required VoidCallback onTap,
-    required BuildContext context
+    required bool showDivider,
   }) {
-    return Card(
-      child: ListTile(
-        leading: Icon(icon, color: Theme.of(context).colorScheme.primary),
-        title: Text(title),
-        trailing: Icon(Icons.arrow_forward_ios, size: 16, color: Theme.of(context).colorScheme.onSurface),
-        onTap: onTap,
-      ),
+    return Column(
+      children: [
+        InkWell(
+          onTap: onTap,
+          borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Icon(
+                  Icons.chevron_right,
+                  color: Colors.grey.shade400,
+                  size: 24,
+                ),
+              ],
+            ),
+          ),
+        ),
+        if (showDivider)
+          Divider(
+            height: 1,
+            thickness: 1,
+            indent: 20,
+            endIndent: 20,
+            color: Colors.grey.shade200,
+          ),
+      ],
     );
   }
 }

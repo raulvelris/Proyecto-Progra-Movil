@@ -8,8 +8,8 @@ class MaterialTheme {
   static ColorScheme lightScheme() {
     return const ColorScheme(
       brightness: Brightness.light,
-      primary: Color(0xff8f4c35),
-      surfaceTint: Color(0xff8f4c35),
+      primary: Color(0xffe05353),
+      surfaceTint: Color(0xFFE85C53),
       onPrimary: Color(0xffffffff),
       primaryContainer: Color(0xffffdbcf),
       onPrimaryContainer: Color(0xff723520),
@@ -33,7 +33,7 @@ class MaterialTheme {
       shadow: Color(0xff000000),
       scrim: Color(0xff000000),
       inverseSurface: Color(0xff392e2b),
-      inversePrimary: Color(0xffffb59c),
+      inversePrimary: Color(0xFFE85C53),
       primaryFixed: Color(0xffffdbcf),
       onPrimaryFixed: Color(0xff390c00),
       primaryFixedDim: Color(0xffffb59c),
