@@ -76,20 +76,11 @@ class EventDetailsPage extends StatelessWidget {
                     fit: StackFit.expand,
                     children: [
                       Container(color: color.primaryContainer),
-                      if (e.image.isNotEmpty)
-                        Image.asset(
-                          e.image,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) {
-                            return Center(
-                              child: Icon(Icons.event, size: 60, color: color.onPrimaryContainer),
-                            );
-                          },
-                        )
-                      else
-                        Center(
-                          child: Icon(Icons.event, size: 60, color: color.onPrimaryContainer),
-                        ),
+                      EventController.buildImage(
+                        e.image,
+                        fit: BoxFit.cover,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
                     ],
                   )
                 ),

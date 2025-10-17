@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import '/models/event.dart';
 import '/models/location.dart';
 import 'dart:typed_data';
+import 'dart:convert';
 import '/services/event_service.dart';
 
 // Controlador de creación de eventos usando GetX
@@ -102,6 +103,12 @@ class CreateEventController extends GetxController {
   // Guarda el evento usando EventService
   void saveEvent() async {
     try {
+      // Convertir imagen a base64 si existe
+      String base64Image = '';
+      if (imageBytes.value != null) {
+        base64Image = base64Encode(imageBytes.value!);
+      }
+
       final event = Event(
         eventId: 0,
         title: title.value,
@@ -120,7 +127,7 @@ class CreateEventController extends GetxController {
           endTime.value.hour,
           endTime.value.minute,
         ),
-        image: imagePath.value,
+        image: base64Image,
         eventStatus: 1,
         privacy: eventType.value == 'Privado' ? 0 : 1,
         location: Location(

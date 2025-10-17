@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'event_item_controller.dart';
 import '../event_item_list/event_item_list_controller.dart';
 import '../../models/event.dart';
+import '../../controllers/event_controller.dart';
 
 /// Widget que representa un ítem de evento en la lista.
 /// Puede ser un evento público o creado por el usuario.
@@ -111,19 +112,13 @@ class EventItem extends StatelessWidget {
             borderRadius: BorderRadius.circular(8),
             color: colorScheme.primaryContainer,
           ),
-          child: event.image.isNotEmpty
-              ? ClipRRect(
-                  borderRadius: BorderRadius.circular(8),
-                  child: Image.asset(
-                    event.image,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      // Ícono por defecto si falla la carga de la imagen
-                      return Icon(Icons.event, color: colorScheme.onPrimaryContainer);
-                    },
-                  ),
-                )
-              : Icon(Icons.event, color: colorScheme.onPrimaryContainer),
+          child: EventController.buildImage(
+            event.image,
+            fit: BoxFit.cover,
+            width: 40,
+            height: 40,
+            borderRadius: BorderRadius.circular(8),
+          ),
         ),
         // Título del evento
         title: Text(
