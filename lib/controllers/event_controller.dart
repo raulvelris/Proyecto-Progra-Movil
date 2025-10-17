@@ -46,7 +46,8 @@ class EventController extends GetxController {
 
   /// Seleccionar para la pantalla de detalle.
   void selectById(int eventId) {
-    final e = attendedEvents.firstWhereOrNull((x) => x.eventId == eventId) ??
+    final e =
+        attendedEvents.firstWhereOrNull((x) => x.eventId == eventId) ??
         publicEvents.firstWhereOrNull((x) => x.eventId == eventId) ??
         _service.findById(eventId);
     selected.value = e;

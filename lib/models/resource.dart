@@ -1,7 +1,7 @@
 class Resource {
   final int sharedFileId;
   final String name;
-  final String url;       // Carta PDF, trailer, etc.
+  final String url; // Carta PDF, trailer, etc.
   final int resourceType; // 1:pdf 2:video ...
   final int eventId;
 
@@ -21,6 +21,16 @@ class Resource {
       resourceType: json['tipo'],
       eventId: json['evento_id'],
     );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'archivo_id': sharedFileId,
+      'nombre': name,
+      'url': url,
+      'tipo': resourceType,
+      'evento_id': eventId,
+    };
   }
 }
 

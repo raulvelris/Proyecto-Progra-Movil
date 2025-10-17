@@ -9,8 +9,11 @@ class EventItem extends StatelessWidget {
   final EventItemController controller;
   final bool isCreatedEvent;
 
-  EventItem({super.key, required this.event, this.isCreatedEvent = false})
-    : controller = EventItemController(event: event);
+  EventItem({
+    super.key,
+    required this.event,
+    this.isCreatedEvent = false,
+  }) : controller = EventItemController(event: event);
 
   void _showDeleteConfirmation(
     BuildContext context,
@@ -26,7 +29,7 @@ class EventItem extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
+              const Text(
                 '¿Estás seguro de eliminar este evento?',
                 style: TextStyle(
                   fontSize: 18,
@@ -62,16 +65,12 @@ class EventItem extends StatelessWidget {
                   ),
                   ElevatedButton(
                     onPressed: () {
-                      // Llamar al controlador de la lista para eliminar el evento
+                      final typeTag = isCreatedEvent ? 'created' : 'public';
                       final listController = Get.find<EventItemListController>(
-                        tag: 'event_list_created',
+                        tag: 'event_list_$typeTag',
                       );
                       listController.removeEvent(event);
                       Get.back();
-                      Get.snackbar(
-                        'Eliminar',
-                        'Evento eliminado correctamente',
-                      );
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
@@ -103,7 +102,7 @@ class EventItem extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ListTile(
         leading: Container(
-          width: 40, // Ancho reducido para evitar overflow
+          width: 40,
           height: 40,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
@@ -116,10 +115,7 @@ class EventItem extends StatelessWidget {
                     event.image,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
-                      return Icon(
-                        Icons.event,
-                        color: colorScheme.onPrimaryContainer,
-                      );
+                      return Icon(Icons.event, color: colorScheme.onPrimaryContainer);
                     },
                   ),
                 )
@@ -138,18 +134,12 @@ class EventItem extends StatelessWidget {
           children: [
             Text(
               '${controller.formatDate(event.startDate)} • ${controller.formatTime(event.startDate)}',
-              style: TextStyle(
-                fontSize: 14,
-                color: colorScheme.onSurfaceVariant,
-              ),
+              style: TextStyle(fontSize: 14, color: colorScheme.onSurfaceVariant),
             ),
             if (event.location != null)
               Text(
                 event.location!.address,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: colorScheme.onSurfaceVariant,
-                ),
+                style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
               ),
@@ -157,37 +147,24 @@ class EventItem extends StatelessWidget {
         ),
         trailing: isCreatedEvent
             ? SizedBox(
-                width: 50, // Ancho fijo
+                width: 50,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Expanded(
                       child: IconButton(
-                        icon: Icon(
-                          Icons.edit,
-                          size: 30,
-                          color: colorScheme.primary,
-                        ),
+                        icon: Icon(Icons.edit, size: 30, color: colorScheme.primary),
                         padding: EdgeInsets.zero,
                         onPressed: () {
-                          Get.snackbar(
-                            'Editar',
-                            'Funcionalidad de editar pendiente',
-                          );
+                          Get.snackbar('Editar', 'Funcionalidad de editar pendiente');
                         },
                       ),
                     ),
-                    const SizedBox(
-                      height: 15,
-                    ), // Separación vertical entre botones
+                    const SizedBox(height: 15),
                     Expanded(
                       child: IconButton(
-                        icon: Icon(
-                          Icons.delete,
-                          size: 30,
-                          color: colorScheme.error,
-                        ),
+                        icon: Icon(Icons.delete, size: 30, color: colorScheme.error),
                         padding: EdgeInsets.zero,
                         onPressed: () {
                           _showDeleteConfirmation(context, controller, event);
@@ -197,11 +174,7 @@ class EventItem extends StatelessWidget {
                   ],
                 ),
               )
-            : Icon(
-                Icons.arrow_forward_ios,
-                size: 16,
-                color: colorScheme.onSurface,
-              ),
+            : Icon(Icons.arrow_forward_ios, size: 16, color: colorScheme.onSurface),
         onTap: controller.onEventTap,
       ),
     );

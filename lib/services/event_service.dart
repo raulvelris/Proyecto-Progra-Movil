@@ -1,55 +1,71 @@
 import 'dart:async';
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/event.dart';
 import '../models/location.dart';
 import '../models/resource.dart';
 
-/// Servicio “mock” que expone SIEMPRE la misma lista base.
-/// No muta estado; el estado vivo lo lleva el controlador.
 class EventService {
-  static const String baseUrl = 'https://tu-api.com/api';
+  static const String _createdEventsKey = 'created_events_list';
 
   List<Event> _all = [];
+  List<Event> _createdEvents = [];
 
   Future<void> _ensureInitialized() async {
     if (_all.isEmpty) {
       _all = await _getMockEvents();
+      await _loadCreatedEventsFromStorage();
+      _all.addAll(_createdEvents);
     }
+  }
+
+  Future<void> _loadCreatedEventsFromStorage() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final eventsJson = prefs.getString(_createdEventsKey);
+      if (eventsJson != null && eventsJson.isNotEmpty) {
+        final List<dynamic> decoded = json.decode(eventsJson);
+        _createdEvents = decoded.map((e) => Event.fromJson(e)).toList();
+      } else {
+        _createdEvents = [];
+      }
+    } catch (_) {
+      _createdEvents = [];
+    }
+  }
+
+  Future<void> _saveCreatedEventsToStorage() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final eventsJson =
+          json.encode(_createdEvents.map((e) => e.toJson()).toList());
+      await prefs.setString(_createdEventsKey, eventsJson);
+    } catch (_) {}
   }
 
   Future<Event> getEventById(int eventId) async {
     await _ensureInitialized();
-
-    final event = _all.firstWhere(
+    return _all.firstWhere(
       (e) => e.eventId == eventId,
       orElse: () => _createDefaultEvent(),
     );
-
-    return event;
   }
 
   Future<List<Event>> getPublicEvents() async {
     await _ensureInitialized();
-    return _all;
+    return _all.where((event) => event.eventId < 1000).toList();
   }
 
   Future<List<Event>> getCreatedEvents() async {
     await _ensureInitialized();
-    return _all.where((event) => event.eventId % 2 == 0).toList();
+    return _all.where((event) => event.eventId >= 1000).toList();
   }
 
   Future<List<Event>> getAttendedEvents() async {
     await _ensureInitialized();
-    return _all.where((event) => event.isAttending).toList();
-  }
-
-  Future<bool> confirmAttendance(int eventId) async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    return true;
-  }
-
-  Future<bool> cancelAttendance(int eventId) async {
-    await Future.delayed(const Duration(milliseconds: 500));
-    return true;
+    return _all
+        .where((event) => event.isAttending && event.eventId < 1000)
+        .toList();
   }
 
   Future<List<Event>> _getMockEvents() async {
@@ -74,7 +90,8 @@ class EventService {
           Resource(
             sharedFileId: 1,
             name: 'Agenda',
-            url: 'https://www.ulima.edu.pe/sites/default/files/career/files/malla_ing_sistemas_2025_1.pdf',
+            url:
+                'https://www.ulima.edu.pe/sites/default/files/career/files/malla_ing_sistemas_2025_1.pdf',
             resourceType: 1,
             eventId: 1,
           ),
@@ -94,7 +111,8 @@ class EventService {
         description: 'El mejor festival de música electrónica del año.',
         startDate: DateTime(2025, 10, 15, 18, 0),
         endDate: DateTime(2025, 10, 16, 6, 0),
-        image: 'https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=1400&auto=format&fit=crop',
+        image:
+            'https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=1400&auto=format&fit=crop',
         eventStatus: 1,
         privacy: 1,
         location: Location(
@@ -109,10 +127,12 @@ class EventService {
       Event(
         eventId: 3,
         title: 'Conferencia de Tecnología',
-        description: 'Charlas sobre IA, nube y buenas prácticas. Networking con cafecito y stickers.',
+        description:
+            'Charlas sobre IA, nube y buenas prácticas. Networking con cafecito y stickers.',
         startDate: DateTime(2025, 8, 20, 9, 0),
         endDate: DateTime(2025, 8, 20, 17, 0),
-        image: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1400&auto=format&fit=crop',
+        image:
+            'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1400&auto=format&fit=crop',
         eventStatus: 1,
         privacy: 1,
         location: Location(
@@ -127,7 +147,6 @@ class EventService {
     ];
   }
 
-  /// Útil para el controlador cuando necesita rehacer un evento por id.
   Event? findById(int id) {
     try {
       return _all.firstWhere((e) => e.eventId == id);
@@ -136,7 +155,35 @@ class EventService {
     }
   }
 
-  /// Crea un evento por defecto para usar en caso de no encontrar uno.
+  Future<Event> createEvent(Event event) async {
+    await _ensureInitialized();
+    final newId = _getNextCreatedEventId();
+    final newEvent = event.copyWith(eventId: newId);
+    _createdEvents.add(newEvent);
+    _all.add(newEvent);
+    await _saveCreatedEventsToStorage();
+    return newEvent;
+  }
+
+  Future<bool> deleteCreatedEvent(int eventId) async {
+    await _ensureInitialized();
+    if (eventId < 1000) return false;
+
+    final initialLength = _createdEvents.length;
+    _createdEvents.removeWhere((e) => e.eventId == eventId);
+    _all.removeWhere((e) => e.eventId == eventId);
+
+    final wasRemoved = _createdEvents.length < initialLength;
+    if (wasRemoved) await _saveCreatedEventsToStorage();
+
+    return wasRemoved;
+  }
+
+  int _getNextCreatedEventId() {
+    if (_createdEvents.isEmpty) return 1000;
+    return _createdEvents.map((e) => e.eventId).reduce((a, b) => a > b ? a : b) + 1;
+  }
+
   Event _createDefaultEvent() {
     return Event(
       eventId: 0,

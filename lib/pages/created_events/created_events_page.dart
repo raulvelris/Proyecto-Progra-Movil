@@ -9,9 +9,8 @@ class CreatedEventsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Obtener el esquema de colores actual del tema
     final colorScheme = Theme.of(context).colorScheme;
-    // Construir la interfaz de usuario
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Mis Eventos Creados'),
@@ -21,7 +20,6 @@ class CreatedEventsPage extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Botón centrado entre la barra y el listado
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16.0),
             child: Center(
@@ -33,6 +31,7 @@ class CreatedEventsPage extends StatelessWidget {
                       tag: 'event_list_created',
                     );
                     controller.addEvent(result);
+                    await controller.refreshEvents();
                     Get.snackbar(
                       'Éxito',
                       'Evento creado y agregado a la lista',
@@ -45,7 +44,6 @@ class CreatedEventsPage extends StatelessWidget {
               ),
             ),
           ),
-          // Listado de eventos que ocupa el espacio restante
           Expanded(child: EventItemList(eventType: 'created')),
         ],
       ),

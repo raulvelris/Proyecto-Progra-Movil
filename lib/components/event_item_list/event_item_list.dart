@@ -28,7 +28,9 @@ class EventItemList extends StatelessWidget {
               const SizedBox(height: 16),
               Text(
                 'Cargando eventos...',
-                style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface),
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurface,
+                ),
               ),
             ],
           ),
@@ -45,7 +47,9 @@ class EventItemList extends StatelessWidget {
               Text(
                 controller.error.value,
                 textAlign: TextAlign.center,
-                style: textTheme.bodyMedium?.copyWith(color: colorScheme.onSurface),
+                style: textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurface,
+                ),
               ),
               const SizedBox(height: 16),
               ElevatedButton(
@@ -82,7 +86,11 @@ class EventItemList extends StatelessWidget {
     });
   }
 
-  Widget _buildEmptyState(String type, ColorScheme colorScheme, TextTheme textTheme) {
+  Widget _buildEmptyState(
+    String type,
+    ColorScheme colorScheme,
+    TextTheme textTheme,
+  ) {
     IconData icon;
     String message;
 
@@ -106,11 +114,7 @@ class EventItemList extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
-            icon, 
-            size: 64, 
-            color: colorScheme.onSurface.withOpacity(0.5),
-          ),
+          Icon(icon, size: 64, color: colorScheme.onSurface.withOpacity(0.5)),
           const SizedBox(height: 16),
           Text(
             message,

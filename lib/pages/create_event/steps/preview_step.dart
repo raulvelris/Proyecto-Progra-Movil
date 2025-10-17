@@ -58,7 +58,7 @@ class PreviewStep extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            controller.currentStep.value--;
+            controller.previousStep();
           },
         ),
         title: const Text('3 de 3: Vista Previa'),

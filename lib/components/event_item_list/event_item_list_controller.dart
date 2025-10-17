@@ -3,14 +3,20 @@ import '../../models/event.dart';
 import '../../services/event_service.dart';
 
 class EventItemListController extends GetxController {
-  final EventService _eventService = EventService();
+  late final EventService _eventService;
   final RxList<Event> events = <Event>[].obs;
   final RxBool isLoading = true.obs;
   final RxString error = ''.obs;
 
   final String eventType;
 
-  EventItemListController({this.eventType = 'public'});
+  EventItemListController({this.eventType = 'public'}) {
+    // Inicializa el servicio como singleton si no existe
+    if (!Get.isRegistered<EventService>()) {
+      Get.put(EventService(), permanent: true);
+    }
+    _eventService = Get.find<EventService>();
+  }
 
   @override
   void onInit() {
@@ -45,17 +51,45 @@ class EventItemListController extends GetxController {
   }
 
   Future<void> refreshEvents() async {
-    await loadEvents();
+    try {
+      isLoading.value = true;
+      await loadEvents();
+    } catch (e) {
+      error.value = 'Error al cargar eventos: $e';
+    } finally {
+      isLoading.value = false;
+    }
   }
 
-  // Agrega un evento a la lista
   void addEvent(Event event) {
     events.add(event);
   }
 
-  // Elimina un evento de la lista
-  void removeEvent(Event event) {
-    events.remove(event);
+  Future<void> removeEvent(Event event) async {
+    try {
+      final success = await _eventService.deleteCreatedEvent(event.eventId);
+      if (success) {
+        events.remove(event);
+        await refreshEvents();
+        Get.snackbar(
+          'Éxito',
+          'Evento eliminado correctamente',
+          snackPosition: SnackPosition.TOP,
+        );
+      } else {
+        Get.snackbar(
+          'Error',
+          'No se pudo eliminar el evento',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'Error al eliminar el evento',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 
   @override

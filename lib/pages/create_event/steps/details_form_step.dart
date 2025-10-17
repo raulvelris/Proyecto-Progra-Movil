@@ -55,7 +55,7 @@ class DetailsFormStep extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            controller.currentStep.value--;
+            controller.previousStep();
           },
         ),
         title: const Text('2 de 3: Detalla'),
@@ -74,6 +74,7 @@ class DetailsFormStep extends StatelessWidget {
           children: [
             // Título del evento
             TextField(
+              controller: TextEditingController(text: controller.title.value),
               onChanged: (value) => controller.title.value = value,
               decoration: const InputDecoration(
                 labelText: 'Título del evento',
@@ -89,21 +90,27 @@ class DetailsFormStep extends StatelessWidget {
                 labelText: 'Tipo de evento',
                 border: OutlineInputBorder(),
               ),
-              value: controller.eventType.value.isEmpty 
-                ? controller.eventTypes[0]
-                : controller.eventType.value,
+              value: controller.eventTypes.contains(controller.eventType.value)
+                ? controller.eventType.value
+                : (controller.eventType.value.isEmpty ? null : controller.eventType.value),
               items: controller.eventTypes.map((String type) {
                 return DropdownMenuItem(
                   value: type,
                   child: Text(type),
                 );
               }).toList(),
-              onChanged: (value) => controller.eventType.value = value!,
+              onChanged: (value) {
+                if (value != null) {
+                  controller.eventType.value = value;
+                }
+              },
+              hint: Text(controller.eventTypes[0]),
             ),
             const SizedBox(height: 16),
 
             // Descripción del evento
             TextField(
+              controller: TextEditingController(text: controller.description.value),
               onChanged: (value) => controller.description.value = value,
               maxLines: 4,
               decoration: const InputDecoration(
@@ -264,6 +271,7 @@ class DetailsFormStep extends StatelessWidget {
 
             // Ubicación
             TextField(
+              controller: TextEditingController(text: controller.location.value),
               onChanged: (value) => controller.location.value = value,
               decoration: const InputDecoration(
                 labelText: 'Ubicación',

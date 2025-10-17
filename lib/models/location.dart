@@ -22,4 +22,14 @@ class Location {
       eventId: json['evento_id'],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'ubicacion_id': locationId,
+      'direccion': address,
+      'lat': latitude,
+      'lng': longitude,
+      'evento_id': eventId,
+    };
+  }
 }

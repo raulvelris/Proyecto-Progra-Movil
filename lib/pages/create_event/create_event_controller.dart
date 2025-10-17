@@ -2,13 +2,23 @@ import 'package:get/get.dart';
 import '/models/event.dart';
 import '/models/location.dart';
 import 'dart:typed_data';
+import '/services/event_service.dart';
 
 class CreateEventController extends GetxController {
-  // Paso 1: Personaliza (Imagen)
+  late final EventService _eventService;
+
+  CreateEventController() {
+    if (!Get.isRegistered<EventService>()) {
+      Get.put(EventService(), permanent: true);
+    }
+    _eventService = Get.find<EventService>();
+  }
+
+  // Paso 1: Imagen
   final RxString imagePath = ''.obs;
   final Rx<Uint8List?> imageBytes = Rx<Uint8List?>(null);
 
-  // Paso 2: Detalla
+  // Paso 2: Detalles
   final RxInt currentStep = 0.obs;
   final RxString title = ''.obs;
   final RxString eventType = ''.obs;
@@ -19,7 +29,6 @@ class CreateEventController extends GetxController {
   final Rx<DateTime> endTime = DateTime.now().add(const Duration(hours: 2)).obs;
   final RxString location = ''.obs;
 
-  // Lista de tipos de eventos disponibles
   final List<String> eventTypes = [
     'Selecciona el tipo de evento',
     'Público',
@@ -52,10 +61,8 @@ class CreateEventController extends GetxController {
             eventType.value != eventTypes[0] &&
             description.value.isNotEmpty &&
             location.value.isNotEmpty;
-      case 2:
-        return true;
       default:
-        return false;
+        return true;
     }
   }
 
@@ -80,37 +87,53 @@ class CreateEventController extends GetxController {
     }
   }
 
-  void saveEvent() {
-    final event = Event(
-      eventId: 0,
-      title: title.value,
-      description: description.value,
-      startDate: DateTime(
-        startDate.value.year,
-        startDate.value.month,
-        startDate.value.day,
-        startTime.value.hour,
-        startTime.value.minute,
-      ),
-      endDate: DateTime(
-        endDate.value.year,
-        endDate.value.month,
-        endDate.value.day,
-        endTime.value.hour,
-        endTime.value.minute,
-      ),
-      image: imagePath.value,
-      eventStatus: 1,
-      privacy: 0,
-      location: Location(
-        locationId: 0,
-        address: location.value,
-        latitude: 0,
-        longitude: 0,
+  void previousStep() {
+    if (currentStep.value > 0) {
+      currentStep.value--;
+    }
+  }
+
+  void saveEvent() async {
+    try {
+      final event = Event(
         eventId: 0,
-      ),
-      isAttending: true,
-    );
-    Get.back(result: event);
+        title: title.value,
+        description: description.value,
+        startDate: DateTime(
+          startDate.value.year,
+          startDate.value.month,
+          startDate.value.day,
+          startTime.value.hour,
+          startTime.value.minute,
+        ),
+        endDate: DateTime(
+          endDate.value.year,
+          endDate.value.month,
+          endDate.value.day,
+          endTime.value.hour,
+          endTime.value.minute,
+        ),
+        image: imagePath.value,
+        eventStatus: 1,
+        privacy: eventType.value == 'Privado' ? 0 : 1,
+        location: Location(
+          locationId: 0,
+          address: location.value,
+          latitude: 0,
+          longitude: 0,
+          eventId: 0,
+        ),
+        isAttending: true,
+      );
+
+      final createdEvent = await _eventService.createEvent(event);
+      Get.back(result: createdEvent);
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        'No se pudo crear el evento',
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
   }
 }

@@ -30,4 +30,5 @@ extension EventCopyWith on Event {
       isAttending: isAttending ?? this.isAttending,
     );
   }
-}*/
+}
+*/

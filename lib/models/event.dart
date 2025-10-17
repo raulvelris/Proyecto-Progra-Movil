@@ -48,6 +48,22 @@ class Event {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'evento_id': eventId,
+      'titulo': title,
+      'descripcion': description,
+      'fechaInicio': startDate.toIso8601String(),
+      'fechaFin': endDate.toIso8601String(),
+      'imagen': image,
+      'estado_evento': eventStatus,
+      'privacidad': privacy,
+      'ubicacion': location?.toJson(),
+      'recursos': resources.isNotEmpty ? resources.map((r) => r.toJson()).toList() : [],
+      'isAsistido': isAttending,
+    };
+  }
+
   Event copyWith({
     int? eventId,
     String? title,

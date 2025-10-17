@@ -6,7 +6,7 @@ import 'steps/details_form_step.dart';
 import 'steps/preview_step.dart';
 
 class CreateEventPage extends StatelessWidget {
-  final CreateEventController controller = Get.put(CreateEventController());
+  final CreateEventController controller = Get.put(CreateEventController(), permanent: true);
 
   CreateEventPage({super.key});
 
