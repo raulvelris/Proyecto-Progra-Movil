@@ -5,9 +5,10 @@ import 'package:image_picker/image_picker.dart';
 import '../create_event_controller.dart';
 import 'dart:typed_data';
 
+// Widget para mostrar la barra de progreso de los pasos
 class StepProgressBar extends StatelessWidget {
-  final int currentStep;
-  final int totalSteps;
+  final int currentStep; // Paso actual
+  final int totalSteps;  // Total de pasos
 
   const StepProgressBar({
     super.key,
@@ -18,22 +19,22 @@ class StepProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final progress = (currentStep + 1) / totalSteps;
+    final progress = (currentStep + 1) / totalSteps; // Calcula porcentaje de avance
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       height: 4,
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3), // Fondo de la barra
         borderRadius: BorderRadius.circular(2),
       ),
       child: Align(
         alignment: Alignment.centerLeft,
         child: FractionallySizedBox(
-          widthFactor: progress,
+          widthFactor: progress, // Porción llenada según avance
           child: Container(
             decoration: BoxDecoration(
-              color: Color(0xFF4CAF50), // Verde más vibrante
+              color: Color(0xFF4CAF50), // Color de progreso
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -43,12 +44,14 @@ class StepProgressBar extends StatelessWidget {
   }
 }
 
+// Widget para el paso de selección de imagen
 class ImagePickStep extends StatelessWidget {
-  final CreateEventController controller = Get.find();
-  final ImagePicker _picker = ImagePicker();
+  final CreateEventController controller = Get.find(); // Controlador de estado
+  final ImagePicker _picker = ImagePicker(); // Selector de imágenes
 
   ImagePickStep({super.key});
 
+  // Función para seleccionar una imagen de la galería
   Future<void> _pickImage() async {
     try {
       final XFile? image = await _picker.pickImage(
@@ -58,8 +61,8 @@ class ImagePickStep extends StatelessWidget {
         imageQuality: 85,
       );
       if (image != null) {
-        controller.imagePath.value = image.path;
-        controller.imageBytes.value = await image.readAsBytes();
+        controller.imagePath.value = image.path; // Guarda la ruta de la imagen
+        controller.imageBytes.value = await image.readAsBytes(); // Guarda los bytes para mostrar
       } else {
         Get.snackbar(
           'Aviso',
@@ -81,12 +84,13 @@ class ImagePickStep extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Scaffold(
+      // AppBar con botón de retroceso y barra de progreso
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
-          onPressed: () => Get.back(),
+          onPressed: () => Get.back(), // Regresa a la pantalla anterior
         ),
         title: const Text('1 de 3: Personaliza'),
         bottom: PreferredSize(
@@ -97,21 +101,23 @@ class ImagePickStep extends StatelessWidget {
           )),
         ),
       ),
+      // Cuerpo principal
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Obx(() => GestureDetector(
-          onTap: _pickImage,
+          onTap: _pickImage, // Permite tocar para seleccionar imagen
           child: Container(
             width: double.infinity,
             height: MediaQuery.of(context).size.height * 0.6,
             decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest,
+              color: colorScheme.surfaceContainerHighest, // Fondo del contenedor
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: colorScheme.outline,
                 width: 1,
               ),
             ),
+            // Si no hay imagen seleccionada, muestra icono y texto
             child: controller.imagePath.value.isEmpty
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
@@ -131,6 +137,7 @@ class ImagePickStep extends StatelessWidget {
                       ),
                     ],
                   )
+                // Si hay imagen, la muestra y permite editar
                 : Stack(
                     fit: StackFit.expand,
                     children: [
@@ -147,7 +154,7 @@ class ImagePickStep extends StatelessWidget {
                         top: 8,
                         right: 8,
                         child: IconButton(
-                          onPressed: _pickImage,
+                          onPressed: _pickImage, // Permite cambiar la imagen
                           icon: const Icon(Icons.edit),
                           style: IconButton.styleFrom(
                             backgroundColor: colorScheme.surface.withValues(alpha: 0.9),
@@ -160,6 +167,7 @@ class ImagePickStep extends StatelessWidget {
           ),
         )),
       ),
+      // Botón inferior para continuar al siguiente paso
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -173,7 +181,7 @@ class ImagePickStep extends StatelessWidget {
           ],
         ),
         child: Obx(() => ElevatedButton(
-          onPressed: controller.imagePath.value.isNotEmpty ? controller.nextStep : null,
+          onPressed: controller.imagePath.value.isNotEmpty ? controller.nextStep : null, // Habilitado solo si hay imagen
           style: ElevatedButton.styleFrom(
             backgroundColor: colorScheme.primary,
             foregroundColor: colorScheme.onPrimary,

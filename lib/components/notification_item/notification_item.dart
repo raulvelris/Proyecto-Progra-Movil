@@ -5,11 +5,14 @@ import '../../models/notificacion.dart';
 import '../../pages/notifications/notifications_controller.dart';
 import '../event_item/event_item_controller.dart';
 
+/// Widget que representa una notificación individual (evento o invitación)
 class NotificationItem extends material.StatelessWidget {
   final Notification notification;
 
   const NotificationItem({super.key, required this.notification});
 
+  /// Retorna el tiempo relativo desde la fecha de la notificación hasta ahora
+  /// Ejemplos: "Hace 5 min", "Hace 1 h", "Hace 2 días"
   String _getRelativeTime(DateTime fechaHora) {
     final diff = DateTime.now().difference(fechaHora);
     if (diff.inMinutes < 1) return 'Hace un momento';
@@ -21,15 +24,22 @@ class NotificationItem extends material.StatelessWidget {
   @override
   material.Widget build(material.BuildContext context) {
     final colors = material.Theme.of(context).colorScheme;
+
+    // Determina si la notificación es de invitación
     final isInvitation = notification.type == NotificationType.invitation;
 
+    // Texto que se mostrará según el tipo de notificación
     String messageText = isInvitation
         ? '¡Has sido invitado a este evento!'
         : notification.generalNotification?.mensaje ?? 'Notificación general';
 
+    // Objeto de evento relacionado, si existe
     final event = notification.event;
+
+    // Controlador temporal para formatear fechas y horas del evento
     final eventCtrl = event != null ? EventItemController(event: event) : null;
 
+    // Estado de la invitación (pendiente, aceptada, rechazada)
     final invitationStatus = notification.invitation?.status;
 
     return material.Card(
@@ -38,6 +48,7 @@ class NotificationItem extends material.StatelessWidget {
         padding: const material.EdgeInsets.all(8.0),
         child: material.Column(
           children: [
+            // Cabecera de la notificación con ícono y tiempo relativo
             material.ListTile(
               leading: material.Icon(
                 isInvitation
@@ -53,9 +64,11 @@ class NotificationItem extends material.StatelessWidget {
                   color: colors.onSurfaceVariant,
                 ),
               ),
+              // Subtítulo con información adicional
               subtitle: material.Column(
                 crossAxisAlignment: material.CrossAxisAlignment.start,
                 children: [
+                  // Nombre del evento si existe
                   if (event != null)
                     material.Text(
                       event.title,
@@ -66,6 +79,7 @@ class NotificationItem extends material.StatelessWidget {
                       ),
                     ),
                   const material.SizedBox(height: 2),
+                  // Mensaje principal
                   material.Text(
                     messageText,
                     style: material.TextStyle(
@@ -73,6 +87,7 @@ class NotificationItem extends material.StatelessWidget {
                       color: colors.onSurfaceVariant,
                     ),
                   ),
+                  // Fecha y hora del evento si es invitación
                   if (isInvitation && event != null)
                     material.Text(
                       '${eventCtrl!.formatDate(event.startDate)} • ${eventCtrl.formatTime(event.startDate)}',
@@ -84,11 +99,12 @@ class NotificationItem extends material.StatelessWidget {
                 ],
               ),
             ),
-            // Si es invitación pendiente, mostrar botones
+            // Botones de acción solo para invitaciones pendientes
             if (isInvitation && invitationStatus == InvitationStatus.pending)
               material.Row(
                 mainAxisAlignment: material.MainAxisAlignment.center,
                 children: [
+                  // Botón "Rechazar"
                   material.ElevatedButton(
                     style: material.ElevatedButton.styleFrom(
                       backgroundColor: colors.errorContainer,
@@ -99,6 +115,7 @@ class NotificationItem extends material.StatelessWidget {
                     child: const material.Text('Rechazar'),
                   ),
                   const material.SizedBox(width: 16),
+                  // Botón "Aceptar"
                   material.ElevatedButton(
                     style: material.ElevatedButton.styleFrom(
                       backgroundColor: colors.primaryContainer,
@@ -110,6 +127,7 @@ class NotificationItem extends material.StatelessWidget {
                   ),
                 ],
               ),
+            // Mostrar estado de invitación ya procesada (aceptada/rechazada)
             if (isInvitation &&
                 invitationStatus != null &&
                 invitationStatus != InvitationStatus.pending)

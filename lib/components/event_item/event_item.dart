@@ -4,9 +4,16 @@ import 'event_item_controller.dart';
 import '../event_item_list/event_item_list_controller.dart';
 import '../../models/event.dart';
 
+/// Widget que representa un ítem de evento en la lista.
+/// Puede ser un evento público o creado por el usuario.
 class EventItem extends StatelessWidget {
+  // Evento que se mostrará en este ítem
   final Event event;
+
+  // Controlador asociado al ítem para manejar acciones
   final EventItemController controller;
+
+  // Indica si el evento fue creado por el usuario (para mostrar botones de edición/eliminación)
   final bool isCreatedEvent;
 
   EventItem({
@@ -15,6 +22,7 @@ class EventItem extends StatelessWidget {
     this.isCreatedEvent = false,
   }) : controller = EventItemController(event: event);
 
+  /// Muestra un diálogo de confirmación para eliminar el evento
   void _showDeleteConfirmation(
     BuildContext context,
     EventItemController controller,
@@ -48,40 +56,34 @@ class EventItem extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
+                  // Botón "No" para cancelar
                   OutlinedButton(
                     onPressed: () => Get.back(),
                     style: OutlinedButton.styleFrom(
                       side: const BorderSide(color: Colors.red, width: 1.5),
                       foregroundColor: Colors.red,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 45,
-                        vertical: 9,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 9),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     child: const Text('No', style: TextStyle(fontSize: 16)),
                   ),
+                  // Botón "Sí" para confirmar eliminación
                   ElevatedButton(
                     onPressed: () {
+                      // Determina la lista correcta según tipo de evento
                       final typeTag = isCreatedEvent ? 'created' : 'public';
                       final listController = Get.find<EventItemListController>(
                         tag: 'event_list_$typeTag',
                       );
+                      // Elimina el evento de la lista
                       listController.removeEvent(event);
                       Get.back();
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
                       foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 45,
-                        vertical: 9,
-                      ),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8),
-                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 9),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                     ),
                     child: const Text('Sí', style: TextStyle(fontSize: 16)),
                   ),
@@ -101,6 +103,7 @@ class EventItem extends StatelessWidget {
     return Card(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: ListTile(
+        // Imagen o ícono del evento
         leading: Container(
           width: 40,
           height: 40,
@@ -115,12 +118,14 @@ class EventItem extends StatelessWidget {
                     event.image,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
+                      // Ícono por defecto si falla la carga de la imagen
                       return Icon(Icons.event, color: colorScheme.onPrimaryContainer);
                     },
                   ),
                 )
               : Icon(Icons.event, color: colorScheme.onPrimaryContainer),
         ),
+        // Título del evento
         title: Text(
           event.title,
           style: TextStyle(
@@ -129,6 +134,7 @@ class EventItem extends StatelessWidget {
             color: colorScheme.onSurface,
           ),
         ),
+        // Subtítulo con fecha, hora y dirección
         subtitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -145,6 +151,7 @@ class EventItem extends StatelessWidget {
               ),
           ],
         ),
+        // Botones de acción: editar/eliminar si es creado por el usuario
         trailing: isCreatedEvent
             ? SizedBox(
                 width: 50,
@@ -152,6 +159,7 @@ class EventItem extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    // Botón de editar
                     Expanded(
                       child: IconButton(
                         icon: Icon(Icons.edit, size: 30, color: colorScheme.primary),
@@ -162,6 +170,7 @@ class EventItem extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 15),
+                    // Botón de eliminar
                     Expanded(
                       child: IconButton(
                         icon: Icon(Icons.delete, size: 30, color: colorScheme.error),
@@ -175,6 +184,7 @@ class EventItem extends StatelessWidget {
                 ),
               )
             : Icon(Icons.arrow_forward_ios, size: 16, color: colorScheme.onSurface),
+        // Acción al tocar el ítem (navegación a detalles)
         onTap: controller.onEventTap,
       ),
     );

@@ -1,12 +1,16 @@
+// Importaciones necesarias
 import 'package:get/get.dart';
 import '/models/event.dart';
 import '/models/location.dart';
 import 'dart:typed_data';
 import '/services/event_service.dart';
 
+// Controlador de creación de eventos usando GetX
 class CreateEventController extends GetxController {
+  // Servicio para manejar eventos
   late final EventService _eventService;
 
+  // Constructor: asegura que EventService esté registrado y lo asigna
   CreateEventController() {
     if (!Get.isRegistered<EventService>()) {
       Get.put(EventService(), permanent: true);
@@ -14,9 +18,9 @@ class CreateEventController extends GetxController {
     _eventService = Get.find<EventService>();
   }
 
+  // Variables observables para el formulario y el paso actual
   final RxString imagePath = ''.obs;
   final Rx<Uint8List?> imageBytes = Rx<Uint8List?>(null);
-
   final RxInt currentStep = 0.obs;
   final RxString title = ''.obs;
   final RxString eventType = ''.obs;
@@ -27,12 +31,14 @@ class CreateEventController extends GetxController {
   final Rx<DateTime> endTime = DateTime.now().add(const Duration(hours: 2)).obs;
   final RxString location = ''.obs;
 
+  // Lista de tipos de evento
   final List<String> eventTypes = [
     'Selecciona el tipo de evento',
     'Público',
     'Privado',
   ];
 
+  // Método para limpiar el formulario y reiniciar valores
   void clearForm() {
     imagePath.value = '';
     imageBytes.value = null;
@@ -47,6 +53,7 @@ class CreateEventController extends GetxController {
     endTime.value = DateTime.now().add(const Duration(hours: 2));
   }
 
+  // Verifica si se puede avanzar al siguiente paso
   bool get canMoveNext {
     switch (currentStep.value) {
       case 0:
@@ -62,6 +69,7 @@ class CreateEventController extends GetxController {
     }
   }
 
+  // Texto del botón dependiendo del paso
   String get nextButtonText {
     switch (currentStep.value) {
       case 0:
@@ -75,6 +83,7 @@ class CreateEventController extends GetxController {
     }
   }
 
+  // Avanza al siguiente paso o guarda el evento si es el último
   void nextStep() {
     if (currentStep.value < 2 && canMoveNext) {
       currentStep.value++;
@@ -83,12 +92,14 @@ class CreateEventController extends GetxController {
     }
   }
 
+  // Retrocede al paso anterior
   void previousStep() {
     if (currentStep.value > 0) {
       currentStep.value--;
     }
   }
 
+  // Guarda el evento usando EventService
   void saveEvent() async {
     try {
       final event = Event(
@@ -123,7 +134,7 @@ class CreateEventController extends GetxController {
       );
 
       final createdEvent = await _eventService.createEvent(event);
-      Get.back(result: createdEvent);
+      Get.back(result: createdEvent); // Cierra la página y devuelve el evento creado
     } catch (e) {
       Get.snackbar(
         'Error',

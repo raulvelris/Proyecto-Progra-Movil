@@ -5,9 +5,10 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'dart:io';
 import '../create_event_controller.dart';
 
+// Barra de progreso de los pasos
 class StepProgressBar extends StatelessWidget {
-  final int currentStep;
-  final int totalSteps;
+  final int currentStep; // Paso actual
+  final int totalSteps;  // Total de pasos
 
   const StepProgressBar({
     super.key,
@@ -18,22 +19,22 @@ class StepProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final progress = (currentStep + 1) / totalSteps;
+    final progress = (currentStep + 1) / totalSteps; // Porcentaje completado
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       height: 4,
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3),
+        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3), // Fondo barra
         borderRadius: BorderRadius.circular(2),
       ),
       child: Align(
         alignment: Alignment.centerLeft,
         child: FractionallySizedBox(
-          widthFactor: progress,
+          widthFactor: progress, // Progreso visible
           child: Container(
             decoration: BoxDecoration(
-              color: Color(0xFF4CAF50),
+              color: Color(0xFF4CAF50), // Color de la barra
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -43,21 +44,23 @@ class StepProgressBar extends StatelessWidget {
   }
 }
 
+// Paso de vista previa del evento
 class PreviewStep extends StatelessWidget {
-  final CreateEventController controller = Get.find();
-  
+  final CreateEventController controller = Get.find(); // Controlador de estado
+
   PreviewStep({super.key});
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
+
     return Scaffold(
+      // AppBar con botón de retroceso y barra de progreso
       appBar: AppBar(
         leading: IconButton(
           icon: const Icon(Icons.arrow_back),
           onPressed: () {
-            controller.previousStep();
+            controller.previousStep(); // Retroceder un paso
           },
         ),
         title: const Text('3 de 3: Vista Previa'),
@@ -69,10 +72,12 @@ class PreviewStep extends StatelessWidget {
           )),
         ),
       ),
+      // Cuerpo principal con scroll
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Imagen del evento
             Obx(() => controller.imagePath.value.isNotEmpty
               ? kIsWeb
                 ? Image.network(
@@ -81,6 +86,7 @@ class PreviewStep extends StatelessWidget {
                     height: 200,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
+                      // Si falla la carga de la imagen
                       return Container(
                         width: double.infinity,
                         height: 200,
@@ -107,7 +113,7 @@ class PreviewStep extends StatelessWidget {
                   width: double.infinity,
                   height: 200,
                   color: colorScheme.surfaceContainerHighest,
-                  child: const Icon(Icons.image, size: 64),
+                  child: const Icon(Icons.image, size: 64), // Placeholder si no hay imagen
                 ),
             ),
 
@@ -116,6 +122,7 @@ class PreviewStep extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  // Título del evento
                   Obx(() => Text(
                     controller.title.value,
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
@@ -124,6 +131,7 @@ class PreviewStep extends StatelessWidget {
                   )),
                   const SizedBox(height: 16),
 
+                  // Inicio del evento
                   Row(
                     children: [
                       Icon(
@@ -153,7 +161,8 @@ class PreviewStep extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 12),
-                  
+
+                  // Fin del evento
                   Row(
                     children: [
                       Icon(
@@ -184,6 +193,7 @@ class PreviewStep extends StatelessWidget {
                   ),
                   const SizedBox(height: 12),
 
+                  // Ubicación
                   Row(
                     children: [
                       Icon(
@@ -202,6 +212,7 @@ class PreviewStep extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
 
+                  // Mapa con marcador
                   ClipRRect(
                     borderRadius: BorderRadius.circular(12),
                     child: SizedBox(
@@ -225,6 +236,7 @@ class PreviewStep extends StatelessWidget {
                   ),
                   const SizedBox(height: 16),
 
+                  // Descripción del evento
                   Text(
                     'Descripción del evento',
                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
@@ -242,6 +254,8 @@ class PreviewStep extends StatelessWidget {
           ],
         ),
       ),
+
+      // Botón inferior para guardar el evento
       bottomNavigationBar: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
@@ -255,7 +269,7 @@ class PreviewStep extends StatelessWidget {
           ],
         ),
         child: ElevatedButton(
-          onPressed: controller.saveEvent,
+          onPressed: controller.saveEvent, // Llama a la función de guardado
           style: ElevatedButton.styleFrom(
             backgroundColor: colorScheme.primary,
             foregroundColor: colorScheme.onPrimary,
