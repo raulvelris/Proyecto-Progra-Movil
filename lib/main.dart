@@ -5,17 +5,20 @@ import 'configs/env.dart';
 import 'configs/theme.dart';
 import 'services/session_service.dart';
 
-// NUEVO: inyectamos el servicio y el controlador
+// Servicios y controladores
 import 'services/event_service.dart';
 import 'controllers/event_controller.dart';
 
 // Páginas
 import 'pages/welcome/welcome_page.dart';
+import 'pages/welcome/splash_page.dart';
 import 'pages/sign_up/sign_up_page.dart';
 import 'pages/sign_in/sign_in_page.dart';
 import 'pages/home/home_page.dart';
 import 'pages/event_details/event_details_page.dart';
-
+import 'pages/sign_up/verify_email_page.dart';
+import 'pages/sign_up/account_activated_page.dart';
+import 'pages/profile/edit_profile_options_page.dart';
 import 'pages/invite/invite_users_page.dart';
 import 'pages/invite/invite_list_page.dart';
 
@@ -45,15 +48,15 @@ class MyApp extends StatelessWidget {
       theme: materialTheme.light(),
       darkTheme: materialTheme.dark(),
       themeMode: ThemeMode.system,
-      initialRoute: '/welcome',
+      initialRoute: '/splash',
       getPages: [
-        GetPage(name: '/invite-users', page: () => const InviteUsersPage()),
-        GetPage(name: '/invite-list', page: () => const InviteListPage()),
+        GetPage(name: '/splash', page: () => const SplashPage()),
         GetPage(name: '/welcome', page: () => WelcomePage()),
         GetPage(name: '/sign-up', page: () => SignUpPage()),
         GetPage(name: '/sign-in', page: () => SignInPage()),
         GetPage(name: '/home', page: () => HomePage()),
-        // 👇 Ruta corregida: recibe un int (eventId)
+
+        // Ruta con parámetro eventId
         GetPage(
           name: '/event-details',
           page: () {
@@ -61,8 +64,14 @@ class MyApp extends StatelessWidget {
             return EventDetailsPage(eventId: id);
           },
         ),
+
+        // Otras páginas
+        GetPage(name: '/verify-email', page: () => const VerifyEmailPage()),
+        GetPage(name: '/account-activated', page: () => const AccountActivatedPage()),
+        GetPage(name: '/edit-profile-options', page: () => const EditProfilePage()),
+        GetPage(name: '/invite-users', page: () => const InviteUsersPage()),
+        GetPage(name: '/invite-list', page: () => const InviteListPage()),
       ],
-      home: WelcomePage(),
       debugShowCheckedModeBanner: false,
     );
   }
