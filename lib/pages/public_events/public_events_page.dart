@@ -29,7 +29,7 @@ class _PublicEventsPageState extends State<PublicEventsPage> {
       final items = controller.publicEvents;
       return Scaffold(
         appBar: AppBar(
-          title: const Text('Eventos publicos'),
+          title: const Text('Eventos públicos'),
           automaticallyImplyLeading: false,
           backgroundColor: colorScheme.primary,
           foregroundColor: colorScheme.onPrimary,

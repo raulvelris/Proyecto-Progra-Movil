@@ -1,4 +1,4 @@
-import '/models/location.dart';
+/*import '/models/location.dart';
 import '/models/resource.dart';
 import '../models/event.dart';
 
@@ -30,4 +30,4 @@ extension EventCopyWith on Event {
       isAttending: isAttending ?? this.isAttending,
     );
   }
-}
+}*/
