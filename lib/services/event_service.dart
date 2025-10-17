@@ -115,7 +115,45 @@ class EventService {
         ],
         isAttending: false,
       ),
-      // Otros eventos mock...
+      Event(
+        eventId: 2,
+        title: 'Festival de Música Electrónica',
+        description: 'El mejor festival de música electrónica del año.',
+        startDate: DateTime(2025, 10, 15, 18, 0),
+        endDate: DateTime(2025, 10, 16, 6, 0),
+        image:
+            'https://images.unsplash.com/photo-1506157786151-b8491531f063?q=80&w=1400&auto=format&fit=crop',
+        eventStatus: 1,
+        privacy: 1,
+        location: Location(
+          locationId: 2,
+          address: 'Costa Verde, Miraflores',
+          latitude: -12.1260,
+          longitude: -77.0300,
+          eventId: 2,
+        ),
+        isAttending: false,
+      ),
+      Event(
+        eventId: 3,
+        title: 'Conferencia de Tecnología',
+        description:
+            'Charlas sobre IA, nube y buenas prácticas. Networking con cafecito y stickers.',
+        startDate: DateTime(2025, 8, 20, 9, 0),
+        endDate: DateTime(2025, 8, 20, 17, 0),
+        image:
+            'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4?q=80&w=1400&auto=format&fit=crop',
+        eventStatus: 1,
+        privacy: 1,
+        location: Location(
+          locationId: 3,
+          address: 'Centro de Convenciones, San Isidro',
+          latitude: -12.0975,
+          longitude: -77.0350,
+          eventId: 3,
+        ),
+        isAttending: false,
+      ),
     ];
   }
 
