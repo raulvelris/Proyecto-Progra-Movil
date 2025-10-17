@@ -13,26 +13,36 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
 
     InputDecoration field(String hint, {bool isPassword = false}) => InputDecoration(
           hintText: hint,
-          hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 14),
+          hintStyle: TextStyle(
+            color: colorScheme.onSurfaceVariant,
+            fontSize: 14
+          ),
           filled: true,
-          fillColor: Colors.white,
+          fillColor: colorScheme.surface,
           contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey.shade300, width: 1),
+            borderSide: BorderSide(
+              color: colorScheme.outlineVariant,
+              width: 1
+            ),
             borderRadius: BorderRadius.circular(8),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: Colors.grey.shade400, width: 1),
+            borderSide: BorderSide(
+              color: colorScheme.primary,
+              width: 1
+            ),
             borderRadius: BorderRadius.circular(8),
           ),
           suffixIcon: isPassword
               ? IconButton(
                   icon: Icon(
                     _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                    color: Colors.grey.shade400,
+                    color: colorScheme.onSurfaceVariant,
                     size: 20,
                   ),
                   onPressed: () {
@@ -45,12 +55,15 @@ class _SignInPageState extends State<SignInPage> {
         );
 
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: colorScheme.background,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: colorScheme.background,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(
+            Icons.arrow_back, 
+            color: colorScheme.onSurface
+          ),
           onPressed: () => Get.back(),
         ),
       ),
@@ -65,13 +78,16 @@ class _SignInPageState extends State<SignInPage> {
               OutlinedButton(
                 onPressed: () {},
                 style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.black87,
-                  side: BorderSide(color: Colors.grey.shade300, width: 1),
+                  foregroundColor: colorScheme.onSurface,
+                  side: BorderSide(
+                    color: colorScheme.outlineVariant,
+                    width: 1
+                  ),
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  backgroundColor: Colors.white,
+                  backgroundColor: colorScheme.surface,
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -85,20 +101,24 @@ class _SignInPageState extends State<SignInPage> {
                           width: 20,
                           height: 20,
                           decoration: BoxDecoration(
-                            color: Colors.grey.shade300,
+                            color: colorScheme.outlineVariant,
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.g_mobiledata, size: 18),
+                          child: Icon(
+                            Icons.g_mobiledata, 
+                            size: 18,
+                            color: colorScheme.onSurface,
+                          ),
                         );
                       },
                     ),
                     const SizedBox(width: 12),
-                    const Text(
+                    Text(
                       'Ingresa con Google',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w500,
-                        color: Colors.black87,
+                        color: colorScheme.onSurface,
                       ),
                     ),
                   ],
@@ -108,15 +128,28 @@ class _SignInPageState extends State<SignInPage> {
               // Divider with "o"
               Row(
                 children: [
-                  Expanded(child: Divider(color: Colors.grey.shade300, thickness: 1)),
+                  Expanded(
+                    child: Divider(
+                      color: colorScheme.outlineVariant,
+                      thickness: 1
+                    )
+                  ),
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       'o',
-                      style: TextStyle(color: Colors.grey.shade400, fontSize: 14),
+                      style: TextStyle(
+                        color: colorScheme.onSurfaceVariant,
+                        fontSize: 14
+                      ),
                     ),
                   ),
-                  Expanded(child: Divider(color: Colors.grey.shade300, thickness: 1)),
+                  Expanded(
+                    child: Divider(
+                      color: colorScheme.outlineVariant,
+                      thickness: 1
+                    )
+                  ),
                 ],
               ),
               const SizedBox(height: 32),
@@ -127,7 +160,7 @@ class _SignInPageState extends State<SignInPage> {
                   'E-mail',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade700,
+                    color: colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -136,7 +169,10 @@ class _SignInPageState extends State<SignInPage> {
               TextField(
                 keyboardType: TextInputType.emailAddress,
                 decoration: field('Ingresa tu correo electrónico'),
-                style: const TextStyle(fontSize: 14),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: colorScheme.onSurface,
+                ),
               ),
               const SizedBox(height: 16),
               // Contraseña field
@@ -146,7 +182,7 @@ class _SignInPageState extends State<SignInPage> {
                   'Contraseña',
                   style: TextStyle(
                     fontSize: 13,
-                    color: Colors.grey.shade700,
+                    color: colorScheme.onSurfaceVariant,
                     fontWeight: FontWeight.w500,
                   ),
                 ),
@@ -155,7 +191,10 @@ class _SignInPageState extends State<SignInPage> {
               TextField(
                 obscureText: _obscurePassword,
                 decoration: field('Ingresa tu contraseña', isPassword: true),
-                style: const TextStyle(fontSize: 14),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: colorScheme.onSurface,
+                ),
               ),
               const SizedBox(height: 28),
               // Iniciar sesión button
@@ -166,8 +205,8 @@ class _SignInPageState extends State<SignInPage> {
                     Get.offAllNamed('/home');
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Theme.of(context).colorScheme.primary,
-                    foregroundColor: Colors.white,
+                    backgroundColor: colorScheme.primary,
+                    foregroundColor: colorScheme.onPrimary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),

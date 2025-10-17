@@ -33,7 +33,12 @@ dev_dependencies:
 flutter:
   uses-material-design: true
 
-  # Para que siempre encuentre tu .env aunque lances desde otra carpeta
   assets:
     - .env
     - images/
+
+platforms:
+  android:
+    pluginClass: none
+  ios:
+    pluginClass: none

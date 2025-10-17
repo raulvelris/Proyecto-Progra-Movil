@@ -1,9 +1,10 @@
 class Resource {
   final int sharedFileId;
   final String name;
-  final String url;       // Carta PDF, trailer, etc.
-  final int resourceType; // 1:pdf 2:video ...
+  final String url;
+  final int resourceType;
   final int eventId;
+  final ResourceType? resourceTypeDetail;
 
   Resource({
     required this.sharedFileId,
@@ -11,6 +12,7 @@ class Resource {
     required this.url,
     required this.resourceType,
     required this.eventId,
+    this.resourceTypeDetail,
   });
 
   factory Resource.fromJson(Map<String, dynamic> json) {
@@ -20,8 +22,14 @@ class Resource {
       url: json['url'],
       resourceType: json['tipo'],
       eventId: json['evento_id'],
+      resourceTypeDetail: json['tipo_recurso_detalle'] != null 
+          ? ResourceType.fromJson(json['tipo_recurso_detalle'])
+          : null,
     );
   }
+
+  bool get isPDF => resourceType == 1;
+  bool get isVideo => resourceType == 2;
 }
 
 class ResourceType {

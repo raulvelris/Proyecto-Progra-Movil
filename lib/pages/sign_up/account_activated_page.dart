@@ -6,14 +6,18 @@ class AccountActivatedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Scaffold(
-      backgroundColor: Colors.white, // Fondo general blanco
+      backgroundColor: colorScheme.background,
       appBar: AppBar(
-        backgroundColor: Colors.white,
+        backgroundColor: colorScheme.background,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          icon: Icon(
+            Icons.arrow_back, 
+            color: colorScheme.onSurface
+          ),
           onPressed: () => Get.back(),
         ),
       ),
@@ -24,11 +28,11 @@ class AccountActivatedPage extends StatelessWidget {
             constraints: const BoxConstraints(maxWidth: 400),
             padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 40),
             decoration: BoxDecoration(
-              color: Colors.white,
+              color: colorScheme.surface,
               borderRadius: BorderRadius.circular(12),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.15),
+                  color: colorScheme.shadow.withOpacity(0.15),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -38,19 +42,19 @@ class AccountActivatedPage extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const Text(
+                Text(
                   '¡Cuenta activada con\néxito!',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 22,
                     fontWeight: FontWeight.bold,
-                    color: Colors.black87,
+                    color: colorScheme.onSurface,
                     height: 1.3,
                   ),
                 ),
                 const SizedBox(height: 16),
-                const Divider(
-                  color: Colors.black87,
+                Divider(
+                  color: colorScheme.outline,
                   thickness: 1,
                   height: 1,
                 ),
@@ -60,20 +64,19 @@ class AccountActivatedPage extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 14,
-                    color: Colors.grey.shade700,
+                    color: colorScheme.onSurfaceVariant,
                     height: 1.5,
                   ),
                 ),
                 const SizedBox(height: 32),
 
-                // ✅ Ícono limpio sin sombra ni bordes
                 Container(
                   width: 120,
                   height: 120,
-                  color: Colors.white,
-                  child: const Icon(
+                  color: colorScheme.surface,
+                  child: Icon(
                     Icons.verified_rounded,
-                    color: Colors.green,
+                    color: colorScheme.primary,
                     size: 96,
                   ),
                 ),
@@ -84,8 +87,8 @@ class AccountActivatedPage extends StatelessWidget {
                   child: ElevatedButton(
                     onPressed: () => Get.toNamed('/sign-in'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Theme.of(context).colorScheme.primary,
-                      foregroundColor: Colors.white,
+                      backgroundColor: colorScheme.primary,
+                      foregroundColor: colorScheme.onPrimary,
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),

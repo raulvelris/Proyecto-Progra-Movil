@@ -60,8 +60,8 @@ class MyApp extends StatelessWidget {
         GetPage(
           name: '/event-details',
           page: () {
-            final int id = (Get.arguments as int?) ?? 0;
-            return EventDetailsPage(eventId: id);
+            final args = Get.arguments as Map<String, dynamic>;
+            return EventDetailsPage(eventId: args['eventId'] as int);
           },
         ),
 
