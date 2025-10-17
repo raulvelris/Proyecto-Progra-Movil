@@ -20,9 +20,6 @@ class Resource {
       url: json['url'],
       resourceType: json['tipo'],
       eventId: json['evento_id'],
-      resourceTypeDetail: json['tipo_recurso_detalle'] != null
-          ? ResourceType.fromJson(json['tipo_recurso_detalle'])
-          : null,
     );
   }
 }

@@ -29,27 +29,25 @@ class Invitation {
   }
 }
 
-extension InviteStatusX on InviteStatus {
+extension InviteStatusX on InvitationStatus {
   String get label {
     switch (this) {
-      case InviteStatus.accepted:
+      case InvitationStatus.accepted:
         return 'Aceptó';
-      case InviteStatus.rejected:
+      case InvitationStatus.declined:
         return 'Rechazó';
-      case InviteStatus.pending:
-      default:
+      case InvitationStatus.pending:
         return 'Sin respuesta';
     }
   }
 
   Color get color {
     switch (this) {
-      case InviteStatus.accepted:
+      case InvitationStatus.accepted:
         return Colors.green;
-      case InviteStatus.rejected:
+      case InvitationStatus.declined:
         return Colors.redAccent;
-      case InviteStatus.pending:
-      default:
+      case InvitationStatus.pending:
         return Colors.orange;
     }
   }
@@ -59,13 +57,13 @@ class Invitee {
   final int id;
   final String name;
   final String email;
-  InviteStatus status;
+  InvitationStatus status;
 
   Invitee({
     required this.id,
     required this.name,
     required this.email,
-    this.status = InviteStatus.pending,
+    this.status = InvitationStatus.pending,
   });
 
   String get initials {
