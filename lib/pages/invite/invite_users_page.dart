@@ -1,110 +1,282 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'invite_controller.dart';
 
-class InviteUsersPage extends StatefulWidget {
+class InviteUsersPage extends StatelessWidget {
   const InviteUsersPage({super.key});
 
   @override
-  State<InviteUsersPage> createState() => _InviteUsersPageState();
-}
-
-class _InviteUsersPageState extends State<InviteUsersPage> {
-  final Set<int> _selected = {};
-  final _users = const [
-    'Aaron Lobo',
-    'Aaron Tello',
-    'Aaron Pérez',
-    'Beatriz Soto',
-    'Carlos Ponce',
-    'Diana Huerta',
-  ];
-
-  @override
   Widget build(BuildContext context) {
-    final c = Theme.of(context).colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
+    
+    // Obtener el eventId de los argumentos
+    final args = Get.arguments as Map<String, dynamic>?;
+    final eventId = args?['eventId'] as int?;
+    
+    // Crear el controller con el eventId
+    final controller = Get.put(
+      InviteUsersController(eventId: eventId),
+      tag: 'invite_${eventId ?? 0}',
+    );
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Invitar usuarios')),
+      appBar: AppBar(
+        title: const Text('Invitar usuarios'),
+        backgroundColor: colorScheme.primary,
+        foregroundColor: colorScheme.onPrimary,
+      ),
       body: Column(
         children: [
           const SizedBox(height: 8),
+          // Campo de búsqueda
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12),
-            child: TextField(
-              decoration: InputDecoration(
-                hintText: 'Buscar',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+            child: Column(
+              children: [
+                TextField(
+                  controller: controller.searchController,
+                  decoration: InputDecoration(
+                    hintText: 'Buscar por email o nombre',
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    isDense: true,
+                  ),
+                  onChanged: (value) => controller.searchUsers(value),
                 ),
-                isDense: true,
-              ),
+                const SizedBox(height: 8),
+                Obx(() {
+                  final count = controller.pendingCount.value;
+                  final limit = controller.pendingLimit.value;
+                  
+                  if (limit == 0) return const SizedBox.shrink();
+                  
+                  return Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: colorScheme.secondaryContainer.withOpacity(0.5),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.info_outline, 
+                          size: 16, 
+                          color: colorScheme.onSecondaryContainer
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          'Invitaciones pendientes: $count / $limit',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: colorScheme.onSecondaryContainer,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              ],
             ),
           ),
           const SizedBox(height: 8),
+          
+          // Resultados de búsqueda
           Expanded(
-            child: ListView.separated(
-              itemCount: _users.length,
-              separatorBuilder: (_, __) => const Divider(height: 1),
-              itemBuilder: (_, i) {
-                final name = _users[i];
-                final isSel = _selected.contains(i);
-                return ListTile(
-                  leading: CircleAvatar(
-                    backgroundColor: c.primaryContainer.withOpacity(.35),
-                    child: Text(_initials(name), style: TextStyle(color: c.primary)),
+            child: Obx(() {
+              // Mostrar indicador de carga
+              if (controller.isSearching.value) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(color: colorScheme.primary),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Buscando usuarios...',
+                        style: TextStyle(color: colorScheme.onSurface),
+                      ),
+                    ],
                   ),
-                  title: Text(name),
-                  trailing: Icon(
-                    isSel ? Icons.radio_button_checked : Icons.radio_button_off,
-                    color: isSel ? c.primary : c.outline,
-                  ),
-                  onTap: () {
-                    setState(() {
-                      if (isSel) {
-                        _selected.remove(i);
-                      } else {
-                        _selected.add(i);
-                      }
-                    });
-                  },
                 );
-              },
-            ),
+              }
+
+              // Mostrar mensaje de error
+              if (controller.error.value.isNotEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.info_outline, size: 64, color: colorScheme.outline),
+                      const SizedBox(height: 16),
+                      Text(
+                        controller.error.value,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(color: colorScheme.onSurface),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              // Mostrar mensaje inicial
+              if (controller.searchQuery.value.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.search, size: 64, color: colorScheme.outline),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Busca usuarios por email o nombre',
+                        style: TextStyle(color: colorScheme.onSurface),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              // Mostrar resultados
+              if (controller.searchResults.isEmpty) {
+                return Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.person_off, size: 64, color: colorScheme.outline),
+                      const SizedBox(height: 16),
+                      Text(
+                        'No se encontraron usuarios',
+                        style: TextStyle(color: colorScheme.onSurface),
+                      ),
+                    ],
+                  ),
+                );
+              }
+
+              return ListView.separated(
+                itemCount: controller.searchResults.length,
+                separatorBuilder: (_, __) => const Divider(height: 1),
+                itemBuilder: (_, index) {
+                  final user = controller.searchResults[index];
+                  
+                  return Obx(() {
+                    final isSelected = controller.isSelected(user.id);
+                    final isEligible = controller.isEligible(user.id);
+                    
+                    return ListTile(
+                      enabled: isEligible,
+                      leading: CircleAvatar(
+                        backgroundColor: isEligible
+                            ? colorScheme.primaryContainer.withOpacity(.35)
+                            : colorScheme.surfaceContainerHighest,
+                        child: Text(
+                          user.initials,
+                          style: TextStyle(
+                            color: isEligible
+                                ? colorScheme.primary
+                                : colorScheme.onSurfaceVariant,
+                          ),
+                        ),
+                      ),
+                      title: Text(
+                        user.name,
+                        style: TextStyle(
+                          color: isEligible
+                              ? colorScheme.onSurface
+                              : colorScheme.onSurfaceVariant,
+                        ),
+                      ),
+                      subtitle: Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              user.email,
+                              style: TextStyle(
+                                color: isEligible
+                                    ? colorScheme.onSurfaceVariant
+                                    : colorScheme.outline,
+                              ),
+                            ),
+                          ),
+                          if (!isEligible)
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8,
+                                vertical: 2,
+                              ),
+                              decoration: BoxDecoration(
+                                color: colorScheme.errorContainer,
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                controller.getNonEligibleLabel(user.id),
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: colorScheme.onErrorContainer,
+                                ),
+                              ),
+                            ),
+                        ],
+                      ),
+                      trailing: Icon(
+                        isEligible
+                            ? (isSelected
+                                ? Icons.check_circle
+                                : Icons.circle_outlined)
+                            : Icons.lock_outline,
+                        color: isEligible
+                            ? (isSelected
+                                ? colorScheme.primary
+                                : colorScheme.outline)
+                            : colorScheme.outline,
+                      ),
+                      onTap: () => controller.toggleSelection(user.id),
+                    );
+                  });
+                },
+              );
+            }),
           ),
         ],
       ),
       bottomNavigationBar: SafeArea(
         child: Padding(
           padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: ElevatedButton(
-            onPressed: () {
-              if (_selected.isEmpty) {
-                Get.snackbar('Invitar usuarios', 'Selecciona al menos una persona');
-              } else {
-                final names = _selected.map((i) => _users[i]).join(', ');
-                Get.snackbar('Invitación enviada', names, snackPosition: SnackPosition.BOTTOM);
-              }
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: c.primary,
-              foregroundColor: c.onPrimary,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+          child: Obx(() {
+            final selectedCount = controller.selectedUserIds.length;
+            final isLoading = controller.isLoading.value;
+            
+            return ElevatedButton(
+              onPressed: isLoading ? null : () => controller.sendInvitations(),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: colorScheme.primary,
+                foregroundColor: colorScheme.onPrimary,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
-            ),
-            child: const Text('Enviar Invitación'),
-          ),
+              child: isLoading
+                  ? SizedBox(
+                      height: 20,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: colorScheme.onPrimary,
+                      ),
+                    )
+                  : Text(
+                      selectedCount > 0
+                          ? 'Enviar Invitación ($selectedCount)'
+                          : 'Enviar Invitación',
+                    ),
+            );
+          }),
         ),
       ),
     );
-  }
-
-  static String _initials(String name) {
-    final parts = name.trim().split(RegExp(r'\s+'));
-    final a = parts.isNotEmpty ? parts.first[0] : '';
-    final b = parts.length > 1 ? parts.last[0] : '';
-    return (a + b).toUpperCase();
   }
 }

@@ -39,18 +39,30 @@ class NotificationsPage extends StatelessWidget {
         }
 
         // Mostrar placeholder si no hay notificaciones
+        // Mostrar placeholder si no hay notificaciones
         if (controller.notifications.isEmpty) {
-          return const Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.notifications, size: 64, color: Colors.grey),
-                SizedBox(height: 16),
-                Text(
-                  'No tienes notificaciones',
-                  style: TextStyle(fontSize: 16, color: Colors.grey),
+          return RefreshIndicator(
+            backgroundColor: colorScheme.surface,
+            color: colorScheme.primary,
+            onRefresh: () => controller.loadNotifications(),
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: SizedBox(
+                height: MediaQuery.of(context).size.height * 0.8,
+                child: const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(Icons.notifications, size: 64, color: Colors.grey),
+                      SizedBox(height: 16),
+                      Text(
+                        'No tienes notificaciones',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    ],
+                  ),
                 ),
-              ],
+              ),
             ),
           );
         }

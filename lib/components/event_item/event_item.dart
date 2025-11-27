@@ -70,15 +70,55 @@ class EventItem extends StatelessWidget {
                   ),
                   // Botón "Sí" para confirmar eliminación
                   ElevatedButton(
-                    onPressed: () {
-                      // Determina la lista correcta según tipo de evento
-                      final typeTag = isCreatedEvent ? 'created' : 'public';
-                      final listController = Get.find<EventItemListController>(
-                        tag: 'event_list_$typeTag',
+                    onPressed: () async {
+                      Get.back(); // Cerrar el diálogo
+                      
+                      // Mostrar indicador de carga
+                      Get.dialog(
+                        const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        barrierDismissible: false,
                       );
-                      // Elimina el evento de la lista
-                      listController.removeEvent(event);
-                      Get.back();
+
+                      try {
+                        // Llamar al servicio para eliminar el evento
+                        await controller.deleteEvent();
+                        
+                        // Cerrar el indicador de carga
+                        Get.back();
+
+                        // Determina la lista correcta según tipo de evento
+                        final typeTag = isCreatedEvent ? 'created' : 'public';
+                        final listController = Get.find<EventItemListController>(
+                          tag: 'event_list_$typeTag',
+                        );
+                        
+                        // Elimina el evento de la lista
+                        listController.removeEvent(event);
+
+                        // Mostrar mensaje de éxito
+                        Get.snackbar(
+                          'Éxito',
+                          'Evento eliminado correctamente',
+                          snackPosition: SnackPosition.TOP,
+                          backgroundColor: Colors.green,
+                          colorText: Colors.white,
+                        );
+                      } catch (e) {
+                        // Cerrar el indicador de carga
+                        Get.back();
+                        
+                        // Mostrar mensaje de error
+                        Get.snackbar(
+                          'Error',
+                          e.toString().replaceAll('Exception: ', ''),
+                          snackPosition: SnackPosition.TOP,
+                          backgroundColor: Colors.red,
+                          colorText: Colors.white,
+                          duration: const Duration(seconds: 4),
+                        );
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.red,
@@ -149,31 +189,36 @@ class EventItem extends StatelessWidget {
         // Botones de acción: editar/eliminar si es creado por el usuario
         trailing: isCreatedEvent
             ? SizedBox(
-                width: 50,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
+                width: 80,
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    // Botón de editar
-                    Expanded(
-                      child: IconButton(
-                        icon: Icon(Icons.edit, size: 30, color: colorScheme.primary),
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
-                          Get.snackbar('Editar', 'Funcionalidad de editar pendiente');
-                        },
-                      ),
+                    // Botón de invitar
+                    IconButton(
+                      icon: Icon(Icons.person_add, size: 24, color: colorScheme.tertiary),
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                        Get.toNamed(
+                          '/invite-users',
+                          arguments: {'eventId': event.eventId},
+                        );
+                      },
                     ),
-                    const SizedBox(height: 15),
+                    // Botón de editar
+                    IconButton(
+                      icon: Icon(Icons.edit, size: 24, color: colorScheme.primary),
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                        Get.snackbar('Editar', 'Funcionalidad de editar pendiente');
+                      },
+                    ),
                     // Botón de eliminar
-                    Expanded(
-                      child: IconButton(
-                        icon: Icon(Icons.delete, size: 30, color: colorScheme.error),
-                        padding: EdgeInsets.zero,
-                        onPressed: () {
-                          _showDeleteConfirmation(context, controller, event);
-                        },
-                      ),
+                    IconButton(
+                      icon: Icon(Icons.delete, size: 24, color: colorScheme.error),
+                      padding: EdgeInsets.zero,
+                      onPressed: () {
+                        _showDeleteConfirmation(context, controller, event);
+                      },
                     ),
                   ],
                 ),

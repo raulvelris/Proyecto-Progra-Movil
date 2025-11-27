@@ -1,163 +1,209 @@
-import 'package:flutter/material.dart' as material;
-
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:logger/logger.dart';
+import '../configs/env.dart';
 import '../models/notificacion.dart';
 import '../models/invitation.dart';
 import '../models/general_notification.dart';
 import '../models/event.dart';
-import '../services/event_service.dart';
+import 'session_service.dart';
 
 class NotificationService {
-  // Mapa estático para mantener el estado de las invitaciones procesadas
-  static final Map<int, InvitationStatus> _invitationStates = {};
+  final SessionService _sessionService = SessionService();
+  final Logger _logger = Logger();
 
   /// Obtiene todas las notificaciones (invitaciones + generales)
   Future<List<Notification>> getAllNotifications() async {
-    // Simula un retraso como si viniera de una API
-    await Future.delayed(const Duration(seconds: 1));
+    final token = _sessionService.userToken;
+    if (token == null) {
+      throw Exception('No hay sesión activa');
+    }
 
-    // Cargar invitaciones, notificaciones generales y mock de notificaciones
-    final invitations = await _getMockInvitations();
-    final generalNotifications = await _getMockGeneralNotifications();
-    final mockNotifications = await _getMockNotifications();
+    final headers = {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token',
+    };
 
-    // Servicio para obtener información de eventos asociados
-    final eventService = EventService();
-    final eventMap = <int, Event>{};
+    try {
+      // 1. Obtener Invitaciones Privadas
+      final invitationsResponse = await http.get(
+        Uri.parse('${Env.apiUrl}/api/private-invitations'),
+        headers: headers,
+      );
 
-    // Recorrer todas las notificaciones y obtener su evento si tiene eventoId
-    for (final notification in mockNotifications) {
-      if (notification.eventoId != null) {
-        try {
-          final event = await eventService.getEventById(notification.eventoId!);
-          eventMap[notification.eventoId!] = event;
-        } catch (e) {
-          // Debug en consola si falla la obtención del evento
-          material.debugPrint(
-            'Failed to fetch event ${notification.eventoId}: $e',
-          );
+      // 2. Obtener Notificaciones de Acción
+      final notificationsResponse = await http.get(
+        Uri.parse('${Env.apiUrl}/api/notifications-action'),
+        headers: headers,
+      );
+
+      final List<Notification> allNotifications = [];
+
+      // Procesar Invitaciones
+      if (invitationsResponse.statusCode == 200) {
+        final data = json.decode(invitationsResponse.body);
+        if (data['success'] == true) {
+          final List<dynamic> items = data['invitaciones'];
+          for (var item in items) {
+            // Mapear a modelo Invitation
+
+            final eventData = item['evento'];
+            Event? event;
+            if (eventData != null) {
+              event = Event(
+                eventId: eventData['evento_id'],
+                title: eventData['titulo'] ?? 'Evento sin título',
+                startDate: eventData['fechaInicio'] != null
+                    ? DateTime.parse(eventData['fechaInicio'])
+                    : DateTime.now(),
+                endDate: eventData['fechaFin'] != null
+                    ? DateTime.parse(eventData['fechaFin'])
+                    : DateTime.now(),
+                description: '',
+                image: '', // Campo requerido por el modelo Event
+                location: null,
+                privacy: 0,
+                eventStatus: 0,
+              );
+            }
+
+            final invitation = Invitation(
+              notificacionId: item['invitacion_usuario_id'],
+              fechaLimite: item['fechaLimite'] != null
+                  ? DateTime.parse(item['fechaLimite'])
+                  : DateTime.now(),
+              status: _parseStatus(item['estado']),
+            );
+
+            allNotifications.add(
+              Notification.fromInvitation(
+                invitation,
+                eventoId: event?.eventId,
+                fechaHora: invitation.fechaLimite,
+                event: event,
+              ),
+            );
+          }
         }
       }
-    }
 
-    final notifications = <Notification>[];
+      // Procesar Notificaciones de Acción
+      if (notificationsResponse.statusCode == 200) {
+        final data = json.decode(notificationsResponse.body);
+        if (data['success'] == true) {
+          final List<dynamic> items = data['notificaciones_accion'];
+          for (var item in items) {
+            final eventData = item['evento'];
+            Event? event;
+            if (eventData != null) {
+              event = Event(
+                eventId: eventData['evento_id'],
+                title: eventData['titulo'] ?? 'Evento sin título',
+                startDate: DateTime.now(),
+                endDate: DateTime.now(),
+                description: '',
+                image: '',
+                location: null,
+                privacy: 0,
+                eventStatus: 0,
+              );
+            }
 
-    // Crear notificaciones tipo invitación
-    // Se hace un match entre invitations y mockNotifications por índice
-    for (var i = 0; i < invitations.length && i < mockNotifications.length; i++) {
-      final mockNotification = mockNotifications[i];
-      final event = eventMap[mockNotification.eventoId];
+            final generalNotification = GeneralNotification(
+              notificacionId: item['notificacion_accion_id'],
+              mensaje: item['mensaje'] ?? '',
+            );
 
-      notifications.add(
-        Notification.fromInvitation(
-          invitations[i],
-          eventoId: mockNotification.eventoId,
-          fechaHora: mockNotification.fechaHora,
-          event: event,
-        ),
-      );
-    }
-
-    // Crear notificaciones generales
-    // Se ajusta el índice restando la cantidad de invitaciones
-    for (var i = invitations.length; i < mockNotifications.length; i++) {
-      final mockNotification = mockNotifications[i];
-      final event = eventMap[mockNotification.eventoId];
-
-      notifications.add(
-        Notification.fromGeneralNotification(
-          generalNotifications[i - invitations.length],
-          eventoId: mockNotification.eventoId,
-          fechaHora: mockNotification.fechaHora,
-          event: event,
-        ),
-      );
-    }
-
-    // Ordenar notificaciones: primero las pendientes, luego las aceptadas/rechazadas
-    notifications.sort((a, b) {
-      final aStatus = a.invitation?.status ?? InvitationStatus.pending;
-      final bStatus = b.invitation?.status ?? InvitationStatus.pending;
-
-      // Si el estado es igual, mantener el orden original
-      if (aStatus == bStatus) return 0;
-
-      // Pendientes van primero
-      if (aStatus == InvitationStatus.pending && bStatus != InvitationStatus.pending) {
-        return -1;
+            allNotifications.add(
+              Notification.fromGeneralNotification(
+                generalNotification,
+                eventoId: event?.eventId,
+                fechaHora: item['fechaHora'] != null
+                    ? DateTime.parse(item['fechaHora'])
+                    : DateTime.now(),
+                event: event,
+              ),
+            );
+          }
+        }
       }
 
-      // Procesadas van al final
-      if (aStatus != InvitationStatus.pending && bStatus == InvitationStatus.pending) {
-        return 1;
-      }
+      // Ordenar por fecha (más reciente primero)
+      allNotifications.sort((a, b) => b.fechaHora.compareTo(a.fechaHora));
 
-      return 0;
-    });
-
-    return notifications;
+      return allNotifications;
+    } catch (e) {
+      _logger.e('Error fetching notifications', e);
+      throw Exception('Error al cargar notificaciones');
+    }
   }
 
-  /// Acepta una invitación y actualiza su estado en memoria
+  InvitationStatus _parseStatus(String? status) {
+    switch (status?.toLowerCase()) {
+      case 'aceptada':
+        return InvitationStatus.accepted;
+      case 'rechazada':
+        return InvitationStatus.declined;
+      case 'pendiente':
+      default:
+        return InvitationStatus.pending;
+    }
+  }
+
+  /// Acepta una invitación
   Future<bool> acceptInvitation(int invitationId) async {
-    await Future.delayed(const Duration(milliseconds: 500)); // Simula delay
-    _invitationStates[invitationId] = InvitationStatus.accepted; // Guardar estado
-    return true;
+    return _respondToInvitation(invitationId, true);
   }
 
-  /// Rechaza una invitación y actualiza su estado en memoria
+  /// Rechaza una invitación
   Future<bool> declineInvitation(int invitationId) async {
-    await Future.delayed(const Duration(milliseconds: 500)); // Simula delay
-    _invitationStates[invitationId] = InvitationStatus.declined; // Guardar estado
-    return true;
+    return _respondToInvitation(invitationId, false);
   }
 
-  /// Mock de notificaciones (tipo Notification)
-  Future<List<Notification>> _getMockNotifications() async {
-    return [
-      Notification(
-        notificacionId: 1,
-        fechaHora: DateTime(2025, 10, 16, 10, 30),
-        eventoId: 1,
-        type: NotificationType.invitation, // Tipo invitación
-      ),
-      Notification(
-        notificacionId: 2,
-        fechaHora: DateTime(2025, 10, 15, 14, 0),
-        eventoId: 2,
-        type: NotificationType.general, // Tipo general
-      ),
-      Notification(
-        notificacionId: 3,
-        fechaHora: DateTime(2025, 10, 16, 6, 0),
-        eventoId: 3,
-        type: NotificationType.general,
-      ),
-    ];
-  }
+  /// Método privado para enviar la respuesta al backend
+  Future<bool> _respondToInvitation(int invitationId, bool accept) async {
+    final token = _sessionService.userToken;
+    if (token == null) {
+      throw Exception('No hay sesión activa');
+    }
 
-  /// Mock de notificaciones generales
-  Future<List<GeneralNotification>> _getMockGeneralNotifications() async {
-    return [
-      GeneralNotification(
-        notificacionId: 3,
-        mensaje: 'El evento ha sido cancelado.',
-      ),
-    ];
-  }
+    try {
+      final url = Uri.parse('${Env.apiUrl}/api/invitaciones/respond');
 
-  /// Mock de invitaciones con estado persistente en memoria
-  Future<List<Invitation>> _getMockInvitations() async {
-    return [
-      Invitation(
-        notificacionId: 1,
-        fechaLimite: DateTime(2025, 10, 22, 14, 0),
-        status: _invitationStates[1] ?? InvitationStatus.pending,
-      ),
-      Invitation(
-        notificacionId: 2,
-        fechaLimite: DateTime(2025, 10, 23, 6, 0),
-        status: _invitationStates[2] ?? InvitationStatus.pending,
-      ),
-    ];
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode({
+          'invitacion_usuario_id': invitationId,
+          'accept': accept,
+          'estado': accept ? 'aceptada' : 'rechazada',
+        }),
+      );
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        return data['success'] == true;
+      } else {
+        // Intentar obtener mensaje de error del backend
+        String errorMessage = 'Error al responder invitación';
+        try {
+          final data = json.decode(response.body);
+          if (data['message'] != null) {
+            errorMessage = data['message'];
+          }
+        } catch (_) {}
+
+        _logger.e(
+          'Error responding invitation: ${response.statusCode} - $errorMessage',
+        );
+        throw Exception(errorMessage);
+      }
+    } catch (e) {
+      _logger.e('Exception responding invitation', e);
+      rethrow;
+    }
   }
 }
