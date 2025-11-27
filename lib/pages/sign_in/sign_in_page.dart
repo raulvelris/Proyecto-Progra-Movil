@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'sign_in_controller.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -10,6 +11,7 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   bool _obscurePassword = true;
+  final _controller = Get.put(SignInController());
 
   @override
   Widget build(BuildContext context) {
@@ -165,6 +167,7 @@ class _SignInPageState extends State<SignInPage> {
               ),
               const SizedBox(height: 8),
               TextField(
+                controller: _controller.emailController,
                 keyboardType: TextInputType.emailAddress,
                 decoration: field('Ingresa tu correo electrónico'),
                 style: TextStyle(
@@ -186,6 +189,7 @@ class _SignInPageState extends State<SignInPage> {
               ),
               const SizedBox(height: 8),
               TextField(
+                controller: _controller.passwordController,
                 obscureText: _obscurePassword,
                 decoration: field('Ingresa tu contraseña', isPassword: true),
                 style: TextStyle(
@@ -194,12 +198,10 @@ class _SignInPageState extends State<SignInPage> {
                 ),
               ),
               const SizedBox(height: 28),
-              SizedBox(
+              Obx(() => SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () {
-                    Get.offAllNamed('/home');
-                  },
+                  onPressed: _controller.isLoading.value ? null : _controller.login,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: colorScheme.primary,
                     foregroundColor: colorScheme.onPrimary,
@@ -208,16 +210,28 @@ class _SignInPageState extends State<SignInPage> {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     elevation: 0,
+                    disabledBackgroundColor: colorScheme.primary.withOpacity(0.6),
                   ),
-                  child: const Text(
-                    'Iniciar sesión',
-                    style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
+                  child: _controller.isLoading.value
+                      ? SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              colorScheme.onPrimary,
+                            ),
+                          ),
+                        )
+                      : const Text(
+                          'Iniciar sesión',
+                          style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
                 ),
-              ),
+              )),
               const SizedBox(height: 20),
             ],
           ),

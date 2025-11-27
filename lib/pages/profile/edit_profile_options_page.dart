@@ -1,25 +1,12 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'edit_profile_controller.dart';
 
-class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
+class EditProfilePage extends StatelessWidget {
+  EditProfilePage({super.key});
 
-  @override
-  State<EditProfilePage> createState() => _EditProfilePageState();
-}
-
-class _EditProfilePageState extends State<EditProfilePage> {
-  final TextEditingController _firstNameController = TextEditingController(text: 'Dylan');
-  final TextEditingController _lastNameController = TextEditingController(text: 'Thomas');
-  final TextEditingController _emailController = TextEditingController(text: 'dylanthomas@server.com');
-
-  @override
-  void dispose() {
-    _firstNameController.dispose();
-    _lastNameController.dispose();
-    _emailController.dispose();
-    super.dispose();
-  }
+  final controller = Get.put(EditProfileController());
 
   @override
   Widget build(BuildContext context) {
@@ -64,66 +51,101 @@ class _EditProfilePageState extends State<EditProfilePage> {
           ),
         ),
         actions: [
-          TextButton(
-            onPressed: () {
-              // Guardar cambios
-              Get.back();
-            },
-            child: Text(
-              'GUARDAR',
-              style: TextStyle(
-                color: colorScheme.primary,
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                letterSpacing: 0.5,
-              ),
-            ),
-          ),
+          Obx(() => TextButton(
+                onPressed: controller.isLoading.value ? null : controller.updateProfile,
+                child: controller.isLoading.value
+                    ? SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            colorScheme.primary,
+                          ),
+                        ),
+                      )
+                    : Text(
+                        'GUARDAR',
+                        style: TextStyle(
+                          color: colorScheme.primary,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          letterSpacing: 0.5,
+                        ),
+                      ),
+              )),
         ],
       ),
       body: SingleChildScrollView(
         child: Column(
           children: [
             const SizedBox(height: 30),
-            Stack(
-              children: [
-                CircleAvatar(
-                  radius: 60,
-                  backgroundColor: colorScheme.primaryContainer,
-                  child: Text(
-                    'DT',
-                    style: TextStyle(
-                      fontSize: 36,
-                      fontWeight: FontWeight.w600,
-                      color: colorScheme.onPrimaryContainer,
-                      letterSpacing: 1,
+            Obx(() {
+              final photoUrl = controller.photoUrl.value;
+              ImageProvider? imageProvider;
+              
+              if (photoUrl.isNotEmpty) {
+                if (photoUrl.startsWith('data:image')) {
+                  try {
+                    final base64String = photoUrl.split(',').last;
+                    imageProvider = MemoryImage(base64Decode(base64String));
+                  } catch (e) {
+                    print('Error decoding base64 image: $e');
+                  }
+                } else {
+                  imageProvider = NetworkImage(photoUrl);
+                }
+              }
+
+              return Stack(
+                children: [
+                  imageProvider != null
+                      ? CircleAvatar(
+                          radius: 60,
+                          backgroundImage: imageProvider,
+                          onBackgroundImageError: (_, __) {},
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.transparent,
+                            ),
+                          ),
+                        )
+                      : CircleAvatar(
+                          radius: 60,
+                          backgroundColor: colorScheme.primaryContainer,
+                          child: Icon(
+                            Icons.person,
+                            size: 50,
+                            color: colorScheme.onPrimaryContainer,
+                          ),
+                        ),
+                  Positioned(
+                    bottom: 0,
+                    right: 0,
+                    child: GestureDetector(
+                      onTap: () {
+                        // Abrir galería para seleccionar imagen
+                        controller.pickImageFromGallery();
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: colorScheme.primary,
+                          shape: BoxShape.circle,
+                          border: Border.all(color: colorScheme.surface, width: 3),
+                        ),
+                        child: Icon(
+                          Icons.camera_alt,
+                          color: colorScheme.onPrimary,
+                          size: 18,
+                        ),
+                      ),
                     ),
                   ),
-                ),
-                Positioned(
-                  bottom: 0,
-                  right: 0,
-                  child: GestureDetector(
-                    onTap: () {
-                      // Acción para cambiar foto
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(8),
-                      decoration: BoxDecoration(
-                        color: colorScheme.primary,
-                        shape: BoxShape.circle,
-                        border: Border.all(color: colorScheme.surface, width: 3),
-                      ),
-                      child: Icon(
-                        Icons.camera_alt,
-                        color: colorScheme.onPrimary,
-                        size: 18,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
+                ],
+              );
+            }),
             const SizedBox(height: 40),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -146,8 +168,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             ),
                             const SizedBox(height: 8),
                             TextField(
-                              controller: _firstNameController,
-                              decoration: field('Dylan'),
+                              controller: controller.firstNameController,
+                              decoration: field('Nombres'),
                               style: TextStyle(
                                 fontSize: 14,
                                 color: colorScheme.onSurface,
@@ -171,8 +193,8 @@ class _EditProfilePageState extends State<EditProfilePage> {
                             ),
                             const SizedBox(height: 8),
                             TextField(
-                              controller: _lastNameController,
-                              decoration: field('Thomas'),
+                              controller: controller.lastNameController,
+                              decoration: field('Apellidos'),
                               style: TextStyle(
                                 fontSize: 14,
                                 color: colorScheme.onSurface,
@@ -194,9 +216,9 @@ class _EditProfilePageState extends State<EditProfilePage> {
                   ),
                   const SizedBox(height: 8),
                   TextField(
-                    controller: _emailController,
+                    controller: controller.emailController,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: field('dylanthomas@server.com'),
+                    decoration: field('correo@ejemplo.com'),
                     style: TextStyle(
                       fontSize: 14,
                       color: colorScheme.onSurface,
@@ -208,6 +230,38 @@ class _EditProfilePageState extends State<EditProfilePage> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  void _showPhotoUrlDialog(BuildContext context, ColorScheme colorScheme) {
+    final tempController = TextEditingController(text: controller.photoUrlController.text);
+    
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: Text('URL de Foto de Perfil'),
+        content: TextField(
+          controller: tempController,
+          decoration: InputDecoration(
+            hintText: 'https://ejemplo.com/foto.jpg',
+            border: OutlineInputBorder(),
+          ),
+          keyboardType: TextInputType.url,
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: Text('Cancelar'),
+          ),
+          TextButton(
+            onPressed: () {
+              controller.updatePhotoUrl(tempController.text);
+              Navigator.pop(context);
+            },
+            child: Text('Aceptar'),
+          ),
+        ],
       ),
     );
   }

@@ -73,7 +73,7 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(
           name: '/edit-profile-options',
-          page: () => const EditProfilePage(),
+          page: () => EditProfilePage(),
         ),
         GetPage(name: '/invite-users', page: () => const InviteUsersPage()),
         GetPage(name: '/invite-list', page: () => const InviteListPage()),

@@ -18,4 +18,10 @@ class Env {
     if (key.isEmpty) debugPrint('GOOGLE_MAPS_API_KEY vacío');
     return key;
   }
+
+  static String get apiUrl {
+    final url = dotenv.env['API_URL'] ?? 'http://localhost:5000';
+    if (url.isEmpty) debugPrint('API_URL vacío');
+    return url;
+  }
 }

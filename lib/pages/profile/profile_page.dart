@@ -1,39 +1,16 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../services/session_service.dart';
+import 'profile_controller.dart';
 
 class ProfilePage extends StatelessWidget {
-  final SessionService sessionService = SessionService();
-
   ProfilePage({super.key});
+
+  final controller = Get.put(ProfileController());
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    
-    // Extraer las iniciales del email o usar "DT" por defecto
-    String getInitials(String? email) {
-      if (email == null || email.isEmpty) return 'DT';
-      final parts = email.split('@')[0].split('.');
-      if (parts.length >= 2) {
-        return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
-      }
-      return email.substring(0, 2).toUpperCase();
-    }
-
-    String formatName(String? email) {
-      if (email == null || email.isEmpty) return 'Dylan Thomas';
-      final namePart = email.split('@')[0];
-      final parts = namePart.split('.');
-      if (parts.length >= 2) {
-        return '${parts[0][0].toUpperCase()}${parts[0].substring(1)} ${parts[1][0].toUpperCase()}${parts[1].substring(1)}';
-      }
-      return namePart[0].toUpperCase() + namePart.substring(1);
-    }
-
-    final initials = getInitials(sessionService.userEmail);
-    final userName = formatName(sessionService.userEmail);
-    final userEmail = sessionService.userEmail ?? 'dylanthomas@server.com';
 
     return Scaffold(
       backgroundColor: colorScheme.background,
@@ -42,69 +19,114 @@ class ProfilePage extends StatelessWidget {
         elevation: 0,
         automaticallyImplyLeading: false,
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            const SizedBox(height: 20),
-            CircleAvatar(
-              radius: 50,
-              backgroundColor: colorScheme.primaryContainer,
-              child: Text(
-                initials,
+      body: Obx(() {
+        if (controller.isLoading.value) {
+          return Center(
+            child: CircularProgressIndicator(
+              color: colorScheme.primary,
+            ),
+          );
+        }
+
+        return SingleChildScrollView(
+          child: Column(
+            children: [
+              const SizedBox(height: 20),
+              // Profile Picture or Initials
+              Builder(
+                builder: (context) {
+                  final photoUrl = controller.profilePicture;
+                  ImageProvider? imageProvider;
+
+                  if (photoUrl != null && photoUrl.isNotEmpty) {
+                    if (photoUrl.startsWith('data:image')) {
+                      try {
+                        final base64String = photoUrl.split(',').last;
+                        imageProvider = MemoryImage(base64Decode(base64String));
+                      } catch (e) {
+                        print('Error decoding base64 image: $e');
+                      }
+                    } else {
+                      imageProvider = NetworkImage(photoUrl);
+                    }
+                  }
+
+                  return imageProvider != null
+                      ? CircleAvatar(
+                          radius: 50,
+                          backgroundImage: imageProvider,
+                          onBackgroundImageError: (_, __) {},
+                          child: Container(
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.transparent,
+                            ),
+                          ),
+                        )
+                      : CircleAvatar(
+                          radius: 50,
+                          backgroundColor: colorScheme.primaryContainer,
+                          child: Text(
+                            controller.initials,
+                            style: TextStyle(
+                              fontSize: 32,
+                              fontWeight: FontWeight.w600,
+                              color: colorScheme.onPrimaryContainer,
+                              letterSpacing: 1,
+                            ),
+                          ),
+                        );
+                }
+              ),
+              const SizedBox(height: 20),
+              Text(
+                controller.fullName,
                 style: TextStyle(
-                  fontSize: 32,
-                  fontWeight: FontWeight.w600,
-                  color: colorScheme.onPrimaryContainer,
-                  letterSpacing: 1,
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
                 ),
               ),
-            ),
-            const SizedBox(height: 20),
-            Text(
-              userName,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: colorScheme.onSurface,
+              const SizedBox(height: 6),
+              Text(
+                controller.email,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: colorScheme.onSurfaceVariant,
+                ),
               ),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              userEmail,
-              style: TextStyle(
-                fontSize: 14,
-                color: colorScheme.onSurfaceVariant,
+              const SizedBox(height: 40),
+              Container(
+                margin: const EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
+                  children: [
+                    _buildMenuItem(
+                      title: 'Editar Perfil',
+                      onTap: () async {
+                        await Get.toNamed('/edit-profile-options');
+                        // Recargar perfil al volver
+                        controller.loadProfile();
+                      },
+                      showDivider: true,
+                      colorScheme: colorScheme,
+                    ),
+                    _buildMenuItem(
+                      title: 'Cerrar sesión',
+                      onTap: () {
+                        controller.sessionService.logout();
+                        Get.offAllNamed('/welcome');
+                      },
+                      showDivider: true,
+                      colorScheme: colorScheme,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 40),
-            Container(
-              margin: const EdgeInsets.symmetric(horizontal: 20),
-              child: Column(
-                children: [
-                  _buildMenuItem(
-                    title: 'Editar Perfil',
-                    onTap: () {
-                      Get.toNamed('/edit-profile-options');
-                    },
-                    showDivider: true,
-                    colorScheme: colorScheme,
-                  ),
-                  _buildMenuItem(
-                    title: 'Cerrar sesión',
-                    onTap: () {
-                      sessionService.logout();
-                      Get.offAllNamed('/welcome');
-                    },
-                    showDivider: true,
-                    colorScheme: colorScheme,
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
+              const SizedBox(height: 20),
+            ],
+          ),
+        );
+      }),
     );
   }
 
