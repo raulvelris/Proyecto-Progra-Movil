@@ -35,7 +35,7 @@ class _SplashPageState extends State<SplashPage> {
                 height: 140,
                 child: CustomPaint(
                   painter: StarBadgePainter(),
-                  child: Center(
+                  child: const Center(
                     child: Text(
                       'EM',
                       style: TextStyle(
@@ -77,14 +77,8 @@ class _SplashPageState extends State<SplashPage> {
 class StarBadgePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final rect = Offset.zero & size;
-    final gradient = const LinearGradient(
-      colors: [Color(0xFFF26D5A), Color(0xFFD74033)],
-      begin: Alignment.topCenter,
-      end: Alignment.bottomCenter,
-    );
     final paint = Paint()
-      ..shader = gradient.createShader(rect)
+      ..color = Colors.black // ✅ ESTRELLA NEGRA
       ..style = PaintingStyle.fill;
 
     final center = Offset(size.width / 2, size.height / 2);
@@ -112,5 +106,5 @@ class StarBadgePainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => true;
 }

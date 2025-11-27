@@ -47,7 +47,7 @@ class MyApp extends StatelessWidget {
       title: 'EventMaster',
       theme: materialTheme.light(),
       darkTheme: materialTheme.dark(),
-      themeMode: ThemeMode.system,
+      themeMode: ThemeMode.light,
       initialRoute: '/splash',
       getPages: [
         GetPage(name: '/splash', page: () => const SplashPage()),

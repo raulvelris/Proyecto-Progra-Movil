@@ -1,267 +1,211 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'sign_up_controller.dart';
 
-class SignUpPage extends StatefulWidget {
+class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
-}
-
-class _SignUpPageState extends State<SignUpPage> {
-  bool _obscurePassword = true;
-
-  @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    InputDecoration field(String hint, {bool isPassword = false}) => InputDecoration(
-          hintText: hint,
-          hintStyle: TextStyle(
-            color: colorScheme.onSurfaceVariant,
-            fontSize: 14
-          ),
-          filled: true,
-          fillColor: colorScheme.surface,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-          enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: colorScheme.outlineVariant,
-              width: 1
-            ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(
-              color: colorScheme.primary,
-              width: 1
-            ),
-            borderRadius: BorderRadius.circular(8),
-          ),
-          suffixIcon: isPassword
-              ? IconButton(
-                  icon: Icon(
-                    _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
-                    color: colorScheme.onSurfaceVariant,
-                    size: 20,
-                  ),
-                  onPressed: () {
-                    setState(() {
-                      _obscurePassword = !_obscurePassword;
-                    });
-                  },
-                )
-              : null,
-        );
+    final controller = Get.put(SignUpController());
 
     return Scaffold(
-      backgroundColor: colorScheme.background,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: colorScheme.background,
+        backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(
-            Icons.arrow_back, 
-            color: colorScheme.onSurface
-          ),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Get.back(),
         ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
+          padding: const EdgeInsets.all(24.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 8),
-              OutlinedButton(
-                onPressed: () {},
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: colorScheme.onSurface,
-                  side: BorderSide(
-                    color: colorScheme.outlineVariant,
-                    width: 1
-                  ),
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  backgroundColor: colorScheme.surface,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Image.network(
-                      'https://www.google.com/favicon.ico',
-                      width: 20,
-                      height: 20,
-                      errorBuilder: (context, error, stackTrace) {
-                        return Container(
-                          width: 20,
-                          height: 20,
-                          decoration: BoxDecoration(
-                            color: colorScheme.outlineVariant,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Icon(
-                            Icons.g_mobiledata, 
-                            size: 18,
-                            color: colorScheme.onSurface,
-                          ),
-                        );
-                      },
-                    ),
-                    const SizedBox(width: 12),
-                    Text(
-                      'Regístrate con Google',
-                      style: TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        color: colorScheme.onSurface,
-                      ),
-                    ),
-                  ],
+              const Text(
+                'Crear Cuenta',
+                style: TextStyle(
+                  fontSize: 32,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black87,
                 ),
               ),
-              const SizedBox(height: 24),
-              // Divider with "o"
+              const SizedBox(height: 8),
+              const Text(
+                'Regístrate para comenzar a organizar eventos',
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.grey,
+                ),
+              ),
+              const SizedBox(height: 32),
+              
+              // Nombre y Apellido
               Row(
                 children: [
                   Expanded(
-                    child: Divider(
-                      color: colorScheme.outlineVariant,
-                      thickness: 1
-                    )
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Text(
-                      'o',
-                      style: TextStyle(
-                        color: colorScheme.onSurfaceVariant,
-                        fontSize: 14
+                    child: TextField(
+                      controller: controller.firstNameController,
+                      decoration: InputDecoration(
+                        labelText: 'Nombre',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        prefixIcon: const Icon(Icons.person_outline),
                       ),
                     ),
                   ),
+                  const SizedBox(width: 16),
                   Expanded(
-                    child: Divider(
-                      color: colorScheme.outlineVariant,
-                      thickness: 1
-                    )
+                    child: TextField(
+                      controller: controller.lastNameController,
+                      decoration: InputDecoration(
+                        labelText: 'Apellido',
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        prefixIcon: const Icon(Icons.person_outline),
+                      ),
+                    ),
                   ),
                 ],
               ),
-              const SizedBox(height: 24),
-              // Nombre field
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Nombre',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                decoration: field('Ingresa tu nombre'),
-                style: TextStyle(
-                  fontSize: 14,
-                  color: colorScheme.onSurface,
-                ),
-              ),
               const SizedBox(height: 16),
-              // Apellido field
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Apellido',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
+              
+              // Email
               TextField(
-                decoration: field('Ingresa tu apellido'),
-                style: TextStyle(
-                  fontSize: 14,
-                  color: colorScheme.onSurface,
-                ),
-              ),
-              const SizedBox(height: 16),
-              // E-mail field
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'E-mail',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
+                controller: controller.emailController,
                 keyboardType: TextInputType.emailAddress,
-                decoration: field('Ingresa tu correo electrónico'),
-                style: TextStyle(
-                  fontSize: 14,
-                  color: colorScheme.onSurface,
+                decoration: InputDecoration(
+                  labelText: 'Correo Electrónico',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  prefixIcon: const Icon(Icons.email_outlined),
                 ),
               ),
               const SizedBox(height: 16),
-              // Contraseña field
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Text(
-                  'Contraseña',
-                  style: TextStyle(
-                    fontSize: 13,
-                    color: colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w500,
+              
+              // Contraseña
+              Obx(() => TextField(
+                controller: controller.passwordController,
+                obscureText: !controller.isPasswordVisible.value,
+                decoration: InputDecoration(
+                  labelText: 'Contraseña',
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  prefixIcon: const Icon(Icons.lock_outline),
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      controller.isPasswordVisible.value
+                          ? Icons.visibility
+                          : Icons.visibility_off,
+                    ),
+                    onPressed: controller.togglePasswordVisibility,
                   ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              TextField(
-                obscureText: _obscurePassword,
-                decoration: field('Ingresa tu contraseña', isPassword: true),
-                style: TextStyle(
-                  fontSize: 14,
-                  color: colorScheme.onSurface,
-                ),
-              ),
-              const SizedBox(height: 28),
-              // Crear cuenta button
+              )),
+              
+              const SizedBox(height: 32),
+              
+              // Botón Registrarse
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: () => Get.toNamed('/verify-email'),
+                height: 56,
+                child: Obx(() => ElevatedButton(
+                  onPressed: controller.isLoading.value ? null : controller.register,
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: colorScheme.primary,
-                    foregroundColor: colorScheme.onPrimary,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
+                    backgroundColor: Colors.black,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
+                      borderRadius: BorderRadius.circular(16),
                     ),
                     elevation: 0,
                   ),
-                  child: const Text(
-                    'Crear cuenta',
+                  child: controller.isLoading.value
+                      ? const CircularProgressIndicator(color: Colors.white)
+                      : const Text(
+                          'Registrarse',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                )),
+              ),
+              
+              const SizedBox(height: 24),
+              
+              // Divisor
+              Row(
+                children: [
+                  Expanded(child: Divider(color: Colors.grey[300])),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      'O continúa con',
+                      style: TextStyle(color: Colors.grey[600]),
+                    ),
+                  ),
+                  Expanded(child: Divider(color: Colors.grey[300])),
+                ],
+              ),
+              
+              const SizedBox(height: 24),
+              
+              // Botón Google
+              SizedBox(
+                width: double.infinity,
+                height: 56,
+                child: OutlinedButton.icon(
+                  onPressed: controller.loginWithGoogle,
+                  icon: Image.network(
+                    'https://upload.wikimedia.org/wikipedia/commons/thumb/c/c1/Google_%22G%22_logo.svg/768px-Google_%22G%22_logo.svg.png',
+                    height: 24,
+                  ),
+                  label: const Text(
+                    'Google',
                     style: TextStyle(
-                      fontSize: 15,
+                      fontSize: 16,
+                      color: Colors.black87,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
+                  style: OutlinedButton.styleFrom(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    side: BorderSide(color: Colors.grey[300]!),
+                  ),
                 ),
               ),
-              const SizedBox(height: 20),
+              
+              const SizedBox(height: 24),
+              
+              // Login Link
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    '¿Ya tienes cuenta? ',
+                    style: TextStyle(color: Colors.grey[600]),
+                  ),
+                  GestureDetector(
+                    onTap: () => Get.offNamed('/sign-in'),
+                    child: const Text(
+                      'Inicia Sesión',
+                      style: TextStyle(
+                        color: Colors.blue,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ],
           ),
         ),

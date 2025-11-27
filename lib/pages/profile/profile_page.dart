@@ -10,29 +10,35 @@ class ProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
-      backgroundColor: colorScheme.background,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: colorScheme.background,
+        backgroundColor: Colors.white,
         elevation: 0,
         automaticallyImplyLeading: false,
+        title: const Text(
+          'Mi Perfil',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
+        centerTitle: false,
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return Center(
-            child: CircularProgressIndicator(
-              color: colorScheme.primary,
-            ),
+          return const Center(
+            child: CircularProgressIndicator(color: Colors.black),
           );
         }
 
         return SingleChildScrollView(
+          padding: const EdgeInsets.all(24.0),
           child: Column(
             children: [
               const SizedBox(height: 20),
-              // Profile Picture or Initials
+              // Profile Picture
               Builder(
                 builder: (context) {
                   final photoUrl = controller.profilePicture;
@@ -51,78 +57,68 @@ class ProfilePage extends StatelessWidget {
                     }
                   }
 
-                  return imageProvider != null
-                      ? CircleAvatar(
-                          radius: 50,
-                          backgroundImage: imageProvider,
-                          onBackgroundImageError: (_, __) {},
-                          child: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.transparent,
-                            ),
-                          ),
-                        )
-                      : CircleAvatar(
-                          radius: 50,
-                          backgroundColor: colorScheme.primaryContainer,
-                          child: Text(
-                            controller.initials,
-                            style: TextStyle(
-                              fontSize: 32,
-                              fontWeight: FontWeight.w600,
-                              color: colorScheme.onPrimaryContainer,
-                              letterSpacing: 1,
-                            ),
-                          ),
-                        );
+                  return Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.grey.shade200, width: 2),
+                    ),
+                    child: CircleAvatar(
+                      radius: 60,
+                      backgroundColor: Colors.grey.shade100,
+                      backgroundImage: imageProvider,
+                      child: imageProvider == null
+                          ? Text(
+                              controller.initials,
+                              style: const TextStyle(
+                                fontSize: 40,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                              ),
+                            )
+                          : null,
+                    ),
+                  );
                 }
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 24),
               Text(
                 controller.fullName,
-                style: TextStyle(
-                  fontSize: 22,
+                style: const TextStyle(
+                  fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: colorScheme.onSurface,
+                  color: Colors.black,
                 ),
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 8),
               Text(
                 controller.email,
                 style: TextStyle(
-                  fontSize: 14,
-                  color: colorScheme.onSurfaceVariant,
+                  fontSize: 16,
+                  color: Colors.grey.shade600,
                 ),
               ),
-              const SizedBox(height: 40),
-              Container(
-                margin: const EdgeInsets.symmetric(horizontal: 20),
-                child: Column(
-                  children: [
-                    _buildMenuItem(
-                      title: 'Editar Perfil',
-                      onTap: () async {
-                        await Get.toNamed('/edit-profile-options');
-                        // Recargar perfil al volver
-                        controller.loadProfile();
-                      },
-                      showDivider: true,
-                      colorScheme: colorScheme,
-                    ),
-                    _buildMenuItem(
-                      title: 'Cerrar sesión',
-                      onTap: () {
-                        controller.sessionService.logout();
-                        Get.offAllNamed('/welcome');
-                      },
-                      showDivider: true,
-                      colorScheme: colorScheme,
-                    ),
-                  ],
-                ),
+              const SizedBox(height: 48),
+              
+              // Menu Items
+              _buildMenuItem(
+                icon: Icons.edit_outlined,
+                title: 'Editar Perfil',
+                onTap: () async {
+                  await Get.toNamed('/edit-profile-options');
+                  controller.loadProfile();
+                },
               ),
-              const SizedBox(height: 20),
+              const SizedBox(height: 16),
+              _buildMenuItem(
+                icon: Icons.logout_rounded,
+                title: 'Cerrar Sesión',
+                onTap: () {
+                  controller.sessionService.logout();
+                  Get.offAllNamed('/welcome');
+                },
+                isDestructive: true,
+              ),
             ],
           ),
         );
@@ -131,53 +127,55 @@ class ProfilePage extends StatelessWidget {
   }
 
   Widget _buildMenuItem({
+    required IconData icon,
     required String title,
     required VoidCallback onTap,
-    required bool showDivider,
-    required ColorScheme colorScheme,
+    bool isDestructive = false,
   }) {
-    return Column(
-      children: [
-        InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(12),
-          child: Container(
-            decoration: BoxDecoration(
-              color: colorScheme.surface,
-              borderRadius: BorderRadius.circular(12),
-            ),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 15,
-                      color: colorScheme.onSurface,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  Icon(
-                    Icons.chevron_right,
-                    color: colorScheme.onSurfaceVariant,
-                    size: 24,
-                  ),
-                ],
-              ),
-            ),
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(16),
+      child: Container(
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: isDestructive ? Colors.red.shade50 : Colors.grey.shade50,
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isDestructive ? Colors.red.shade100 : Colors.grey.shade200,
           ),
         ),
-        if (showDivider)
-          Divider(
-            height: 1,
-            thickness: 1,
-            indent: 20,
-            endIndent: 20,
-            color: colorScheme.onSurfaceVariant,
-          ),
-      ],
+        child: Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                color: isDestructive ? Colors.red.shade100 : Colors.white,
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Icon(
+                icon,
+                color: isDestructive ? Colors.red : Colors.black,
+                size: 24,
+              ),
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: isDestructive ? Colors.red : Colors.black,
+                ),
+              ),
+            ),
+            Icon(
+              Icons.chevron_right_rounded,
+              color: isDestructive ? Colors.red.shade300 : Colors.grey.shade400,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -10,70 +10,68 @@ class EditProfilePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     InputDecoration field(String label) => InputDecoration(
           labelText: label,
           labelStyle: TextStyle(
-            color: colorScheme.onSurfaceVariant,
-            fontSize: 13,
+            color: Colors.grey.shade600,
+            fontSize: 14,
             fontWeight: FontWeight.w500,
           ),
           filled: true,
-          fillColor: colorScheme.surface,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+          fillColor: Colors.grey.shade50,
+          contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           enabledBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: colorScheme.outlineVariant, width: 1),
-            borderRadius: BorderRadius.circular(8),
+            borderSide: BorderSide(color: Colors.grey.shade200, width: 1),
+            borderRadius: BorderRadius.circular(12),
           ),
           focusedBorder: OutlineInputBorder(
-            borderSide: BorderSide(color: colorScheme.primary, width: 1),
-            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: Colors.black, width: 1.5),
+            borderRadius: BorderRadius.circular(12),
           ),
-          floatingLabelBehavior: FloatingLabelBehavior.never,
+          floatingLabelBehavior: FloatingLabelBehavior.auto,
         );
 
     return Scaffold(
-      backgroundColor: colorScheme.background,
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        backgroundColor: colorScheme.surface,
+        backgroundColor: Colors.white,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: colorScheme.onSurface),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Get.back(),
         ),
-        title: Text(
+        title: const Text(
           'Editar Perfil',
           style: TextStyle(
-            color: colorScheme.onSurface,
-            fontSize: 18,
+            color: Colors.black,
+            fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
         ),
+        centerTitle: true,
         actions: [
           Obx(() => TextButton(
                 onPressed: controller.isLoading.value ? null : controller.updateProfile,
                 child: controller.isLoading.value
-                    ? SizedBox(
+                    ? const SizedBox(
                         width: 20,
                         height: 20,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          valueColor: AlwaysStoppedAnimation<Color>(
-                            colorScheme.primary,
-                          ),
+                          color: Colors.black,
                         ),
                       )
-                    : Text(
+                    : const Text(
                         'GUARDAR',
                         style: TextStyle(
-                          color: colorScheme.primary,
+                          color: Colors.black,
                           fontSize: 14,
-                          fontWeight: FontWeight.w600,
+                          fontWeight: FontWeight.bold,
                           letterSpacing: 0.5,
                         ),
                       ),
               )),
+          const SizedBox(width: 8),
         ],
       ),
       body: SingleChildScrollView(
@@ -99,27 +97,25 @@ class EditProfilePage extends StatelessWidget {
 
               return Stack(
                 children: [
-                  imageProvider != null
-                      ? CircleAvatar(
-                          radius: 60,
-                          backgroundImage: imageProvider,
-                          onBackgroundImageError: (_, __) {},
-                          child: Container(
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.transparent,
-                            ),
-                          ),
-                        )
-                      : CircleAvatar(
-                          radius: 60,
-                          backgroundColor: colorScheme.primaryContainer,
-                          child: Icon(
-                            Icons.person,
-                            size: 50,
-                            color: colorScheme.onPrimaryContainer,
-                          ),
-                        ),
+                  Container(
+                    padding: const EdgeInsets.all(4),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.grey.shade200, width: 2),
+                    ),
+                    child: CircleAvatar(
+                      radius: 60,
+                      backgroundColor: Colors.grey.shade100,
+                      backgroundImage: imageProvider,
+                      child: imageProvider == null
+                          ? const Icon(
+                              Icons.person,
+                              size: 50,
+                              color: Colors.grey,
+                            )
+                          : null,
+                    ),
+                  ),
                   Positioned(
                     bottom: 0,
                     right: 0,
@@ -129,16 +125,16 @@ class EditProfilePage extends StatelessWidget {
                         controller.pickImageFromGallery();
                       },
                       child: Container(
-                        padding: const EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: colorScheme.primary,
+                          color: Colors.black,
                           shape: BoxShape.circle,
-                          border: Border.all(color: colorScheme.surface, width: 3),
+                          border: Border.all(color: Colors.white, width: 3),
                         ),
-                        child: Icon(
+                        child: const Icon(
                           Icons.camera_alt,
-                          color: colorScheme.onPrimary,
-                          size: 18,
+                          color: Colors.white,
+                          size: 20,
                         ),
                       ),
                     ),
@@ -155,73 +151,36 @@ class EditProfilePage extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Nombres',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: colorScheme.onSurfaceVariant,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            TextField(
-                              controller: controller.firstNameController,
-                              decoration: field('Nombres'),
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: colorScheme.onSurface,
-                              ),
-                            ),
-                          ],
+                        child: TextField(
+                          controller: controller.firstNameController,
+                          decoration: field('Nombre'),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 12),
+                      const SizedBox(width: 16),
                       Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Apellidos',
-                              style: TextStyle(
-                                fontSize: 12,
-                                color: colorScheme.onSurfaceVariant,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const SizedBox(height: 8),
-                            TextField(
-                              controller: controller.lastNameController,
-                              decoration: field('Apellidos'),
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: colorScheme.onSurface,
-                              ),
-                            ),
-                          ],
+                        child: TextField(
+                          controller: controller.lastNameController,
+                          decoration: field('Apellido'),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black,
+                          ),
                         ),
                       ),
                     ],
                   ),
-                  const SizedBox(height: 20),
-                  Text(
-                    'E-mail',
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 24),
                   TextField(
                     controller: controller.emailController,
                     keyboardType: TextInputType.emailAddress,
-                    decoration: field('correo@ejemplo.com'),
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: colorScheme.onSurface,
+                    decoration: field('Correo Electrónico'),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
                     ),
                   ),
                   const SizedBox(height: 40),
@@ -234,32 +193,41 @@ class EditProfilePage extends StatelessWidget {
     );
   }
 
-  void _showPhotoUrlDialog(BuildContext context, ColorScheme colorScheme) {
+  void _showPhotoUrlDialog(BuildContext context) {
     final tempController = TextEditingController(text: controller.photoUrlController.text);
     
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
-        title: Text('URL de Foto de Perfil'),
+        backgroundColor: Colors.white,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text(
+          'URL de Foto de Perfil',
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
         content: TextField(
           controller: tempController,
           decoration: InputDecoration(
             hintText: 'https://ejemplo.com/foto.jpg',
-            border: OutlineInputBorder(),
+            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(12),
+              borderSide: const BorderSide(color: Colors.black),
+            ),
           ),
           keyboardType: TextInputType.url,
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Cancelar'),
+            child: Text('Cancelar', style: TextStyle(color: Colors.grey.shade600)),
           ),
           TextButton(
             onPressed: () {
               controller.updatePhotoUrl(tempController.text);
               Navigator.pop(context);
             },
-            child: Text('Aceptar'),
+            child: const Text('Aceptar', style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold)),
           ),
         ],
       ),

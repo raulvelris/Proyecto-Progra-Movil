@@ -1,4 +1,4 @@
-package com.example.eventmaster
+package com.eventmaster.app
 
 import io.flutter.embedding.android.FlutterActivity
 

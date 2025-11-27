@@ -45,7 +45,7 @@ class WelcomePage extends StatelessWidget {
                   'Bienvenido a EventMaster',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 20,
+                    fontSize: 40,
                     fontWeight: FontWeight.bold,
                     color: colorScheme.onSurface,
                   ),
@@ -56,52 +56,49 @@ class WelcomePage extends StatelessWidget {
                 children: [
                   SizedBox(
                     width: double.infinity,
+                    height: 56,
                     child: ElevatedButton(
                       onPressed: () {
                         Get.toNamed('/sign-up');
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: colorScheme.primary,
-                        foregroundColor: colorScheme.onPrimary,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: Colors.black,
+                        foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(16),
                         ),
                         elevation: 0,
                       ),
                       child: const Text(
                         'Crear cuenta',
                         style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
+                    height: 56,
                     child: OutlinedButton(
                       onPressed: () {
                         Get.toNamed('/sign-in');
                       },
                       style: OutlinedButton.styleFrom(
-                        side: BorderSide(
-                          color: colorScheme.primary,
-                          width: 1.5
-                        ),
-                        foregroundColor: colorScheme.primary,
-                        backgroundColor: colorScheme.surface,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        side: const BorderSide(color: Colors.black, width: 1.5),
+                        foregroundColor: Colors.black,
+                        backgroundColor: Colors.transparent,
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8),
+                          borderRadius: BorderRadius.circular(16),
                         ),
                       ),
-                      child: Text(
+                      child: const Text(
                         'Iniciar sesión',
                         style: TextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
