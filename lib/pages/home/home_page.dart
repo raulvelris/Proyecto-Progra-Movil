@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../created_events/created_events_page.dart';
 import '../attended_events/attended_events_page.dart';
 import '../public_events/public_events_page.dart';
-import '../notifications/notifications_page.dart';
+import '../inbox/notifications_page.dart';
 import '../profile/profile_page.dart';
 
 class HomePage extends StatefulWidget {

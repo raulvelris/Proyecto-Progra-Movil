@@ -29,10 +29,13 @@ class NotificationsController extends GetxController {
     try {
       isLoading.value = true; // Activar indicador de carga
       error.value = ''; // Limpiar errores
-      final data = await _notificationService.getAllNotifications(); // Obtener datos
+      final data = await _notificationService
+          .getAllNotifications(); // Obtener datos
       notifications.assignAll(data); // Asignar datos a la lista observable
+      _reorderNotifications();
     } catch (e) {
-      error.value = 'Error al cargar notificaciones: $e'; // Guardar mensaje de error
+      error.value =
+          'Error al cargar notificaciones: $e'; // Guardar mensaje de error
     } finally {
       isLoading.value = false; // Desactivar indicador de carga
     }
@@ -41,44 +44,87 @@ class NotificationsController extends GetxController {
   // Método para aceptar una invitación
   Future<void> acceptInvitation(int invitationId) async {
     try {
-      final success = await _notificationService.acceptInvitation(invitationId); // Llamada al servicio
+      final success = await _notificationService.acceptInvitation(
+        invitationId,
+      ); // Llamada al servicio
       if (success) {
-        _updateInvitationStatus(invitationId, InvitationStatus.accepted); // Actualizar estado
+        _updateInvitationStatus(
+          invitationId,
+          InvitationStatus.accepted,
+        ); // Actualizar estado
         Get.snackbar('Éxito', 'Invitación aceptada'); // Mostrar mensaje
       } else {
-        Get.snackbar('Error', 'No se pudo aceptar la invitación'); // Error de operación
+        Get.snackbar(
+          'Error',
+          'No se pudo aceptar la invitación',
+        ); // Error de operación
       }
     } catch (e) {
-      Get.snackbar('Error', 'Error al aceptar invitación'); // Error de excepción
+      Get.snackbar(
+        'Error',
+        'Error al aceptar invitación',
+      ); // Error de excepción
     }
   }
 
   // Método para rechazar una invitación
   Future<void> declineInvitation(int invitationId) async {
     try {
-      final success = await _notificationService.declineInvitation(invitationId); // Llamada al servicio
+      final success = await _notificationService.declineInvitation(
+        invitationId,
+      ); // Llamada al servicio
       if (success) {
-        _updateInvitationStatus(invitationId, InvitationStatus.declined); // Actualizar estado
+        _updateInvitationStatus(
+          invitationId,
+          InvitationStatus.declined,
+        ); // Actualizar estado
         Get.snackbar('Éxito', 'Invitación rechazada'); // Mostrar mensaje
       } else {
-        Get.snackbar('Error', 'No se pudo rechazar la invitación'); // Error de operación
+        Get.snackbar(
+          'Error',
+          'No se pudo rechazar la invitación',
+        ); // Error de operación
       }
     } catch (e) {
-      Get.snackbar('Error', 'Error al rechazar invitación'); // Error de excepción
+      Get.snackbar(
+        'Error',
+        'Error al rechazar invitación',
+      ); // Error de excepción
     }
   }
 
   // Método privado para actualizar el estado de una invitación en la lista de notificaciones
   void _updateInvitationStatus(int invitationId, InvitationStatus status) {
-    final index = notifications.indexWhere((n) => n.notificacionId == invitationId); // Buscar notificación
+    final index = notifications.indexWhere(
+      (n) => n.notificacionId == invitationId,
+    ); // Buscar notificación
     if (index != -1) {
       final notification = notifications[index];
       if (notification.invitation != null) {
         notification.invitation!.status = status; // Actualizar estado
         final updated = notifications.removeAt(index); // Remover de la lista
         notifications.add(updated); // Volver a agregar para refrescar la UI
-        notifications.refresh(); // Forzar actualización de GetX
+        _reorderNotifications();
       }
     }
+  }
+
+  void _reorderNotifications() {
+    final pendingOrGeneral = <Notification>[];
+    final processed = <Notification>[];
+
+    for (final notification in notifications) {
+      final status = notification.invitation?.status;
+      if (status == null || status == InvitationStatus.pending) {
+        pendingOrGeneral.add(notification);
+      } else {
+        processed.add(notification);
+      }
+    }
+
+    pendingOrGeneral.sort((a, b) => b.fechaHora.compareTo(a.fechaHora));
+    processed.sort((a, b) => b.fechaHora.compareTo(a.fechaHora));
+
+    notifications.assignAll([...pendingOrGeneral, ...processed]);
   }
 }

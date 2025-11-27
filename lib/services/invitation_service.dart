@@ -1,77 +1,277 @@
-import 'dart:math';
+import 'dart:convert';
+import 'dart:async';
+import 'package:http/http.dart' as http;
 import 'package:get/get.dart';
 import '../models/invitation.dart';
+import '../configs/env.dart';
+import 'session_service.dart';
 
 class InvitationService extends GetxService {
-  // Mantenemos un mapa reactivo: eventId -> lista reactiva de invitados
-  final RxMap<int, RxList<Invitee>> _invitesByEvent = <int, RxList<Invitee>>{}.obs;
+  final SessionService _sessionService = SessionService();
+  
+  // Debounce timer for search
+  Timer? _debounceTimer;
 
-  // Pool de personas ficticias para buscar/invitar
-  final List<Invitee> _peoplePool = [
-    Invitee(id: 1, name: 'Aaron Lobo',    email: 'aaron.lobo@email.com'),
-    Invitee(id: 2, name: 'Beatriz Silva', email: 'bea.silva@email.com'),
-    Invitee(id: 3, name: 'Camila Ramos',  email: 'camila.r@email.com'),
-    Invitee(id: 4, name: 'Diego Quispe',  email: 'd.quispe@email.com'),
-    Invitee(id: 5, name: 'Elena Torres',  email: 'elena.t@email.com'),
-    Invitee(id: 6, name: 'Fiorella Vega', email: 'fio.vega@email.com'),
-    Invitee(id: 7, name: 'Gustavo León',  email: 'gus.leon@email.com'),
-    Invitee(id: 8, name: 'Héctor Poma',   email: 'hpoma@email.com'),
-    Invitee(id: 9, name: 'Iris Medina',   email: 'iris.m@email.com'),
-  ];
+  /// Busca usuarios por email o nombre
+  /// Retorna una lista de usuarios que coinciden con la búsqueda
+  Future<List<Invitee>> searchUsers(String query) async {
+    try {
+      // Verificar que el usuario esté autenticado
+      final token = _sessionService.userToken;
+      if (token == null || token.isEmpty) {
+        throw Exception('Usuario no autenticado');
+      }
 
-  /// Devuelve la RxList de invitados para un evento (crea y siembra si no existe)
-  RxList<Invitee> invitesRx(int eventId) {
-    if (!_invitesByEvent.containsKey(eventId)) {
-      _invitesByEvent[eventId] = _seed(eventId).obs;
+      // Si la query está vacía, retornar lista vacía
+      if (query.trim().isEmpty) {
+        return [];
+      }
+
+      // Construir la URL del endpoint
+      final url = Uri.parse('${Env.apiUrl}/api/send-invitations/search?query=${Uri.encodeComponent(query)}');
+
+      print('Searching users with query: $query');
+
+      // Realizar la petición GET con el token de autenticación
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      print('Search Response Status: ${response.statusCode}');
+      print('Search Response Body: ${response.body}');
+
+      // Parsear la respuesta
+      Map<String, dynamic> data;
+      try {
+        data = json.decode(response.body);
+      } catch (e) {
+        print('Error parsing JSON: $e');
+        throw Exception('Respuesta inválida del servidor');
+      }
+
+      if (response.statusCode == 200) {
+        if (data['success'] == true) {
+          final List<dynamic> usuariosJson = data['usuarios'] ?? [];
+          
+          // Mapear los usuarios del backend al modelo Invitee del frontend
+          return usuariosJson.map<Invitee>((userData) {
+            final nombre = userData['nombre'] ?? '';
+            final apellido = userData['apellido'] ?? '';
+            final fullName = '$nombre $apellido'.trim();
+            
+            return Invitee(
+              id: userData['usuario_id'],
+              name: fullName.isNotEmpty ? fullName : userData['correo'],
+              email: userData['correo'] ?? '',
+            );
+          }).toList();
+        } else {
+          throw Exception(data['message'] ?? 'Error al buscar usuarios');
+        }
+      } else if (response.statusCode == 401) {
+        throw Exception('Sesión expirada. Por favor inicia sesión nuevamente.');
+      } else {
+        throw Exception(data['message'] ?? 'Error del servidor');
+      }
+    } on Exception {
+      rethrow;
+    } catch (e) {
+      print('Unexpected error in searchUsers: $e');
+      throw Exception('Error de conexión. Verifica tu internet.');
     }
-    return _invitesByEvent[eventId]!;
   }
 
-  /// Búsqueda en el pool de personas (para "Invitar usuarios")
-  List<Invitee> peoplePool([String query = '']) {
-    final q = query.trim().toLowerCase();
-    if (q.isEmpty) return List.of(_peoplePool);
-    return _peoplePool.where((p) => p.name.toLowerCase().contains(q)).toList();
+  /// Busca usuarios con debounce para evitar llamadas excesivas
+  Future<List<Invitee>> searchUsersDebounced(String query, {Duration delay = const Duration(milliseconds: 500)}) async {
+    // Cancelar el timer anterior si existe
+    _debounceTimer?.cancel();
+    
+    // Crear un Completer para manejar el resultado
+    final completer = Completer<List<Invitee>>();
+    
+    // Crear nuevo timer
+    _debounceTimer = Timer(delay, () async {
+      try {
+        final results = await searchUsers(query);
+        completer.complete(results);
+      } catch (e) {
+        completer.completeError(e);
+      }
+    });
+    
+    return completer.future;
   }
 
-  Future<void> updateStatus({
+  /// Envía invitaciones a usuarios seleccionados
+  Future<Map<String, dynamic>> sendInvites({
     required int eventId,
-    required int inviteeId,
-    required InvitationStatus status,
+    required List<int> userIds,
   }) async {
-    final list = invitesRx(eventId);
-    final idx = list.indexWhere((i) => i.id == inviteeId);
-    if (idx != -1) {
-      list[idx].status = status;
-      list.refresh();
+    try {
+      final token = _sessionService.userToken;
+      if (token == null || token.isEmpty) {
+        throw Exception('Usuario no autenticado');
+      }
+
+      final url = Uri.parse('${Env.apiUrl}/api/send-invitations/send');
+
+      final response = await http.post(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+        body: json.encode({
+          'evento_id': eventId,
+          'usuarios': userIds.map((id) => {'usuario_id': id}).toList(),
+        }),
+      );
+
+      print('Send Invites Response Status: ${response.statusCode}');
+      print('Send Invites Response Body: ${response.body}');
+
+      final data = json.decode(response.body);
+
+      if (response.statusCode == 201 || response.statusCode == 200) {
+        if (data['success'] == true) {
+          return {
+            'success': true,
+            'message': data['message'] ?? 'Invitaciones enviadas exitosamente',
+          };
+        } else {
+          throw Exception(data['message'] ?? 'Error al enviar invitaciones');
+        }
+      } else if (response.statusCode == 401) {
+        throw Exception('Sesión expirada. Por favor inicia sesión nuevamente.');
+      } else if (response.statusCode == 403) {
+        throw Exception(data['message'] ?? 'No tienes permisos para enviar invitaciones');
+      } else {
+        throw Exception(data['message'] ?? 'Error del servidor');
+      }
+    } on Exception {
+      rethrow;
+    } catch (e) {
+      print('Unexpected error in sendInvites: $e');
+      throw Exception('Error de conexión. Verifica tu internet.');
     }
   }
 
-  Future<void> sendInvites({
-    required int eventId,
-    required List<int> inviteeIds,
-  }) async {
-    final list = invitesRx(eventId);
-    final existingIds = list.map((e) => e.id).toSet();
-    final toAdd = _peoplePool
-        .where((p) => inviteeIds.contains(p.id) && !existingIds.contains(p.id))
-        .map((p) => Invitee(id: p.id, name: p.name, email: p.email))
-        .toList();
-    list.addAll(toAdd);
-    list.refresh();
+  /// Obtiene la lista de usuarios no elegibles para un evento
+  /// Retorna un mapa con los IDs de usuarios y su tipo (participante o invitación pendiente)
+  Future<Map<int, String>> getNonEligibleUsers(int eventId) async {
+    try {
+      final token = _sessionService.userToken;
+      if (token == null || token.isEmpty) {
+        throw Exception('Usuario no autenticado');
+      }
+
+      final url = Uri.parse('${Env.apiUrl}/api/send-invitations/no-eligible/$eventId');
+
+      print('Getting non-eligible users for event: $eventId');
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      print('Non-Eligible Response Status: ${response.statusCode}');
+      print('Non-Eligible Response Body: ${response.body}');
+
+      Map<String, dynamic> data;
+      try {
+        data = json.decode(response.body);
+      } catch (e) {
+        print('Error parsing JSON: $e');
+        throw Exception('Respuesta inválida del servidor');
+      }
+
+      if (response.statusCode == 200) {
+        if (data['success'] == true) {
+          final List<dynamic> noElegiblesJson = data['noElegibles'] ?? [];
+          
+          // Crear un mapa de usuario_id -> tipo
+          final Map<int, String> nonEligibleMap = {};
+          for (var userData in noElegiblesJson) {
+            final userId = userData['usuario_id'] as int;
+            final tipo = userData['tipo'] as String;
+            nonEligibleMap[userId] = tipo;
+          }
+          
+          return nonEligibleMap;
+        } else {
+          throw Exception(data['message'] ?? 'Error al obtener usuarios no elegibles');
+        }
+      } else if (response.statusCode == 401) {
+        throw Exception('Sesión expirada. Por favor inicia sesión nuevamente.');
+      } else {
+        throw Exception(data['message'] ?? 'Error del servidor');
+      }
+    } on Exception {
+      rethrow;
+    } catch (e) {
+      print('Unexpected error in getNonEligibleUsers: $e');
+      throw Exception('Error de conexión. Verifica tu internet.');
+    }
   }
 
-  // Siembra inicial con estados aleatorios, para que la lista no esté vacía
-  List<Invitee> _seed(int eventId) {
-    final rnd = Random(eventId);
-    final base = [
-      Invitee(id: 1, name: 'Aaron Lobo',    email: 'aaron.lobo@email.com'),
-      Invitee(id: 2, name: 'Beatriz Silva', email: 'bea.silva@email.com'),
-      Invitee(id: 3, name: 'Camila Ramos',  email: 'camila.r@email.com'),
-    ];
-    for (final p in base) {
-      p.status = InvitationStatus.values[rnd.nextInt(InvitationStatus.values.length)];
+  /// Obtiene el conteo de invitaciones pendientes para un evento
+  Future<Map<String, int>> getPendingInvitationsCount(int eventId) async {
+    try {
+      final token = _sessionService.userToken;
+      if (token == null || token.isEmpty) {
+        throw Exception('Usuario no autenticado');
+      }
+
+      final url = Uri.parse('${Env.apiUrl}/api/send-invitations/count/$eventId');
+
+      final response = await http.get(
+        url,
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer $token',
+        },
+      );
+
+      Map<String, dynamic> data;
+      try {
+        data = json.decode(response.body);
+      } catch (e) {
+        print('Error parsing JSON: $e');
+        throw Exception('Respuesta inválida del servidor');
+      }
+
+      if (response.statusCode == 200) {
+        if (data['success'] == true) {
+          return {
+            'pendientes': data['pendientes'] as int,
+            'limite': data['limite'] as int,
+          };
+        } else {
+          throw Exception(data['message'] ?? 'Error al obtener conteo');
+        }
+      } else if (response.statusCode == 401) {
+        throw Exception('Sesión expirada');
+      } else {
+        throw Exception(data['message'] ?? 'Error del servidor');
+      }
+    } on Exception {
+      rethrow;
+    } catch (e) {
+      print('Unexpected error in getPendingInvitationsCount: $e');
+      throw Exception('Error de conexión');
     }
-    return base;
+  }
+
+  @override
+  void onClose() {
+    _debounceTimer?.cancel();
+    super.onClose();
   }
 }

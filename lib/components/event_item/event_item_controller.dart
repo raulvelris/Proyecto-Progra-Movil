@@ -1,10 +1,14 @@
 import 'package:get/get.dart';
 import '../../models/event.dart';
+import '../../services/delete_event_service.dart';
 
 /// Controlador para un ítem de evento en la lista
 class EventItemController extends GetxController {
   // Evento asociado a este controlador
   final Event event;
+
+  // Servicio para eliminar eventos
+  final DeleteEventService _deleteEventService = DeleteEventService();
 
   // Constructor obligatorio para recibir el evento
   EventItemController({required this.event});
@@ -16,6 +20,11 @@ class EventItemController extends GetxController {
       '/event-details', // Ruta definida en GetX para detalles de eventos
       arguments: {'eventId': event.eventId}, // Se pasa el ID del evento
     );
+  }
+
+  /// Elimina el evento usando el servicio
+  Future<void> deleteEvent() async {
+    await _deleteEventService.deleteEvent(event.eventId);
   }
 
   /// Formatea una fecha a un string tipo "16 Oct 2025"

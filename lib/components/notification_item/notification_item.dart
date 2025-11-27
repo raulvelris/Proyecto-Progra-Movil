@@ -2,7 +2,7 @@ import 'package:eventmaster/models/invitation.dart';
 import 'package:flutter/material.dart' as material;
 import 'package:get/get.dart';
 import '../../models/notificacion.dart';
-import '../../pages/notifications/notifications_controller.dart';
+import '../../pages/inbox/notifications_controller.dart';
 import '../event_item/event_item_controller.dart';
 
 /// Widget que representa una notificación individual (evento o invitación)
