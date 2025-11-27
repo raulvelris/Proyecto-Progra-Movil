@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "249558996091",
+    "project_id": "proyecto-8e7b1",
+    "storage_bucket": "proyecto-8e7b1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:249558996091:android:ecd743d094ddca6555bede",
+        "android_client_info": {
+          "package_name": "com.eventmaster.app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "249558996091-9o8rjdh0b8bdshphmufif6bpc0s5d638.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.eventmaster.app",
+            "certificate_hash": "04ea98f79e3a266543ed7ad913840462d8dfba2d"
+          }
+        },
+        {
+          "client_id": "249558996091-n22q983j0fk9e8lt8p79tadm76v3h7qc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC-yFvP2Wq8ATb9s8y5JfdMzZUX3TD82zE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "249558996091-n22q983j0fk9e8lt8p79tadm76v3h7qc.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -4,7 +4,11 @@ import java.io.FileInputStream
 plugins {
     id("com.android.application")
     id("kotlin-android")
-    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+
+    // ✅ PLUGIN DE FIREBASE (OBLIGATORIO)
+    id("com.google.gms.google-services")
+
+    // Flutter
     id("dev.flutter.flutter-gradle-plugin")
 }
 
@@ -21,7 +25,7 @@ val dotenv = Properties().apply {
 val googleMapsApiKey: String = dotenv.getProperty("GOOGLE_MAPS_API_KEY", "")
 
 android {
-    namespace = "com.example.eventmaster"
+    namespace = "com.eventmaster.app"
     compileSdk = flutter.compileSdkVersion
     ndkVersion = flutter.ndkVersion
 
@@ -35,7 +39,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.eventmaster"
+        applicationId = "com.eventmaster.app"
         minSdk = flutter.minSdkVersion
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
@@ -43,14 +47,21 @@ android {
 
         resValue("string", "google_maps_api_key", googleMapsApiKey)
     }
-
-    buildTypes {
-        getByName("release") {
-            signingConfig = signingConfigs.getByName("debug")
-        }
-    }
 }
+
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+
+    // ✅ BOLETÍN DE VERSIONES FIREBASE
+    implementation(platform("com.google.firebase:firebase-bom:34.6.0"))
+
+    // ✅ AUTENTICACIÓN (LOGIN GOOGLE + EMAIL)
+    implementation("com.google.firebase:firebase-auth")
+
+    // ✅ ANALYTICS (opcional, recomendado)
+    implementation("com.google.firebase:firebase-analytics")
 }

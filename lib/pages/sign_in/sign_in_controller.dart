@@ -102,4 +102,34 @@ class SignInController extends GetxController {
       isLoading.value = false;
     }
   }
+  Future<void> loginWithGoogle() async {
+    try {
+      isLoading.value = true;
+      final result = await _authService.loginWithGoogle();
+      
+      // Guardar sesión
+      final user = result['user'];
+      await _sessionService.saveUserData(
+        result['token'],
+        user['usuario_id'].toString(),
+        user['correo'],
+        firstName: user['nombre'],
+        lastName: user['apellido'],
+        profilePicture: user['foto_perfil'],
+      );
+      
+      Get.offAllNamed('/home');
+      
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        e.toString().replaceAll('Exception: ', ''),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    } finally {
+      isLoading.value = false;
+    }
+  }
 }
