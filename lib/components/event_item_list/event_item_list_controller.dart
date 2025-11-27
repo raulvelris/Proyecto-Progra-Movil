@@ -2,10 +2,12 @@ import 'package:get/get.dart';
 import '../../models/event.dart';
 import '../../services/event_service.dart';
 import '../../services/created_events_service.dart';
+import '../../services/public_events_service.dart';
 
 class EventItemListController extends GetxController {
   late final EventService _eventService;
   late final CreatedEventsService _createdEventsService;
+  late final PublicEventsService _publicEventsService;
   final RxList<Event> events = <Event>[].obs;
   final RxBool isLoading = true.obs;
   final RxString error = ''.obs;
@@ -22,6 +24,11 @@ class EventItemListController extends GetxController {
       Get.put(CreatedEventsService(), permanent: true);
     }
     _createdEventsService = Get.find<CreatedEventsService>();
+
+    if (!Get.isRegistered<PublicEventsService>()) {
+      Get.put(PublicEventsService(), permanent: true);
+    }
+    _publicEventsService = Get.find<PublicEventsService>();
   }
 
   @override
@@ -46,7 +53,8 @@ class EventItemListController extends GetxController {
           break;
         case 'public':
         default:
-          eventList = await _eventService.getPublicEvents();
+          // Usar el servicio de eventos públicos que se conecta al backend
+          eventList = await _publicEventsService.getPublicEvents();
           break;
       }
 

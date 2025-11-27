@@ -15,7 +15,6 @@ class StepProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final progress = (currentStep + 1) / totalSteps; // Calcula el progreso
 
     // Contenedor principal de la barra
@@ -23,7 +22,7 @@ class StepProgressBar extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       height: 4,
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3), // Fondo de la barra
+        color: Colors.grey.shade200, // Fondo de la barra
         borderRadius: BorderRadius.circular(2),
       ),
       child: Align(
@@ -32,7 +31,7 @@ class StepProgressBar extends StatelessWidget {
           widthFactor: progress, // Porción coloreada según progreso
           child: Container(
             decoration: BoxDecoration(
-              color: Color(0xFF4CAF50), // Color de progreso
+              color: Colors.black, // Color de progreso
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -50,18 +49,22 @@ class DetailsFormStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    
     return Scaffold(
+      backgroundColor: Colors.white,
       // AppBar con botón de retroceso y barra de progreso
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
             controller.previousStep(); // Retrocede al paso anterior
           },
         ),
-        title: const Text('2 de 3: Detalla'),
+        title: const Text(
+          '2 de 3: Detalles',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(12),
           child: Obx(() => StepProgressBar(
@@ -72,28 +75,40 @@ class DetailsFormStep extends StatelessWidget {
       ),
       // Cuerpo principal con formulario
       body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // Campo de texto para el título del evento
-            TextField(
+            _buildTextField(
+              label: 'Título del evento',
+              hint: 'Ingresa el título del evento',
               controller: TextEditingController(text: controller.title.value),
               onChanged: (value) => controller.title.value = value,
-              decoration: const InputDecoration(
-                labelText: 'Título del evento',
-                hintText: 'Ingresa el título del evento',
-                border: OutlineInputBorder(),
-              ),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
 
             // Dropdown para seleccionar tipo de evento
             DropdownButtonFormField<String>(
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Tipo de evento',
-                border: OutlineInputBorder(),
+                labelStyle: TextStyle(color: Colors.grey.shade600),
+                filled: true,
+                fillColor: Colors.grey.shade50,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide(color: Colors.grey.shade200),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: const BorderSide(color: Colors.black, width: 1.5),
+                ),
               ),
+              dropdownColor: Colors.white,
               value: controller.eventTypes.contains(controller.eventType.value)
                 ? controller.eventType.value
                 : (controller.eventType.value.isEmpty ? null : controller.eventType.value),
@@ -110,66 +125,87 @@ class DetailsFormStep extends StatelessWidget {
               },
               hint: Text(controller.eventTypes[0]),
             ),
-            const SizedBox(height: 16),
+            const SizedBox(height: 20),
 
             // Campo de descripción del evento
-            TextField(
+            _buildTextField(
+              label: 'Descripción del evento',
+              hint: 'Escribe la descripción del evento',
               controller: TextEditingController(text: controller.description.value),
               onChanged: (value) => controller.description.value = value,
               maxLines: 4,
-              decoration: const InputDecoration(
-                labelText: 'Descripción del evento',
-                hintText: 'Escribe la descripción del evento',
-                border: OutlineInputBorder(),
-              ),
             ),
             const SizedBox(height: 32),
 
             // Etiqueta para horario del evento
-            Text('Horario del evento',
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(
+            const Text('Horario del evento',
+                style: TextStyle(
+                  fontSize: 18,
                   fontWeight: FontWeight.bold,
+                  color: Colors.black,
                 )),
-            const SizedBox(height: 24),
+            const SizedBox(height: 20),
             
             // Fila de fecha y hora de inicio
             Row(
               children: [
                 Expanded(
                   child: Obx(() { // Campo fecha inicio
-                    return InkWell(
+                    return _buildDateTimePicker(
+                      context: context,
+                      label: 'Fecha inicio',
+                      value: '${controller.startDate.value.day}/${controller.startDate.value.month}/${controller.startDate.value.year}',
+                      icon: Icons.calendar_today_rounded,
                       onTap: () async {
                         final date = await showDatePicker(
                           context: context,
                           initialDate: controller.startDate.value,
                           firstDate: DateTime.now(),
                           lastDate: DateTime.now().add(const Duration(days: 365)),
+                          builder: (context, child) {
+                            return Theme(
+                              data: Theme.of(context).copyWith(
+                                colorScheme: const ColorScheme.light(
+                                  primary: Colors.black,
+                                  onPrimary: Colors.white,
+                                  onSurface: Colors.black,
+                                ),
+                              ),
+                              child: child!,
+                            );
+                          },
                         );
                         if (date != null) {
                           controller.startDate.value = date; // Actualiza fecha inicio
                         }
                       },
-                      child: InputDecorator(
-                        decoration: const InputDecoration(
-                          labelText: 'Fecha inicio',
-                          border: OutlineInputBorder(),
-                          suffixIcon: Icon(Icons.calendar_today),
-                        ),
-                        child: Text(
-                          '${controller.startDate.value.day}/${controller.startDate.value.month}/${controller.startDate.value.year}',
-                        ),
-                      ),
                     );
                   }),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Obx(() { // Campo hora inicio
-                    return InkWell(
+                    return _buildDateTimePicker(
+                      context: context,
+                      label: 'Hora inicio',
+                      value: '${controller.startTime.value.hour.toString().padLeft(2, '0')}:${controller.startTime.value.minute.toString().padLeft(2, '0')}',
+                      icon: Icons.access_time_rounded,
                       onTap: () async {
                         final time = await showTimePicker(
                           context: context,
                           initialTime: TimeOfDay.fromDateTime(controller.startTime.value),
+                          builder: (context, child) {
+                            return Theme(
+                              data: Theme.of(context).copyWith(
+                                colorScheme: const ColorScheme.light(
+                                  primary: Colors.black,
+                                  onPrimary: Colors.white,
+                                  onSurface: Colors.black,
+                                ),
+                              ),
+                              child: child!,
+                            );
+                          },
                         );
                         if (time != null) {
                           controller.startTime.value = DateTime(
@@ -181,16 +217,6 @@ class DetailsFormStep extends StatelessWidget {
                           ); // Actualiza hora inicio
                         }
                       },
-                      child: InputDecorator(
-                        decoration: const InputDecoration(
-                          labelText: 'Hora inicio',
-                          border: OutlineInputBorder(),
-                          suffixIcon: Icon(Icons.access_time),
-                        ),
-                        child: Text(
-                          '${controller.startTime.value.hour.toString().padLeft(2, '0')}:${controller.startTime.value.minute.toString().padLeft(2, '0')}',
-                        ),
-                      ),
                     );
                   }),
                 ),
@@ -206,13 +232,29 @@ class DetailsFormStep extends StatelessWidget {
                     final initialDate = controller.endDate.value.isBefore(controller.startDate.value)
                         ? controller.startDate.value
                         : controller.endDate.value;
-                    return InkWell(
+                    return _buildDateTimePicker(
+                      context: context,
+                      label: 'Fecha fin',
+                      value: '${controller.endDate.value.day}/${controller.endDate.value.month}/${controller.endDate.value.year}',
+                      icon: Icons.calendar_today_rounded,
                       onTap: () async {
                         final date = await showDatePicker(
                           context: context,
                           initialDate: initialDate,
                           firstDate: controller.startDate.value,
                           lastDate: DateTime.now().add(const Duration(days: 365)),
+                          builder: (context, child) {
+                            return Theme(
+                              data: Theme.of(context).copyWith(
+                                colorScheme: const ColorScheme.light(
+                                  primary: Colors.black,
+                                  onPrimary: Colors.white,
+                                  onSurface: Colors.black,
+                                ),
+                              ),
+                              child: child!,
+                            );
+                          },
                         );
                         if (date != null) {
                           controller.endDate.value = DateTime(
@@ -224,27 +266,33 @@ class DetailsFormStep extends StatelessWidget {
                           ); // Actualiza fecha fin
                         }
                       },
-                      child: InputDecorator(
-                        decoration: const InputDecoration(
-                          labelText: 'Fecha fin',
-                          border: OutlineInputBorder(),
-                          suffixIcon: Icon(Icons.calendar_today),
-                        ),
-                        child: Text(
-                          '${controller.endDate.value.day}/${controller.endDate.value.month}/${controller.endDate.value.year}',
-                        ),
-                      ),
                     );
                   }),
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Obx(() { // Campo hora fin
-                    return InkWell(
+                    return _buildDateTimePicker(
+                      context: context,
+                      label: 'Hora fin',
+                      value: '${controller.endTime.value.hour.toString().padLeft(2, '0')}:${controller.endTime.value.minute.toString().padLeft(2, '0')}',
+                      icon: Icons.access_time_rounded,
                       onTap: () async {
                         final time = await showTimePicker(
                           context: context,
                           initialTime: TimeOfDay.fromDateTime(controller.endTime.value),
+                          builder: (context, child) {
+                            return Theme(
+                              data: Theme.of(context).copyWith(
+                                colorScheme: const ColorScheme.light(
+                                  primary: Colors.black,
+                                  onPrimary: Colors.white,
+                                  onSurface: Colors.black,
+                                ),
+                              ),
+                              child: child!,
+                            );
+                          },
                         );
                         if (time != null) {
                           controller.endTime.value = DateTime(
@@ -256,16 +304,6 @@ class DetailsFormStep extends StatelessWidget {
                           ); // Actualiza hora fin
                         }
                       },
-                      child: InputDecorator(
-                        decoration: const InputDecoration(
-                          labelText: 'Hora fin',
-                          border: OutlineInputBorder(),
-                          suffixIcon: Icon(Icons.access_time),
-                        ),
-                        child: Text(
-                          '${controller.endTime.value.hour.toString().padLeft(2, '0')}:${controller.endTime.value.minute.toString().padLeft(2, '0')}',
-                        ),
-                      ),
                     );
                   }),
                 ),
@@ -274,41 +312,124 @@ class DetailsFormStep extends StatelessWidget {
             const SizedBox(height: 32),
 
             // Campo de ubicación del evento
-            TextField(
+            _buildTextField(
+              label: 'Ubicación',
+              hint: 'Ingresa la ubicación',
               controller: TextEditingController(text: controller.location.value),
               onChanged: (value) => controller.location.value = value,
-              decoration: const InputDecoration(
-                labelText: 'Ubicación',
-                hintText: 'Ingresa la ubicación',
-                border: OutlineInputBorder(),
-                suffixIcon: Icon(Icons.location_on),
-              ),
+              suffixIcon: Icons.location_on_outlined,
             ),
           ],
         ),
       ),
       // Botón inferior para avanzar al siguiente paso
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+          child: Obx(() => ElevatedButton(
+            onPressed: controller.canMoveNext ? controller.nextStep : null, // Habilita según validación
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              disabledBackgroundColor: Colors.grey.shade300,
+            ),
+            child: Text(
+              controller.nextButtonText,
+              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ), // Texto dinámico del botón
+          )),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required String label,
+    required String hint,
+    required TextEditingController controller,
+    required Function(String) onChanged,
+    int maxLines = 1,
+    IconData? suffixIcon,
+  }) {
+    return TextField(
+      controller: controller,
+      onChanged: onChanged,
+      maxLines: maxLines,
+      style: const TextStyle(color: Colors.black),
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        labelStyle: TextStyle(color: Colors.grey.shade600),
+        hintStyle: TextStyle(color: Colors.grey.shade400),
+        filled: true,
+        fillColor: Colors.grey.shade50,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade200),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.black, width: 1.5),
+        ),
+        suffixIcon: suffixIcon != null ? Icon(suffixIcon, color: Colors.grey.shade600) : null,
+      ),
+    );
+  }
+
+  Widget _buildDateTimePicker({
+    required BuildContext context,
+    required String label,
+    required String value,
+    required IconData icon,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(12),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 4,
-              offset: const Offset(0, -2),
+          color: Colors.grey.shade50,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey.shade600,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    value,
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.black,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                Icon(icon, size: 20, color: Colors.grey.shade600),
+              ],
             ),
           ],
         ),
-        child: Obx(() => ElevatedButton(
-          onPressed: controller.canMoveNext ? controller.nextStep : null, // Habilita según validación
-          style: ElevatedButton.styleFrom(
-            backgroundColor: colorScheme.primary,
-            foregroundColor: colorScheme.onPrimary,
-            minimumSize: const Size(double.infinity, 48),
-          ),
-          child: Text(controller.nextButtonText), // Texto dinámico del botón
-        )),
       ),
     );
   }

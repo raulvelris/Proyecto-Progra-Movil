@@ -34,12 +34,36 @@ class EditEventPage extends StatelessWidget {
       firstDate: DateTime(now.year - 1),
       lastDate: DateTime(now.year + 3),
       initialDate: controller.startDate.value,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.black,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (date == null) return;
 
     final time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(controller.startDate.value),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.black,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (time == null) return;
 
@@ -66,12 +90,36 @@ class EditEventPage extends StatelessWidget {
       firstDate: DateTime(now.year - 1),
       lastDate: DateTime(now.year + 3),
       initialDate: controller.endDate.value,
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.black,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (date == null) return;
 
     final time = await showTimePicker(
       context: context,
       initialTime: TimeOfDay.fromDateTime(controller.endDate.value),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: const ColorScheme.light(
+              primary: Colors.black,
+              onPrimary: Colors.white,
+              onSurface: Colors.black,
+            ),
+          ),
+          child: child!,
+        );
+      },
     );
     if (time == null) return;
 
@@ -86,12 +134,16 @@ class EditEventPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-    final tt = Theme.of(context).textTheme;
-
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Editar evento'),
+        title: const Text(
+          'Editar evento',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
         actions: [
           IconButton(
             icon: const Icon(Icons.check),
@@ -106,7 +158,7 @@ class EditEventPage extends StatelessWidget {
       ),
       body: Obx(() {
         return SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
+          padding: const EdgeInsets.all(24),
           child: Form(
             key: _formKey,
             child: Column(
@@ -114,22 +166,19 @@ class EditEventPage extends StatelessWidget {
                 // Imagen (preview + botón cambiar)
                 _ImageSection(controller: controller, pickImage: _pickImage),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
 
                 // Título
-                TextFormField(
+                _buildTextField(
+                  label: 'Título',
                   initialValue: controller.title.value,
                   onChanged: (v) => controller.title.value = v,
-                  decoration: const InputDecoration(
-                    labelText: 'Título',
-                    border: OutlineInputBorder(),
-                  ),
                   validator: (v) => (v == null || v.trim().isEmpty)
                       ? 'Ingresa un título'
                       : null,
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
 
                 // Tipo (Privacidad)
                 DropdownButtonFormField<String>(
@@ -140,42 +189,51 @@ class EditEventPage extends StatelessWidget {
                   onChanged: (v) {
                     if (v != null) controller.setPrivacyFromString(v);
                   },
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: 'Tipo de evento',
-                    border: OutlineInputBorder(),
+                    labelStyle: TextStyle(color: Colors.grey.shade600),
+                    filled: true,
+                    fillColor: Colors.grey.shade50,
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide(color: Colors.grey.shade200),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: const BorderSide(color: Colors.black, width: 1.5),
+                    ),
                   ),
+                  dropdownColor: Colors.white,
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
 
                 // Descripción
-                TextFormField(
+                _buildTextField(
+                  label: 'Descripción',
                   initialValue: controller.description.value,
                   maxLines: 4,
                   onChanged: (v) => controller.description.value = v,
-                  decoration: const InputDecoration(
-                    labelText: 'Descripción',
-                    alignLabelWithHint: true,
-                    border: OutlineInputBorder(),
-                  ),
                   validator: (v) => (v == null || v.trim().isEmpty)
                       ? 'Ingresa una descripción'
                       : null,
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 20),
 
                 // Ubicación (texto libre)
-                TextFormField(
+                _buildTextField(
+                  label: 'Ubicación / Dirección',
                   initialValue: controller.locationText.value,
                   onChanged: (v) => controller.locationText.value = v,
-                  decoration: const InputDecoration(
-                    labelText: 'Ubicación / Dirección',
-                    border: OutlineInputBorder(),
-                  ),
+                  suffixIcon: Icons.location_on_outlined,
                 ),
 
-                const SizedBox(height: 16),
+                const SizedBox(height: 24),
 
                 // Fechas
                 _DateTimePickers(
@@ -183,18 +241,27 @@ class EditEventPage extends StatelessWidget {
                   onPickEnd: () => _pickEndDateTime(context),
                 ),
 
-                const SizedBox(height: 24),
+                const SizedBox(height: 32),
 
                 // Botón Guardar (redundante al AppBar, útil en scroll largo)
                 SizedBox(
                   width: double.infinity,
-                  child: FilledButton.icon(
+                  child: ElevatedButton.icon(
                     icon: const Icon(Icons.save),
                     label: const Text('Guardar cambios'),
                     onPressed: () {
                       final formOk = _formKey.currentState?.validate() ?? true;
                       if (formOk) controller.save();
                     },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.black,
+                      foregroundColor: Colors.white,
+                      padding: const EdgeInsets.symmetric(vertical: 16),
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
                   ),
                 ),
               ],
@@ -202,6 +269,42 @@ class EditEventPage extends StatelessWidget {
           ),
         );
       }),
+    );
+  }
+
+  Widget _buildTextField({
+    required String label,
+    required String initialValue,
+    required Function(String) onChanged,
+    String? Function(String?)? validator,
+    int maxLines = 1,
+    IconData? suffixIcon,
+  }) {
+    return TextFormField(
+      initialValue: initialValue,
+      onChanged: onChanged,
+      validator: validator,
+      maxLines: maxLines,
+      style: const TextStyle(color: Colors.black),
+      decoration: InputDecoration(
+        labelText: label,
+        labelStyle: TextStyle(color: Colors.grey.shade600),
+        filled: true,
+        fillColor: Colors.grey.shade50,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: BorderSide(color: Colors.grey.shade200),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+          borderSide: const BorderSide(color: Colors.black, width: 1.5),
+        ),
+        suffixIcon: suffixIcon != null ? Icon(suffixIcon, color: Colors.grey.shade600) : null,
+      ),
     );
   }
 }
@@ -214,47 +317,77 @@ class _ImageSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Text('Imagen', style: Theme.of(context).textTheme.titleMedium),
-        const SizedBox(height: 8),
-        AspectRatio(
-          aspectRatio: 16 / 9,
-          child: DecoratedBox(
-            decoration: BoxDecoration(
-              border: Border.all(color: cs.outline),
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(8),
-              child: Obx(() {
-                final Uint8List? bytes = controller.imageBytes.value;
-                if (bytes != null) {
-                  return Image.memory(bytes, fit: BoxFit.cover);
-                }
-                if (controller.imageUrl.value.isNotEmpty) {
-                  return Image.network(
-                    controller.imageUrl.value,
-                    fit: BoxFit.cover,
-                  );
-                }
-                return Center(
-                  child: Icon(Icons.image, size: 48, color: cs.outline),
-                );
-              }),
-            ),
+        const Text(
+          'Imagen',
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
           ),
         ),
-        const SizedBox(height: 8),
-        Align(
-          alignment: Alignment.centerRight,
-          child: OutlinedButton.icon(
-            onPressed: pickImage,
-            icon: const Icon(Icons.photo_library_outlined),
-            label: const Text('Cambiar imagen'),
+        const SizedBox(height: 12),
+        AspectRatio(
+          aspectRatio: 16 / 9,
+          child: Container(
+            decoration: BoxDecoration(
+              color: Colors.grey.shade50,
+              borderRadius: BorderRadius.circular(16),
+              border: Border.all(color: Colors.grey.shade200),
+            ),
+            child: Stack(
+              fit: StackFit.expand,
+              children: [
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(16),
+                  child: Obx(() {
+                    final Uint8List? bytes = controller.imageBytes.value;
+                    if (bytes != null) {
+                      return Image.memory(bytes, fit: BoxFit.cover);
+                    }
+                    if (controller.imageUrl.value.isNotEmpty) {
+                      return Image.network(
+                        controller.imageUrl.value,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) {
+                          return Center(
+                            child: Icon(Icons.broken_image_outlined, size: 48, color: Colors.grey.shade400),
+                          );
+                        },
+                      );
+                    }
+                    return Center(
+                      child: Icon(Icons.image_outlined, size: 48, color: Colors.grey.shade400),
+                    );
+                  }),
+                ),
+                Positioned(
+                  bottom: 12,
+                  right: 12,
+                  child: InkWell(
+                    onTap: pickImage,
+                    borderRadius: BorderRadius.circular(30),
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.1),
+                            blurRadius: 8,
+                            offset: const Offset(0, 4),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(Icons.edit, size: 20, color: Colors.black),
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ],
@@ -270,7 +403,6 @@ class _DateTimePickers extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final tt = Theme.of(context).textTheme;
     return Obx(() {
       final c = Get.find<EditEventController>();
       String fmt(DateTime d) {
@@ -279,7 +411,17 @@ class _DateTimePickers extends StatelessWidget {
       }
 
       return Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          const Text(
+            'Horario',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold,
+              color: Colors.black,
+            ),
+          ),
+          const SizedBox(height: 12),
           Row(
             children: [
               Expanded(
@@ -299,16 +441,14 @@ class _DateTimePickers extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 6),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: Text(
-              c.endDate.value.isBefore(c.startDate.value)
-                  ? '⚠️ La fecha/hora de fin debe ser posterior al inicio'
-                  : '',
-              style: tt.bodySmall?.copyWith(color: Colors.red),
+          if (c.endDate.value.isBefore(c.startDate.value))
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Text(
+                '⚠️ La fecha/hora de fin debe ser posterior al inicio',
+                style: TextStyle(color: Colors.red.shade700, fontSize: 12),
+              ),
             ),
-          ),
         ],
       );
     });
@@ -328,25 +468,43 @@ class _DateTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cs = Theme.of(context).colorScheme;
     return InkWell(
       onTap: onTap,
-      borderRadius: BorderRadius.circular(8),
+      borderRadius: BorderRadius.circular(12),
       child: Container(
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
         decoration: BoxDecoration(
-          border: Border.all(color: cs.outline),
-          borderRadius: BorderRadius.circular(8),
+          color: Colors.grey.shade50,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade200),
         ),
-        child: Row(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(Icons.event, size: 18, color: cs.onSurfaceVariant),
-            const SizedBox(width: 8),
-            Expanded(child: Text(value)),
-            Icon(
-              Icons.edit_calendar_outlined,
-              size: 18,
-              color: cs.onSurfaceVariant,
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 12,
+                color: Colors.grey.shade600,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Row(
+              children: [
+                Icon(Icons.calendar_today_rounded, size: 16, color: Colors.grey.shade600),
+                const SizedBox(width: 8),
+                Expanded(
+                  child: Text(
+                    value,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.black,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              ],
             ),
           ],
         ),
