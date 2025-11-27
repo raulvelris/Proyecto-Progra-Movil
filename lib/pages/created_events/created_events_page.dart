@@ -9,21 +9,30 @@ class CreatedEventsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Mis Eventos Creados'),
+        title: const Text(
+          'Mis Eventos',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
+        centerTitle: false,
         automaticallyImplyLeading: false,
-        backgroundColor: colorScheme.primary,
-        foregroundColor: colorScheme.onPrimary,
+        backgroundColor: Colors.white,
+        elevation: 0,
       ),
       body: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16.0),
-            child: Center(
-              child: FloatingActionButton(
+            padding: const EdgeInsets.fromLTRB(24, 0, 24, 16),
+            child: SizedBox(
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton.icon(
                 onPressed: () async {
                   final result = await Get.to(() => CreateEventPage());
                   if (result != null) {
@@ -36,11 +45,29 @@ class CreatedEventsPage extends StatelessWidget {
                       'Éxito',
                       'Evento creado y agregado a la lista',
                       snackPosition: SnackPosition.TOP,
+                      backgroundColor: Colors.black,
+                      colorText: Colors.white,
+                      margin: const EdgeInsets.all(16),
+                      borderRadius: 12,
                     );
                   }
                 },
-                backgroundColor: colorScheme.primary,
-                child: Icon(Icons.add, color: colorScheme.onPrimary),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.black,
+                  foregroundColor: Colors.white,
+                  elevation: 0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                ),
+                icon: const Icon(Icons.add_rounded),
+                label: const Text(
+                  'Crear Nuevo Evento',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               ),
             ),
           ),

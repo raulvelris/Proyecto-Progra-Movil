@@ -18,14 +18,13 @@ class StepProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final progress = (currentStep + 1) / totalSteps; // Calcula porcentaje de avance
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       height: 4,
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3), // Fondo de la barra
+        color: Colors.grey.shade200, // Fondo de la barra
         borderRadius: BorderRadius.circular(2),
       ),
       child: Align(
@@ -34,7 +33,7 @@ class StepProgressBar extends StatelessWidget {
           widthFactor: progress, // Porción llenada según avance
           child: Container(
             decoration: BoxDecoration(
-              color: Color(0xFF4CAF50), // Color de progreso
+              color: Colors.black, // Color de progreso
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -68,6 +67,10 @@ class ImagePickStep extends StatelessWidget {
           'Aviso',
           'No se seleccionó ninguna imagen',
           snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.black,
+          colorText: Colors.white,
+          margin: const EdgeInsets.all(16),
+          borderRadius: 12,
         );
       }
     } catch (e) {
@@ -76,6 +79,10 @@ class ImagePickStep extends StatelessWidget {
         'Error',
         'No se pudo seleccionar la imagen: ${e.toString()}',
         snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        margin: const EdgeInsets.all(16),
+        borderRadius: 12,
         duration: const Duration(seconds: 5),
       );
     }
@@ -83,16 +90,20 @@ class ImagePickStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
+      backgroundColor: Colors.white,
       // AppBar con botón de retroceso y barra de progreso
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () => Get.back(), // Regresa a la pantalla anterior
         ),
-        title: const Text('1 de 3: Personaliza'),
+        title: const Text(
+          '1 de 3: Personaliza',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(12),
           child: Obx(() => StepProgressBar(
@@ -103,18 +114,19 @@ class ImagePickStep extends StatelessWidget {
       ),
       // Cuerpo principal
       body: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.all(24),
         child: Obx(() => GestureDetector(
           onTap: _pickImage, // Permite tocar para seleccionar imagen
           child: Container(
             width: double.infinity,
-            height: MediaQuery.of(context).size.height * 0.6,
+            height: MediaQuery.of(context).size.height * 0.5,
             decoration: BoxDecoration(
-              color: colorScheme.surfaceContainerHighest, // Fondo del contenedor
-              borderRadius: BorderRadius.circular(12),
+              color: Colors.grey.shade50, // Fondo del contenedor
+              borderRadius: BorderRadius.circular(24),
               border: Border.all(
-                color: colorScheme.outline,
-                width: 1,
+                color: controller.imagePath.value.isEmpty ? Colors.grey.shade300 : Colors.transparent,
+                width: 1.5,
+                style: controller.imagePath.value.isEmpty ? BorderStyle.solid : BorderStyle.none,
               ),
             ),
             // Si no hay imagen seleccionada, muestra icono y texto
@@ -122,17 +134,25 @@ class ImagePickStep extends StatelessWidget {
                 ? Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        Icons.image_outlined,
-                        size: 64,
-                        color: colorScheme.primary,
+                      Container(
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Icon(
+                          Icons.add_photo_alternate_outlined,
+                          size: 48,
+                          color: Colors.grey.shade600,
+                        ),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 24),
                       Text(
                         'Toca para seleccionar una imagen',
                         style: TextStyle(
-                          color: colorScheme.primary,
+                          color: Colors.grey.shade600,
                           fontSize: 16,
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
                     ],
@@ -142,7 +162,7 @@ class ImagePickStep extends StatelessWidget {
                     fit: StackFit.expand,
                     children: [
                       ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(24),
                         child: controller.imageBytes.value != null
                             ? Image.memory(
                                 controller.imageBytes.value!,
@@ -150,16 +170,29 @@ class ImagePickStep extends StatelessWidget {
                               )
                             : const SizedBox(),
                       ),
+                      Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24),
+                          color: Colors.black.withOpacity(0.1),
+                        ),
+                      ),
                       Positioned(
-                        top: 8,
-                        right: 8,
-                        child: IconButton(
-                          onPressed: _pickImage, // Permite cambiar la imagen
-                          icon: const Icon(Icons.edit),
-                          style: IconButton.styleFrom(
-                            backgroundColor: colorScheme.surface.withValues(alpha: 0.9),
-                            foregroundColor: colorScheme.primary,
+                        bottom: 16,
+                        right: 16,
+                        child: Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 8,
+                                offset: const Offset(0, 4),
+                              ),
+                            ],
                           ),
+                          child: const Icon(Icons.edit, color: Colors.black),
                         ),
                       ),
                     ],
@@ -168,27 +201,27 @@ class ImagePickStep extends StatelessWidget {
         )),
       ),
       // Botón inferior para continuar al siguiente paso
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 4,
-              offset: const Offset(0, -2),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+          child: Obx(() => ElevatedButton(
+            onPressed: controller.imagePath.value.isNotEmpty ? controller.nextStep : null, // Habilitado solo si hay imagen
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              disabledBackgroundColor: Colors.grey.shade300,
             ),
-          ],
+            child: const Text(
+              'Siguiente: Detalles',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
+          )),
         ),
-        child: Obx(() => ElevatedButton(
-          onPressed: controller.imagePath.value.isNotEmpty ? controller.nextStep : null, // Habilitado solo si hay imagen
-          style: ElevatedButton.styleFrom(
-            backgroundColor: colorScheme.primary,
-            foregroundColor: colorScheme.onPrimary,
-            minimumSize: const Size(double.infinity, 48),
-          ),
-          child: const Text('Siguiente: Detalla'),
-        )),
       ),
     );
   }

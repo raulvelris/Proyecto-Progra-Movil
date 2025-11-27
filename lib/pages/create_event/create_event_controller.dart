@@ -74,7 +74,7 @@ class CreateEventController extends GetxController {
   String get nextButtonText {
     switch (currentStep.value) {
       case 0:
-        return 'Siguiente: Detalla';
+        return 'Siguiente: Detalles';
       case 1:
         return 'Siguiente: Vista Previa';
       case 2:

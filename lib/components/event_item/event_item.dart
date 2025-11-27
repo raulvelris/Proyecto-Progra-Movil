@@ -58,75 +58,85 @@ class EventItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   // Botón "No" para cancelar
-                  OutlinedButton(
-                    onPressed: () => Get.back(),
-                    style: OutlinedButton.styleFrom(
-                      side: const BorderSide(color: Colors.red, width: 1.5),
-                      foregroundColor: Colors.red,
-                      padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 9),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                  Expanded(
+                    child: OutlinedButton(
+                      onPressed: () => Get.back(),
+                      style: OutlinedButton.styleFrom(
+                        side: BorderSide(color: Colors.grey.shade300, width: 1.5),
+                        foregroundColor: Colors.black,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: const Text('Cancelar', style: TextStyle(fontSize: 16)),
                     ),
-                    child: const Text('No', style: TextStyle(fontSize: 16)),
                   ),
+                  const SizedBox(width: 12),
                   // Botón "Sí" para confirmar eliminación
-                  ElevatedButton(
-                    onPressed: () async {
-                      Get.back(); // Cerrar el diálogo
-                      
-                      // Mostrar indicador de carga
-                      Get.dialog(
-                        const Center(
-                          child: CircularProgressIndicator(),
-                        ),
-                        barrierDismissible: false,
-                      );
-
-                      try {
-                        // Llamar al servicio para eliminar el evento
-                        await controller.deleteEvent();
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () async {
+                        Get.back(); // Cerrar el diálogo
                         
-                        // Cerrar el indicador de carga
-                        Get.back();
+                        // Mostrar indicador de carga
+                        Get.dialog(
+                          const Center(
+                            child: CircularProgressIndicator(color: Colors.black),
+                          ),
+                          barrierDismissible: false,
+                        );
 
-                        // Determina la lista correcta según tipo de evento
-                        final typeTag = isCreatedEvent ? 'created' : 'public';
-                        final listController = Get.find<EventItemListController>(
-                          tag: 'event_list_$typeTag',
-                        );
-                        
-                        // Elimina el evento de la lista
-                        listController.removeEvent(event);
+                        try {
+                          // Llamar al servicio para eliminar el evento
+                          await controller.deleteEvent();
+                          
+                          // Cerrar el indicador de carga
+                          Get.back();
 
-                        // Mostrar mensaje de éxito
-                        Get.snackbar(
-                          'Éxito',
-                          'Evento eliminado correctamente',
-                          snackPosition: SnackPosition.TOP,
-                          backgroundColor: Colors.green,
-                          colorText: Colors.white,
-                        );
-                      } catch (e) {
-                        // Cerrar el indicador de carga
-                        Get.back();
-                        
-                        // Mostrar mensaje de error
-                        Get.snackbar(
-                          'Error',
-                          e.toString().replaceAll('Exception: ', ''),
-                          snackPosition: SnackPosition.TOP,
-                          backgroundColor: Colors.red,
-                          colorText: Colors.white,
-                          duration: const Duration(seconds: 4),
-                        );
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red,
-                      foregroundColor: Colors.white,
-                      padding: const EdgeInsets.symmetric(horizontal: 45, vertical: 9),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                          // Determina la lista correcta según tipo de evento
+                          final typeTag = isCreatedEvent ? 'created' : 'public';
+                          final listController = Get.find<EventItemListController>(
+                            tag: 'event_list_$typeTag',
+                          );
+                          
+                          // Elimina el evento de la lista
+                          listController.removeEvent(event);
+
+                          // Mostrar mensaje de éxito
+                          Get.snackbar(
+                            'Éxito',
+                            'Evento eliminado correctamente',
+                            snackPosition: SnackPosition.TOP,
+                            backgroundColor: Colors.black,
+                            colorText: Colors.white,
+                            margin: const EdgeInsets.all(16),
+                            borderRadius: 12,
+                          );
+                        } catch (e) {
+                          // Cerrar el indicador de carga
+                          Get.back();
+                          
+                          // Mostrar mensaje de error
+                          Get.snackbar(
+                            'Error',
+                            e.toString().replaceAll('Exception: ', ''),
+                            snackPosition: SnackPosition.TOP,
+                            backgroundColor: Colors.red,
+                            colorText: Colors.white,
+                            margin: const EdgeInsets.all(16),
+                            borderRadius: 12,
+                            duration: const Duration(seconds: 4),
+                          );
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 12),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                      ),
+                      child: const Text('Eliminar', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                     ),
-                    child: const Text('Sí', style: TextStyle(fontSize: 16)),
                   ),
                 ],
               ),
@@ -139,93 +149,144 @@ class EventItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      child: ListTile(
-        // Imagen o ícono del evento
-        leading: Container(
-          width: 40,
-          height: 40,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(8),
-            color: colorScheme.primaryContainer,
-          ),
-          child: EventController.buildImage(
-            event.image,
-            fit: BoxFit.cover,
-            width: 40,
-            height: 40,
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        // Título del evento
-        title: Text(
-          event.title,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-            color: colorScheme.onSurface,
-          ),
-        ),
-        // Subtítulo con fecha, hora y dirección
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '${controller.formatDate(event.startDate)} • ${controller.formatTime(event.startDate)}',
-              style: TextStyle(fontSize: 14, color: colorScheme.onSurfaceVariant),
-            ),
-            if (event.location != null)
-              Text(
-                event.location!.address,
-                style: TextStyle(fontSize: 12, color: colorScheme.onSurfaceVariant),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.grey.shade50,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(color: Colors.grey.shade200),
+      ),
+      child: InkWell(
+        onTap: controller.onEventTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Padding(
+          padding: const EdgeInsets.all(10),
+          child: Row(
+            children: [
+              // Imagen del evento
+              Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.grey.shade200,
+                ),
+                clipBehavior: Clip.antiAlias,
+                child: EventController.buildImage(
+                  event.image,
+                  fit: BoxFit.cover,
+                  width: 56,
+                  height: 56,
+                  borderRadius: BorderRadius.circular(10),
+                ),
               ),
-          ],
-        ),
-        // Botones de acción: editar/eliminar si es creado por el usuario
-        trailing: isCreatedEvent
-            ? SizedBox(
-                width: 80,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+              const SizedBox(width: 12),
+              // Información del evento
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    // Botón de invitar
-                    IconButton(
-                      icon: Icon(Icons.person_add, size: 24, color: colorScheme.tertiary),
-                      padding: EdgeInsets.zero,
-                      onPressed: () {
-                        Get.toNamed(
-                          '/invite-users',
-                          arguments: {'eventId': event.eventId},
-                        );
-                      },
+                    Text(
+                      event.title,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Colors.black,
+                      ),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
                     ),
-                    // Botón de editar
-                    IconButton(
-                      icon: Icon(Icons.edit, size: 24, color: colorScheme.primary),
-                      padding: EdgeInsets.zero,
-                      onPressed: () {
-                        Get.snackbar('Editar', 'Funcionalidad de editar pendiente');
-                      },
+                    const SizedBox(height: 4),
+                    Row(
+                      children: [
+                        Icon(Icons.calendar_today_rounded, size: 14, color: Colors.grey.shade600),
+                        const SizedBox(width: 4),
+                        Flexible(
+                          child: Text(
+                            controller.formatDate(event.startDate),
+                            style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        const SizedBox(width: 6),
+                        Icon(Icons.access_time_rounded, size: 14, color: Colors.grey.shade600),
+                        const SizedBox(width: 4),
+                        Flexible(
+                          child: Text(
+                            controller.formatTime(event.startDate),
+                            style: TextStyle(fontSize: 13, color: Colors.grey.shade600),
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                      ],
                     ),
-                    // Botón de eliminar
-                    IconButton(
-                      icon: Icon(Icons.delete, size: 24, color: colorScheme.error),
-                      padding: EdgeInsets.zero,
-                      onPressed: () {
-                        _showDeleteConfirmation(context, controller, event);
-                      },
-                    ),
+                    if (event.location != null) ...[
+                      const SizedBox(height: 4),
+                      Row(
+                        children: [
+                          Icon(Icons.location_on_outlined, size: 14, color: Colors.grey.shade600),
+                          const SizedBox(width: 4),
+                          Expanded(
+                            child: Text(
+                              event.location!.address,
+                              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ],
                 ),
-              )
-            : Icon(Icons.arrow_forward_ios, size: 16, color: colorScheme.onSurface),
-        // Acción al tocar el ítem (navegación a detalles)
-        onTap: controller.onEventTap,
+              ),
+              // Botones de acción o flecha
+              if (isCreatedEvent) ...[
+                const SizedBox(width: 6),
+                _buildActionButton(
+                  icon: Icons.person_add_outlined,
+                  color: Colors.blue.shade700,
+                  onPressed: () {
+                    Get.toNamed(
+                      '/invite-users',
+                      arguments: {'eventId': event.eventId},
+                    );
+                  },
+                ),
+                const SizedBox(width: 4),
+                _buildActionButton(
+                  icon: Icons.delete_outline_rounded,
+                  color: Colors.red.shade700,
+                  onPressed: () {
+                    _showDeleteConfirmation(context, controller, event);
+                  },
+                ),
+              ] else ...[
+                const SizedBox(width: 8),
+                Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.grey.shade400),
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required IconData icon,
+    required Color color,
+    required VoidCallback onPressed,
+  }) {
+    return InkWell(
+      onTap: onPressed,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Icon(icon, size: 20, color: color),
       ),
     );
   }

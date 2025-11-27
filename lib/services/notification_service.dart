@@ -45,8 +45,6 @@ class NotificationService {
         if (data['success'] == true) {
           final List<dynamic> items = data['invitaciones'];
           for (var item in items) {
-            // Mapear a modelo Invitation
-
             final eventData = item['evento'];
             Event? event;
             if (eventData != null) {
@@ -60,7 +58,7 @@ class NotificationService {
                     ? DateTime.parse(eventData['fechaFin'])
                     : DateTime.now(),
                 description: '',
-                image: '', // Campo requerido por el modelo Event
+                image: '',
                 location: null,
                 privacy: 0,
                 eventStatus: 0,
@@ -128,12 +126,15 @@ class NotificationService {
         }
       }
 
-      // Ordenar por fecha (más reciente primero)
       allNotifications.sort((a, b) => b.fechaHora.compareTo(a.fechaHora));
-
       return allNotifications;
-    } catch (e) {
-      _logger.e('Error fetching notifications', e);
+
+    } catch (e, stack) {
+      _logger.e(
+        'Error fetching notifications',
+        error: e,
+        stackTrace: stack,
+      );
       throw Exception('Error al cargar notificaciones');
     }
   }
@@ -187,7 +188,6 @@ class NotificationService {
         final data = json.decode(response.body);
         return data['success'] == true;
       } else {
-        // Intentar obtener mensaje de error del backend
         String errorMessage = 'Error al responder invitación';
         try {
           final data = json.decode(response.body);
@@ -199,10 +199,15 @@ class NotificationService {
         _logger.e(
           'Error responding invitation: ${response.statusCode} - $errorMessage',
         );
+
         throw Exception(errorMessage);
       }
-    } catch (e) {
-      _logger.e('Exception responding invitation', e);
+    } catch (e, stack) {
+      _logger.e(
+        'Exception responding invitation',
+        error: e,
+        stackTrace: stack,
+      );
       rethrow;
     }
   }

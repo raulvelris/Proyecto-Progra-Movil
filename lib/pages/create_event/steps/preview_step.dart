@@ -18,14 +18,13 @@ class StepProgressBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final progress = (currentStep + 1) / totalSteps; // Porcentaje completado
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       height: 4,
       decoration: BoxDecoration(
-        color: colorScheme.surfaceContainerHighest.withValues(alpha: 0.3), // Fondo barra
+        color: Colors.grey.shade200, // Fondo barra
         borderRadius: BorderRadius.circular(2),
       ),
       child: Align(
@@ -34,7 +33,7 @@ class StepProgressBar extends StatelessWidget {
           widthFactor: progress, // Progreso visible
           child: Container(
             decoration: BoxDecoration(
-              color: Color(0xFF4CAF50), // Color de la barra
+              color: Colors.black, // Color de la barra
               borderRadius: BorderRadius.circular(2),
             ),
           ),
@@ -52,18 +51,22 @@ class PreviewStep extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
+      backgroundColor: Colors.white,
       // AppBar con botón de retroceso y barra de progreso
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
             controller.previousStep(); // Retroceder un paso
           },
         ),
-        title: const Text('3 de 3: Vista Previa'),
+        title: const Text(
+          '3 de 3: Vista Previa',
+          style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
+        ),
+        backgroundColor: Colors.white,
+        elevation: 0,
         bottom: PreferredSize(
           preferredSize: const Size.fromHeight(12),
           child: Obx(() => StepProgressBar(
@@ -83,140 +86,93 @@ class PreviewStep extends StatelessWidget {
                 ? Image.network(
                     controller.imagePath.value,
                     width: double.infinity,
-                    height: 200,
+                    height: 240,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
-                      // Si falla la carga de la imagen
                       return Container(
                         width: double.infinity,
-                        height: 200,
-                        color: colorScheme.surfaceContainerHighest,
-                        child: const Icon(Icons.error, size: 64),
+                        height: 240,
+                        color: Colors.grey.shade200,
+                        child: const Icon(Icons.error_outline, size: 48, color: Colors.grey),
                       );
                     },
                   )
                 : Image.file(
                     File(controller.imagePath.value),
                     width: double.infinity,
-                    height: 200,
+                    height: 240,
                     fit: BoxFit.cover,
                     errorBuilder: (context, error, stackTrace) {
                       return Container(
                         width: double.infinity,
-                        height: 200,
-                        color: colorScheme.surfaceContainerHighest,
-                        child: const Icon(Icons.error, size: 64),
+                        height: 240,
+                        color: Colors.grey.shade200,
+                        child: const Icon(Icons.error_outline, size: 48, color: Colors.grey),
                       );
                     },
                   )
               : Container(
                   width: double.infinity,
-                  height: 200,
-                  color: colorScheme.surfaceContainerHighest,
-                  child: const Icon(Icons.image, size: 64), // Placeholder si no hay imagen
+                  height: 240,
+                  color: Colors.grey.shade200,
+                  child: const Icon(Icons.image_outlined, size: 64, color: Colors.grey),
                 ),
             ),
 
             Padding(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   // Título del evento
                   Obx(() => Text(
                     controller.title.value,
-                    style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    style: const TextStyle(
+                      fontSize: 24,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
                   )),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 24),
 
                   // Inicio del evento
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.calendar_today,
-                        size: 20,
-                        color: colorScheme.primary,
-                      ),
-                      const SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Inicio',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: colorScheme.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Obx(() => Text(
-                            '${controller.startDate.value.day}/${controller.startDate.value.month}/${controller.startDate.value.year} - '
-                            '${controller.startTime.value.hour.toString().padLeft(2, '0')}:${controller.startTime.value.minute.toString().padLeft(2, '0')}',
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          )),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Fin del evento
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.event_available,
-                        size: 20,
-                        color: colorScheme.primary,
-                      ),
-                      const SizedBox(width: 8),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Fin',
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: colorScheme.primary,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4),
-                          Obx(() => Text(
-                            '${controller.endDate.value.day}/${controller.endDate.value.month}/${controller.endDate.value.year} - '
-                            '${controller.endTime.value.hour.toString().padLeft(2, '0')}:${controller.endTime.value.minute.toString().padLeft(2, '0')}',
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          )),
-                        ],
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 12),
-
-                  // Ubicación
-                  Row(
-                    children: [
-                      Icon(
-                        Icons.location_on,
-                        size: 20,
-                        color: colorScheme.primary,
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: Obx(() => Text(
-                          controller.location.value,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        )),
-                      ),
-                    ],
+                  _buildInfoRow(
+                    context,
+                    icon: Icons.calendar_today_rounded,
+                    label: 'Inicio',
+                    value: '${controller.startDate.value.day}/${controller.startDate.value.month}/${controller.startDate.value.year} - '
+                           '${controller.startTime.value.hour.toString().padLeft(2, '0')}:${controller.startTime.value.minute.toString().padLeft(2, '0')}',
                   ),
                   const SizedBox(height: 16),
 
+                  // Fin del evento
+                  _buildInfoRow(
+                    context,
+                    icon: Icons.event_available_rounded,
+                    label: 'Fin',
+                    value: '${controller.endDate.value.day}/${controller.endDate.value.month}/${controller.endDate.value.year} - '
+                           '${controller.endTime.value.hour.toString().padLeft(2, '0')}:${controller.endTime.value.minute.toString().padLeft(2, '0')}',
+                  ),
+                  const SizedBox(height: 16),
+
+                  // Ubicación
+                  _buildInfoRow(
+                    context,
+                    icon: Icons.location_on_outlined,
+                    label: 'Ubicación',
+                    value: controller.location.value,
+                  ),
+                  const SizedBox(height: 24),
+
                   // Mapa con marcador
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(12),
-                    child: SizedBox(
-                      height: 200,
+                  Container(
+                    height: 200,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(16),
+                      border: Border.all(color: Colors.grey.shade200),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(16),
                       child: GoogleMap(
                         initialCameraPosition: const CameraPosition(
                           target: LatLng(-12.0464, -77.0428), // Lima, Perú
@@ -234,19 +190,25 @@ class PreviewStep extends StatelessWidget {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 24),
 
                   // Descripción del evento
-                  Text(
+                  const Text(
                     'Descripción del evento',
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                    style: TextStyle(
+                      fontSize: 18,
                       fontWeight: FontWeight.bold,
+                      color: Colors.black,
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  const SizedBox(height: 12),
                   Obx(() => Text(
                     controller.description.value,
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: Colors.grey.shade700,
+                      height: 1.5,
+                    ),
                   )),
                 ],
               ),
@@ -256,28 +218,68 @@ class PreviewStep extends StatelessWidget {
       ),
 
       // Botón inferior para guardar el evento
-      bottomNavigationBar: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surface,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 4,
-              offset: const Offset(0, -2),
+      bottomNavigationBar: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+          child: ElevatedButton(
+            onPressed: controller.saveEvent, // Llama a la función de guardado
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+              padding: const EdgeInsets.symmetric(vertical: 16),
+              elevation: 0,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
             ),
-          ],
-        ),
-        child: ElevatedButton(
-          onPressed: controller.saveEvent, // Llama a la función de guardado
-          style: ElevatedButton.styleFrom(
-            backgroundColor: colorScheme.primary,
-            foregroundColor: colorScheme.onPrimary,
-            minimumSize: const Size(double.infinity, 48),
+            child: const Text(
+              'Guardar y Publicar',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+            ),
           ),
-          child: const Text('Guardar'),
         ),
       ),
+    );
+  }
+
+  Widget _buildInfoRow(BuildContext context, {required IconData icon, required String label, required String value}) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Container(
+          padding: const EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade100,
+            borderRadius: BorderRadius.circular(10),
+          ),
+          child: Icon(icon, size: 20, color: Colors.black),
+        ),
+        const SizedBox(width: 16),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  color: Colors.grey.shade600,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 15,
+                  color: Colors.black,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

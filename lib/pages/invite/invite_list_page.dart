@@ -15,26 +15,53 @@ class InviteListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final c = Theme.of(context).colorScheme;
     return Scaffold(
-      appBar: AppBar(title: const Text('Lista de invitados')),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        title: const Text(
+          'Lista de invitados',
+          style: TextStyle(
+            color: Colors.black,
+            fontWeight: FontWeight.bold,
+            fontSize: 24,
+          ),
+        ),
+        centerTitle: false,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+      ),
       body: ListView.separated(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(16),
         itemCount: _data.length,
-        separatorBuilder: (_, __) => const Divider(height: 1),
+        separatorBuilder: (_, __) => const SizedBox(height: 12),
         itemBuilder: (_, i) {
           final item = _data[i];
-          final badge = _statusBadge(item.status, c);
-          return ListTile(
-            leading: CircleAvatar(
-              backgroundColor: c.primaryContainer.withOpacity(.35),
-              child: Text(
-                _initials(item.name),
-                style: TextStyle(color: c.primary),
-              ),
+          final badge = _statusBadge(item.status);
+          return Container(
+            decoration: BoxDecoration(
+              color: Colors.grey.shade50,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: Colors.grey.shade200),
             ),
-            title: Text(item.name),
-            trailing: badge,
+            child: ListTile(
+              contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              leading: CircleAvatar(
+                backgroundColor: Colors.black,
+                child: Text(
+                  _initials(item.name),
+                  style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ),
+              title: Text(
+                item.name,
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16,
+                ),
+              ),
+              trailing: badge,
+            ),
           );
         },
       ),
@@ -48,37 +75,38 @@ class InviteListPage extends StatelessWidget {
     return (a + b).toUpperCase();
   }
 
-  static Widget _statusBadge(_InviteStatus s, ColorScheme c) {
+  static Widget _statusBadge(_InviteStatus s) {
     late final String label;
     late final Color bg, fg;
 
     switch (s) {
       case _InviteStatus.going:
         label = 'Asistirá';
-        bg = Colors.green.withOpacity(.15);
-        fg = Colors.green.shade800;
+        bg = Colors.green.shade50;
+        fg = Colors.green.shade700;
         break;
       case _InviteStatus.rejected:
         label = 'Rechazó';
-        bg = Colors.red.withOpacity(.15);
-        fg = Colors.red.shade800;
+        bg = Colors.red.shade50;
+        fg = Colors.red.shade700;
         break;
       case _InviteStatus.undecided:
         label = 'Pendiente';
-        bg = c.outlineVariant.withOpacity(.25);
-        fg = c.onSurfaceVariant;
+        bg = Colors.grey.shade100;
+        fg = Colors.grey.shade600;
         break;
     }
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
         color: bg,
         borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: bg == Colors.grey.shade100 ? Colors.grey.shade300 : Colors.transparent),
       ),
       child: Text(
         label,
-        style: TextStyle(color: fg, fontWeight: FontWeight.w600),
+        style: TextStyle(color: fg, fontWeight: FontWeight.w600, fontSize: 13),
       ),
     );
   }

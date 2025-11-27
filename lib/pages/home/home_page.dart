@@ -36,10 +36,10 @@ class _HomePageState extends State<HomePage> {
     return Container(
       height: 70,
       decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
+        color: Colors.white,
         boxShadow: [
           BoxShadow(
-            color: Colors.grey.withOpacity(0.3),
+            color: Colors.black.withOpacity(0.05),
             blurRadius: 10,
             offset: const Offset(0, -2),
           ),
@@ -48,11 +48,11 @@ class _HomePageState extends State<HomePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Flexible(child: _buildNavItem(0, 'Creados', Icons.create)),
-          Flexible(child: _buildNavItem(1, 'Asistidos', Icons.event_available)),
-          Flexible(child: _buildNavItem(2, 'Públicos', Icons.public)),
-          Flexible(child: _buildNavItem(3, 'Avisos', Icons.notifications)),
-          Flexible(child: _buildNavItem(4, 'Perfil', Icons.person)),
+          Flexible(child: _buildNavItem(0, 'Creados', Icons.edit_calendar_rounded)),
+          Flexible(child: _buildNavItem(1, 'Asistidos', Icons.event_available_rounded)),
+          Flexible(child: _buildNavItem(2, 'Públicos', Icons.public_rounded)),
+          Flexible(child: _buildNavItem(3, 'Avisos', Icons.notifications_rounded)),
+          Flexible(child: _buildNavItem(4, 'Perfil', Icons.person_rounded)),
         ],
       ),
     );
@@ -60,24 +60,25 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildNavItem(int index, String label, IconData icon) {
     final isSelected = _currentIndex == index;
-    final colors = Theme.of(context).colorScheme;
 
     return GestureDetector(
       onTap: () => setState(() => _currentIndex = index),
+      behavior: HitTestBehavior.opaque,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             icon,
-            size: 24,
-            color: isSelected ? colors.primary : colors.onSurface.withOpacity(0.6),
+            size: 26,
+            color: isSelected ? Colors.black : Colors.grey.shade400,
           ),
           const SizedBox(height: 4),
           Text(
             label,
             style: TextStyle(
-              fontSize: 12,
-              color: isSelected ? colors.primary : colors.onSurface.withOpacity(0.6),
+              fontSize: 11,
+              fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
+              color: isSelected ? Colors.black : Colors.grey.shade400,
             ),
           ),
         ],
