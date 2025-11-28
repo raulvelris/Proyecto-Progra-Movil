@@ -1,0 +1,138 @@
+@startuml DatabaseDiagram
+!theme plain
+
+entity "Cliente" {
+  * cliente_id : INTEGER
+  --
+  * nombre : VARCHAR(50)
+  * apellido : VARCHAR(50)
+  * fotoperfil : VARCHAR(200)
+  * usuario_id : INTEGER
+}
+
+entity "Usuario" {
+  * usuario_id : INTEGER
+  --
+  * clave : VARCHAR(20)
+  * correo : VARCHAR(30)
+  * isActive : BOOLEAN
+  * activation_token : VARCHAR(50)
+  * token_expires_at: DATETIME
+  * google_id : VARCHAR(100)
+}
+
+entity "Evento" {
+  * evento_id : INTEGER
+  --
+  * titulo : VARCHAR(30)
+  * descripcion : VARCHAR(300)
+  * fechaInicio : DATETIME
+  * fechaFin : DATETIME
+  * imagen : VARCHAR(200)
+  * estado_evento : INTEGER
+  * privacidad : INTEGER
+}
+
+entity "Invitacion" {
+  * invitacion_id : INTEGER
+  --
+  * fechaLimite : DATETIME
+}
+
+entity "InvitacionUsuario" {
+  * invitacion_usuario_id : INTEGER
+  --
+  * invitacion_id : INTEGER
+  * usuario_id : INTEGER
+  * estado_invitacion_id : INTEGER
+}
+
+entity "Notificacion" {
+  * notificacion_id : INTEGER
+  --
+  * fechahora : DATETIME
+  * evento_id : INTEGER
+}
+
+entity "NotificacionGeneral" {
+  * notificacion_general_id : INTEGER
+  --
+  * mensaje : VARCHAR(50)
+}
+
+entity "Ubicacion" {
+  * ubicacion_id : INTEGER
+  --
+  * direccion : VARCHAR(200)
+  * latitud : DOUBLE
+  * longitud : DOUBLE
+  * evento_id : INTEGER
+}
+
+entity "EstadoInvitacion" {
+  * estado_id : INTEGER
+  --
+  * nombre : VARCHAR(20)
+}
+
+entity "EstadoEvento" {
+  * estado_evento_id : INTEGER
+  --
+  * nombre : VARCHAR(20)
+}
+
+entity "Privacidad" {
+  * privacidad_id : INTEGER
+  --
+  * nombre : VARCHAR(20)
+}
+
+entity "UsuarioRolEvento" {
+  * usuario_rol_evento_id : INTEGER
+  --
+  * usuario_id : INTEGER
+  * rol_id : INTEGER
+  * evento_id : INTEGER
+}
+
+entity "Rol" {
+  * rol_id : INTEGER
+  --
+  * nombre : VARCHAR(20)
+}
+
+entity "Recurso" {
+  * archivo_compartido_id : INTEGER
+  --
+  * nombre : VARCHAR(20)
+  * url : VARCHAR(200)
+  * tipo_recurso_id : INTEGER
+  * evento_id : INTEGER
+}
+
+entity "TipoRecurso" {
+  * tipo_recurso_id : INTEGER
+  --
+  * nombre : VARCHAR(20)
+}
+
+' Relaciones 1:1
+Cliente ||--|| Usuario : usuario_id
+NotificacionGeneral ||--|| Notificacion : notificacion_general_id
+Invitacion ||--|| Notificacion : invitacion_id
+
+' Relaciones 1:m
+InvitacionUsuario }|--|| EstadoInvitacion : estado_invitacion_id
+InvitacionUsuario }|--|| Invitacion : invitacion_id
+InvitacionUsuario }|--|| Usuario : usuario_id
+Notificacion }|--|| Evento : evento_id
+Recurso }|--|| TipoRecurso : tipo_recurso_id
+Recurso }|--|| Evento : evento_id
+Ubicacion }|--|| Evento : evento_id
+Evento }|--|| EstadoEvento : estado_evento_id
+Evento }|--|| Privacidad : privacidad_id
+UsuarioRolEvento }|--|| Usuario : usuario_id
+UsuarioRolEvento }|--|| Rol : rol_id
+UsuarioRolEvento }|--|| Evento : evento_id
+
+@enduml
