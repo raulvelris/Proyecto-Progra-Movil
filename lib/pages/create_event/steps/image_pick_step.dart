@@ -66,7 +66,7 @@ class ImagePickStep extends StatelessWidget {
         Get.snackbar(
           'Aviso',
           'No se seleccionó ninguna imagen',
-          snackPosition: SnackPosition.BOTTOM,
+          snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.black,
           colorText: Colors.white,
           margin: const EdgeInsets.all(16),
@@ -78,7 +78,7 @@ class ImagePickStep extends StatelessWidget {
       Get.snackbar(
         'Error',
         'No se pudo seleccionar la imagen: ${e.toString()}',
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
         margin: const EdgeInsets.all(16),

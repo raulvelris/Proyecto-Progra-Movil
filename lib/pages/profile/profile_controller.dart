@@ -37,7 +37,7 @@ class ProfileController extends GetxController {
       Get.snackbar(
         'Error',
         e.toString().replaceAll('Exception: ', ''),
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red.shade100,
         colorText: Colors.red.shade900,
         margin: const EdgeInsets.all(16),

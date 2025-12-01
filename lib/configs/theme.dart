@@ -8,8 +8,9 @@ class MaterialTheme {
   static ColorScheme lightScheme() {
     return const ColorScheme(
       brightness: Brightness.light,
-      primary: Color(0xffe05353),
-      surfaceTint: Color(0xFFE85C53),
+      primary: Color(0xffff292e),
+      surfaceTint: Color(0xffff292e),
+
       onPrimary: Color(0xffffffff),
       primaryContainer: Color(0xffffdbcf),
       onPrimaryContainer: Color(0xff723520),
@@ -173,8 +174,9 @@ class MaterialTheme {
   static ColorScheme darkScheme() {
     return const ColorScheme(
       brightness: Brightness.dark,
-      primary: Color(0xffffb59c),
-      surfaceTint: Color(0xffffb59c),
+      primary: Color(0xffff292e),
+      surfaceTint: Color(0xffff292e),
+
       onPrimary: Color(0xff55200c),
       primaryContainer: Color(0xff723520),
       onPrimaryContainer: Color(0xffffdbcf),
@@ -344,8 +346,12 @@ class MaterialTheme {
        bodyColor: colorScheme.onSurface,
        displayColor: colorScheme.onSurface,
      ),
-     scaffoldBackgroundColor: colorScheme.background,
-     canvasColor: colorScheme.surface,
+     scaffoldBackgroundColor: colorScheme.brightness == Brightness.light
+         ? const Color(0xffffffff)
+         : const Color(0xff000000),
+     canvasColor: colorScheme.brightness == Brightness.light
+         ? const Color(0xffffffff)
+         : const Color(0xff000000),
   );
 
   /// Custom Color 1

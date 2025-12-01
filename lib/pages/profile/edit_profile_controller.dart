@@ -75,7 +75,7 @@ class EditProfileController extends GetxController {
         Get.snackbar(
           'Éxito',
           'Imagen seleccionada correctamente',
-          snackPosition: SnackPosition.BOTTOM,
+          snackPosition: SnackPosition.TOP,
           backgroundColor: Colors.green.shade100,
           colorText: Colors.green.shade900,
           margin: const EdgeInsets.all(16),
@@ -86,7 +86,7 @@ class EditProfileController extends GetxController {
       Get.snackbar(
         'Error',
         'No se pudo seleccionar la imagen: ${e.toString()}',
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red.shade100,
         colorText: Colors.red.shade900,
         margin: const EdgeInsets.all(16),
@@ -117,7 +117,7 @@ class EditProfileController extends GetxController {
       Get.snackbar(
         'Error de validación',
         validationError,
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red.shade100,
         colorText: Colors.red.shade900,
         margin: const EdgeInsets.all(16),
@@ -157,7 +157,7 @@ class EditProfileController extends GetxController {
       Get.snackbar(
         'Éxito',
         'Perfil actualizado correctamente',
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.green.shade100,
         colorText: Colors.green.shade900,
         margin: const EdgeInsets.all(16),
@@ -166,7 +166,7 @@ class EditProfileController extends GetxController {
       Get.snackbar(
         'Error',
         e.toString().replaceAll('Exception: ', ''),
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red.shade100,
         colorText: Colors.red.shade900,
         margin: const EdgeInsets.all(16),

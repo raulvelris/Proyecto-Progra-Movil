@@ -8,6 +8,8 @@ import '../../models/event.dart';
 import '../../models/resource.dart';
 import '../../services/event_details_service.dart';
 import '../../services/event_participants_service.dart';
+import '../../services/resource_service.dart';
+import '../add_resource/add_resource_flow.dart';
 
 class EventDetailsPage extends StatefulWidget {
   const EventDetailsPage({super.key, required this.eventId});
@@ -19,12 +21,17 @@ class EventDetailsPage extends StatefulWidget {
 
 class _EventDetailsPageState extends State<EventDetailsPage> {
   final EventParticipantsService _participantsService = EventParticipantsService();
+  final ResourceService _resourceService = ResourceService();
   bool _isOrganizer = false;
   bool _isCheckingOrganizer = true;
+  late Future<Event?> _eventFuture;
+  late Future<List<Resource>> _resourcesFuture;
 
   @override
   void initState() {
     super.initState();
+    _eventFuture = _getEvent();
+    _resourcesFuture = _loadResources();
     _checkIfOrganizer();
   }
 
@@ -34,6 +41,14 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
       _isOrganizer = isOrg;
       _isCheckingOrganizer = false;
     });
+  }
+
+  Future<List<Resource>> _loadResources() async {
+    try {
+      return await _resourceService.getResourcesByEvent(widget.eventId);
+    } catch (_) {
+      return [];
+    }
   }
 
   Future<Event?> _getEvent() async {
@@ -66,7 +81,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     final controller = Get.find<EventController>();
 
     return FutureBuilder<Event?>(
-      future: _getEvent(),
+      future: _eventFuture,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Scaffold(
@@ -200,7 +215,6 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                     Text(e.description, style: TextStyle(color: Colors.grey.shade700, fontSize: 15, height: 1.5)),
                     const SizedBox(height: 24),
 
-                    // Mostrar solo si el usuario es el organizador del evento
                     if (_isOrganizer && !_isCheckingOrganizer) ...[
                       Row(
                         children: [
@@ -226,16 +240,52 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                       const SizedBox(height: 24),
                     ],
 
-                    if(e.resources.isNotEmpty) ...[
-                      // Recursos (mock)
-                      const Text('Recursos',
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                              fontSize: 18)),
-                      const SizedBox(height: 12),
-                      ...e.resources.map((resource) => _buildResourceItem(resource)).toList(),
-                    ]
+                    FutureBuilder<List<Resource>>(
+                      future: _resourcesFuture,
+                      builder: (context, resourcesSnapshot) {
+                        final backendResources = resourcesSnapshot.data ?? [];
+                        final hasBackendResources = backendResources.isNotEmpty;
+                        final hasLocalResources = e.resources.isNotEmpty;
+
+                        if (!hasBackendResources && !hasLocalResources && !_isOrganizer) {
+                          return const SizedBox.shrink();
+                        }
+
+                        final resources = hasBackendResources ? backendResources : e.resources;
+
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Recursos',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black,
+                                fontSize: 18,
+                              ),
+                            ),
+                            const SizedBox(height: 12),
+                            if (_isOrganizer && !_isCheckingOrganizer)
+                              Padding(
+                                padding: const EdgeInsets.only(bottom: 12),
+                                child: OutlinedButton.icon(
+                                  onPressed: () => _openAddResourceFlow(e.eventId),
+                                  icon: const Icon(Icons.add),
+                                  label: const Text('Agregar recurso'),
+                                ),
+                              ),
+                            ...resources.map(
+                              (resource) => _buildResourceItem(
+                                resource,
+                                onDelete: _isOrganizer && !_isCheckingOrganizer
+                                    ? () => _confirmDeleteResource(e.eventId, resource)
+                                    : null,
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
                   ]
                 )
               )
@@ -272,6 +322,84 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
         );
       }
     );
+  }
+
+  Future<void> _openAddResourceFlow(int eventId) async {
+    final result = await Get.to<AddResourceResult>(
+      () => const AddResourceChoosePage(),
+    );
+
+    if (result == null) return;
+
+    try {
+      await _resourceService.shareResource(
+        eventId: eventId,
+        name: result.name,
+        url: result.url,
+        resourceType: result.type,
+      );
+
+      setState(() {
+        _resourcesFuture = _loadResources();
+      });
+
+      Get.snackbar(
+        'Recurso agregado',
+        'El recurso se agregó correctamente',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
+      );
+    } catch (e) {
+      Get.snackbar(
+        'Error',
+        e.toString().replaceAll('Exception: ', ''),
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
+  }
+
+  Future<void> _confirmDeleteResource(int eventId, Resource resource) async {
+    final result = await Get.defaultDialog(
+      title: 'Eliminar recurso',
+      middleText: '¿Deseas eliminar "${resource.name}"?',
+      textConfirm: 'Eliminar',
+      textCancel: 'Cancelar',
+      confirmTextColor: Theme.of(context).colorScheme.onError,
+      onConfirm: () => Get.back(result: true),
+      onCancel: () => Get.back(result: false),
+    );
+
+    if (result == true) {
+      try {
+        await _resourceService.deleteResource(
+          eventId: eventId,
+          resourceId: resource.sharedFileId,
+        );
+
+        setState(() {
+          _resourcesFuture = _loadResources();
+        });
+
+        Get.snackbar(
+          'Recurso eliminado',
+          'El recurso se eliminó correctamente',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        );
+      } catch (e) {
+        Get.snackbar(
+          'Error',
+          e.toString().replaceAll('Exception: ', ''),
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        );
+      }
+    }
   }
 
       static String _two(int x) => x.toString().padLeft(2, '0');
@@ -340,7 +468,7 @@ class _RoundedAction extends StatelessWidget {
   }
 }
 
-Widget _buildResourceItem(Resource resource) {
+Widget _buildResourceItem(Resource resource, {VoidCallback? onDelete}) {
   final controller = Get.find<EventController>();
 
   return Container(
@@ -364,8 +492,19 @@ Widget _buildResourceItem(Resource resource) {
         ),
       ),
       title: Text(resource.name, style: const TextStyle(fontWeight: FontWeight.w600)),
-      subtitle: Text(resource.isPDF ? 'Documento PDF' : 'Enlace de video', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
-      trailing: Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.grey.shade400),
+      subtitle: Text(resource.isPDF ? 'Archivo' : 'Enlace', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (onDelete != null)
+            IconButton(
+              icon: const Icon(Icons.delete_outline, size: 20),
+              color: Colors.red.shade400,
+              onPressed: onDelete,
+            ),
+          Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.grey.shade400),
+        ],
+      ),
       onTap: () {
         if (resource.isPDF) {
           controller.openPdf(resource.url, resource.name);

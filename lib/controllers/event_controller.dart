@@ -186,7 +186,25 @@ class EventController extends GetxController {
     // Abre un PDF desde URL
     Get.dialog(const Center(child: CircularProgressIndicator()), barrierDismissible: false);
     try {
-      await _downloadAndOpenPdf(url, name);
+      if (url.isEmpty) {
+        throw Exception('URL del PDF no válida');
+      }
+
+      if (url.startsWith('http://') || url.startsWith('https://')) {
+        await _downloadAndOpenPdf(url, name);
+      } else {
+        // Tratar como archivo local
+        String path = url;
+        if (path.startsWith('file://')) {
+          path = path.substring(7);
+        }
+        final file = File(path);
+        if (!file.existsSync()) {
+          throw Exception('El archivo PDF no existe');
+        }
+        _closeLoading();
+        await _openPdfFile(file, name);
+      }
     } catch (e) {
       _closeLoading();
       Get.snackbar('Error', 'No se pudo abrir el PDF: $e', backgroundColor: Theme.of(Get.context!).colorScheme.errorContainer, colorText: Theme.of(Get.context!).colorScheme.onErrorContainer);

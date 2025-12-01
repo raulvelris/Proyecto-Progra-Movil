@@ -46,7 +46,9 @@ app.*.map.json
 
 # Environment variable files
 .env
-.env.*
+.env.local
+.env.production
+.env.*.local
 
 # Android secrets
 android/app/src/main/res/values/secrets.xml
@@ -63,9 +65,3 @@ ios/Runner/Secrets.plist
 /build/
 /android/app/build/
 /ios/Runner/build/lib.zip
-
-# Exclude unused platforms
-/linux/
-/macos/
-/web/
-/windows/

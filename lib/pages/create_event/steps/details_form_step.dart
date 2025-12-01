@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../create_event_controller.dart';
+import '../../add_resource/add_resource_flow.dart';
 
 // Widget que representa la barra de progreso de los pasos
 class StepProgressBar extends StatelessWidget {
@@ -319,6 +320,109 @@ class DetailsFormStep extends StatelessWidget {
               onChanged: (value) => controller.location.value = value,
               suffixIcon: Icons.location_on_outlined,
             ),
+            const SizedBox(height: 32),
+
+            // Sección de recursos agregados durante la creación (paso 2)
+            const Text(
+              'Recursos',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Obx(() {
+              final items = controller.draftResources;
+              if (items.isEmpty) {
+                return Text(
+                  'Aún no has agregado recursos a este evento.',
+                  style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+                );
+              }
+              return Column(
+                children: List.generate(items.length, (index) {
+                  final r = items[index];
+                  return Container(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(10),
+                      border: Border.all(color: Colors.grey.shade200),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(
+                          r.type == 1
+                              ? Icons.insert_drive_file_rounded
+                              : Icons.link_rounded,
+                          size: 20,
+                          color: r.type == 1
+                              ? Colors.blueGrey
+                              : Colors.blueAccent,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                r.name,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                              const SizedBox(height: 2),
+                              Text(
+                                r.url,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.grey.shade600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        IconButton(
+                          icon: const Icon(Icons.delete_outline, size: 20),
+                          color: Colors.red.shade400,
+                          onPressed: () async {
+                            final shouldDelete = await _confirmDeleteDraftResource(context, r.name);
+                            if (shouldDelete == true) {
+                              controller.draftResources.removeAt(index);
+                            }
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                }),
+              );
+            }),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: () async {
+                  final result = await Get.to<AddResourceResult>(
+                    () => const AddResourceChoosePage(),
+                  );
+                  if (result != null) {
+                    controller.addDraftResource(
+                      name: result.name,
+                      url: result.url,
+                      type: result.type,
+                    );
+                  }
+                },
+                icon: const Icon(Icons.add),
+                label: const Text('Agregar recurso'),
+              ),
+            ),
           ],
         ),
       ),
@@ -433,4 +537,16 @@ class DetailsFormStep extends StatelessWidget {
       ),
     );
   }
+}
+
+Future<bool?> _confirmDeleteDraftResource(BuildContext context, String name) {
+  return Get.defaultDialog<bool>(
+    title: 'Eliminar recurso',
+    middleText: '¿Deseas eliminar "$name"?',
+    textConfirm: 'Eliminar',
+    textCancel: 'Cancelar',
+    confirmTextColor: Theme.of(context).colorScheme.onError,
+    onConfirm: () => Get.back(result: true),
+    onCancel: () => Get.back(result: false),
+  );
 }

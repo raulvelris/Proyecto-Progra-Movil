@@ -29,7 +29,7 @@ class SignUpController extends GetxController {
       Get.snackbar(
         'Error',
         'Todos los campos son obligatorios',
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -40,7 +40,7 @@ class SignUpController extends GetxController {
       Get.snackbar(
         'Error',
         'La contraseña debe tener al menos 6 caracteres',
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -58,7 +58,7 @@ class SignUpController extends GetxController {
       Get.snackbar(
         'Error al registrarse',
         e.toString().replaceAll('Exception: ', ''),
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
@@ -89,7 +89,7 @@ class SignUpController extends GetxController {
       Get.snackbar(
         'Error',
         e.toString().replaceAll('Exception: ', ''),
-        snackPosition: SnackPosition.BOTTOM,
+        snackPosition: SnackPosition.TOP,
         backgroundColor: Colors.red,
         colorText: Colors.white,
       );
