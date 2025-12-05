@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import '../../controllers/event_controller.dart';
 import '../../models/event.dart';
@@ -56,23 +55,6 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     setState(() {
       _coordinates = coords;
     });
-  }
-
-  Future<void> _openInGoogleMaps(double lat, double lng) async {
-    final url = Uri.parse(
-      'https://www.google.com/maps/search/?api=1&query=$lat,$lng',
-    );
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
-      Get.snackbar(
-        'Error',
-        'No se pudo abrir Google Maps',
-        snackPosition: SnackPosition.BOTTOM,
-        backgroundColor: Colors.red,
-        colorText: Colors.white,
-      );
-    }
   }
 
   Future<List<Resource>> _loadResources() async {
@@ -174,7 +156,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
             padding: EdgeInsets.zero,
             children: [
               AspectRatio(
-                aspectRatio: 16 / 9,
+                aspectRatio: 1 / 0.8,
                 child: Stack(
                   fit: StackFit.expand,
                   children: [
@@ -278,7 +260,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                           SizedBox(
                             width: double.infinity,
                             child: OutlinedButton.icon(
-                              onPressed: () => _openInGoogleMaps(
+                              onPressed: () => controller.openInGoogleMaps(
                                 _coordinates!['latitude']!,
                                 _coordinates!['longitude']!,
                               ),
@@ -516,14 +498,59 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   }
 
   Future<void> _confirmDeleteResource(int eventId, Resource resource) async {
-    final result = await Get.defaultDialog(
-      title: 'Eliminar recurso',
-      middleText: '¿Deseas eliminar "${resource.name}"?',
-      textConfirm: 'Eliminar',
-      textCancel: 'Cancelar',
-      confirmTextColor: Theme.of(context).colorScheme.onError,
-      onConfirm: () => Get.back(result: true),
-      onCancel: () => Get.back(result: false),
+    final colorScheme = Theme.of(Get.context!).colorScheme;
+    final result = await Get.dialog(
+      Dialog(
+        backgroundColor: colorScheme.surface,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        child: Padding(
+          padding: const EdgeInsets.all(24.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.error_outline, size: 64, color: colorScheme.error),
+              const SizedBox(height: 16),
+              Text(
+                '¿Deseas eliminar el recurso?',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: colorScheme.onSurface,
+                ),
+                textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  ElevatedButton(
+                    onPressed: () {
+                      Get.back();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: colorScheme.primary,
+                      foregroundColor: colorScheme.onPrimary,
+                    ),
+                    child: const Text('Cancelar'),
+                  ),
+                  const SizedBox(width: 12),
+                  OutlinedButton(
+                    onPressed: () {
+                      Get.back(result: true);
+                    },
+                    style: OutlinedButton.styleFrom(
+                      side: BorderSide(color: colorScheme.primary),
+                      foregroundColor: colorScheme.primary,
+                    ),
+                    child: const Text('Eliminar'),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+      barrierDismissible: true,
     );
 
     if (result == true) {
@@ -671,14 +698,12 @@ Widget _buildResourceItem(Resource resource, {VoidCallback? onDelete}) {
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: resource.isPDF ? Colors.red.shade50 : Colors.blue.shade50,
+          color: resource.isFile ? Colors.red.shade50 : Colors.blue.shade50,
           borderRadius: BorderRadius.circular(8),
         ),
         child: Icon(
-          resource.isPDF
-              ? Icons.picture_as_pdf_rounded
-              : Icons.video_library_rounded,
-          color: resource.isPDF ? Colors.red : Colors.blue,
+          resource.isFile ? Icons.description_rounded : Icons.link_rounded,
+          color: resource.isFile ? Colors.red : Colors.blue,
           size: 20,
         ),
       ),
@@ -687,7 +712,7 @@ Widget _buildResourceItem(Resource resource, {VoidCallback? onDelete}) {
         style: const TextStyle(fontWeight: FontWeight.w600),
       ),
       subtitle: Text(
-        resource.isPDF ? 'Archivo' : 'Enlace',
+        resource.isFile ? 'Archivo' : 'Enlace',
         style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
       ),
       trailing: Row(
@@ -707,10 +732,10 @@ Widget _buildResourceItem(Resource resource, {VoidCallback? onDelete}) {
         ],
       ),
       onTap: () {
-        if (resource.isPDF) {
-          controller.openPdf(resource.url, resource.name);
+        if (resource.isFile) {
+          controller.openFile(resource.url, resource.name);
         } else {
-          controller.openVideo(resource.url);
+          controller.openLink(resource.url);
         }
       },
     ),

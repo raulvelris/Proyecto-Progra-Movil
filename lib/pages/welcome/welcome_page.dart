@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'dart:math' as math;
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -23,20 +22,7 @@ class WelcomePage extends StatelessWidget {
                 child: Container(
                   width: 140,
                   height: 140,
-                  child: CustomPaint(
-                    painter: StarBadgePainter(),
-                    child: const Center(
-                      child: Text(
-                        'EM',
-                        style: TextStyle(
-                          fontSize: 44,
-                          fontWeight: FontWeight.w900,
-                          color: Colors.white,
-                          letterSpacing: -1,
-                        ),
-                      ),
-                    ),
-                  ),
+                  child: Image.asset('images/icon.png', fit: BoxFit.contain),
                 ),
               ),
               const SizedBox(height: 24),
@@ -112,39 +98,4 @@ class WelcomePage extends StatelessWidget {
       ),
     );
   }
-}
-
-class StarBadgePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = const Color(0xFFE85C53)
-      ..style = PaintingStyle.fill;
-
-    final center = Offset(size.width / 2, size.height / 2);
-    final outerRadius = size.width / 2;
-    final innerRadius = outerRadius * 0.7;
-    final spikes = 16;
-
-    final path = Path();
-
-    for (int i = 0; i < spikes * 2; i++) {
-      final angle = (i * math.pi) / spikes;
-      final radius = i.isEven ? outerRadius : innerRadius;
-      final x = center.dx + radius * 0.95 * math.cos(angle - math.pi / 2);
-      final y = center.dy + radius * 0.95 * math.sin(angle - math.pi / 2);
-
-      if (i == 0) {
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
-      }
-    }
-    path.close();
-
-    canvas.drawPath(path, paint);
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }
