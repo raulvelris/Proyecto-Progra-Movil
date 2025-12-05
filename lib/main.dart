@@ -55,7 +55,17 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/welcome', page: () => WelcomePage()),
         GetPage(name: '/sign-up', page: () => SignUpPage()),
         GetPage(name: '/sign-in', page: () => SignInPage()),
-        GetPage(name: '/home', page: () => HomePage()),
+        GetPage(
+          name: '/home',
+          page: () {
+            final args = Get.arguments;
+            int initialIndex = 2;
+            if (args is Map<String, dynamic> && args['tabIndex'] is int) {
+              initialIndex = args['tabIndex'] as int;
+            }
+            return HomePage(initialIndex: initialIndex);
+          },
+        ),
 
         // Ruta con parámetro eventId
         GetPage(
@@ -72,10 +82,7 @@ class MyApp extends StatelessWidget {
           name: '/account-activated',
           page: () => const AccountActivatedPage(),
         ),
-        GetPage(
-          name: '/edit-profile-options',
-          page: () => EditProfilePage(),
-        ),
+        GetPage(name: '/edit-profile-options', page: () => EditProfilePage()),
         GetPage(name: '/invite-users', page: () => const InviteUsersPage()),
         GetPage(name: '/invite-list', page: () => const InviteListPage()),
         GetPage(

@@ -4,6 +4,7 @@ import 'event_item_controller.dart';
 import '../event_item_list/event_item_list_controller.dart';
 import '../../models/event.dart';
 import '../../controllers/event_controller.dart';
+import '../../pages/edit_event/edit_event_page.dart';
 
 /// Widget que representa un ítem de evento en la lista.
 /// Puede ser un evento público o creado por el usuario.
@@ -244,13 +245,10 @@ class EventItem extends StatelessWidget {
               if (isCreatedEvent) ...[
                 const SizedBox(width: 6),
                 _buildActionButton(
-                  icon: Icons.person_add_outlined,
+                  icon: Icons.edit_outlined,
                   color: Colors.blue.shade700,
                   onPressed: () {
-                    Get.toNamed(
-                      '/invite-users',
-                      arguments: {'eventId': event.eventId},
-                    );
+                    Get.to(() => EditEventPage(), arguments: event);
                   },
                 ),
                 const SizedBox(width: 4),

@@ -48,7 +48,14 @@ class EventController extends GetxController {
     // Devuelve los bytes de la imagen si es base64
     if (isBase64Image(image) && image.isNotEmpty) {
       try {
-        return base64Decode(image);
+        String base64String = image;
+        if (image.startsWith('data:image')) {
+          final parts = image.split(',');
+          if (parts.length > 1) {
+            base64String = parts[1];
+          }
+        }
+        return base64Decode(base64String);
       } catch (_) {
         return null;
       }

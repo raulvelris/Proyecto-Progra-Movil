@@ -53,8 +53,8 @@ class EventDetailsService {
                 ? Location(
                     locationId: 0,
                     address: eventoJson['ubicacion']['direccion'] ?? 'Sin ubicación',
-                    latitude: 0.0, // Las coordenadas se obtienen por separado
-                    longitude: 0.0, // Las coordenadas se obtienen por separado
+                    latitude: (eventoJson['ubicacion']['latitud'] ?? 0.0).toDouble(),
+                    longitude: (eventoJson['ubicacion']['longitud'] ?? 0.0).toDouble(),
                     eventId: eventoJson['evento_id'] ?? 0,
                   )
                 : Location(

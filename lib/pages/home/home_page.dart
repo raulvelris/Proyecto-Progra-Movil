@@ -7,14 +7,16 @@ import '../inbox/notifications_page.dart';
 import '../profile/profile_page.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({super.key, this.initialIndex = 2});
+
+  final int initialIndex;
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  int _currentIndex = 2;
+  late int _currentIndex;
 
   final List<Widget> _pages = [
     const CreatedEventsPage(),
@@ -23,6 +25,12 @@ class _HomePageState extends State<HomePage> {
     const NotificationsPage(),
     ProfilePage(),
   ];
+
+  @override
+  void initState() {
+    super.initState();
+    _currentIndex = widget.initialIndex;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +56,16 @@ class _HomePageState extends State<HomePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Flexible(child: _buildNavItem(0, 'Creados', Icons.edit_calendar_rounded)),
-          Flexible(child: _buildNavItem(1, 'Asistidos', Icons.event_available_rounded)),
+          Flexible(
+            child: _buildNavItem(0, 'Creados', Icons.edit_calendar_rounded),
+          ),
+          Flexible(
+            child: _buildNavItem(1, 'Asistidos', Icons.event_available_rounded),
+          ),
           Flexible(child: _buildNavItem(2, 'Públicos', Icons.public_rounded)),
-          Flexible(child: _buildNavItem(3, 'Avisos', Icons.notifications_rounded)),
+          Flexible(
+            child: _buildNavItem(3, 'Avisos', Icons.notifications_rounded),
+          ),
           Flexible(child: _buildNavItem(4, 'Perfil', Icons.person_rounded)),
         ],
       ),
