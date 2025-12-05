@@ -22,7 +22,8 @@ class EventDetailsPage extends StatefulWidget {
 }
 
 class _EventDetailsPageState extends State<EventDetailsPage> {
-  final EventParticipantsService _participantsService = EventParticipantsService();
+  final EventParticipantsService _participantsService =
+      EventParticipantsService();
   final EventCoordinatesService _coordinatesService = EventCoordinatesService();
   final ResourceService _resourceService = ResourceService();
   bool _isOrganizer = false;
@@ -49,14 +50,18 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
   }
 
   Future<void> _loadCoordinates() async {
-    final coords = await _coordinatesService.getEventCoordinates(widget.eventId);
+    final coords = await _coordinatesService.getEventCoordinates(
+      widget.eventId,
+    );
     setState(() {
       _coordinates = coords;
     });
   }
 
   Future<void> _openInGoogleMaps(double lat, double lng) async {
-    final url = Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lng');
+    final url = Uri.parse(
+      'https://www.google.com/maps/search/?api=1&query=$lat,$lng',
+    );
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);
     } else {
@@ -80,14 +85,14 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
 
   Future<Event?> _getEvent() async {
     final eventDetailsService = EventDetailsService();
-    
+
     // Intentar obtener del backend primero
     final event = await eventDetailsService.getEventDetails(widget.eventId);
-    
+
     if (event != null) {
       return event;
     }
-    
+
     // Si falla el backend, intentar obtener de los datos locales (fallback)
     final controller = Get.find<EventController>();
     await controller.ensureSeeded();
@@ -95,7 +100,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     final all = <Event>[];
     all.addAll(controller.publicEvents);
     all.addAll(controller.attendedEvents);
-    
+
     try {
       return all.firstWhere((e) => e.eventId == widget.eventId);
     } catch (_) {
@@ -114,12 +119,17 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
           return Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
-              title: const Text('Detalle de evento', style: TextStyle(color: Colors.black)),
+              title: const Text(
+                'Detalle de evento',
+                style: TextStyle(color: Colors.black),
+              ),
               backgroundColor: Colors.white,
               elevation: 0,
               iconTheme: const IconThemeData(color: Colors.black),
             ),
-            body: const Center(child: CircularProgressIndicator(color: Colors.black)),
+            body: const Center(
+              child: CircularProgressIndicator(color: Colors.black),
+            ),
           );
         }
 
@@ -129,7 +139,10 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
           return Scaffold(
             backgroundColor: Colors.white,
             appBar: AppBar(
-              title: const Text('Detalle de evento', style: TextStyle(color: Colors.black)),
+              title: const Text(
+                'Detalle de evento',
+                style: TextStyle(color: Colors.black),
+              ),
               backgroundColor: Colors.white,
               elevation: 0,
               iconTheme: const IconThemeData(color: Colors.black),
@@ -181,18 +194,33 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-
-                    const Text('Datos básicos',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            fontSize: 18)),
+                    const Text(
+                      'Datos básicos',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 18,
+                      ),
+                    ),
                     const SizedBox(height: 16),
-                    _InfoRow(icon: Icons.calendar_today_rounded, text: _fmtDate(e.startDate)),
                     _InfoRow(
-                        icon: Icons.access_time_rounded,
-                        text: '${_fmtTime(e.startDate)} – ${_fmtTime(e.endDate)}'),
-                    _InfoRow(icon: Icons.location_on_outlined, text: e.location?.address ?? '—'),
+                      icon: Icons.calendar_today_rounded,
+                      label: 'Inicio',
+                      value:
+                          '${_fmtDate(e.startDate)} - ${_fmtTime(e.startDate)}',
+                    ),
+                    const SizedBox(height: 8),
+                    _InfoRow(
+                      icon: Icons.event_available,
+                      label: 'Fin',
+                      value: '${_fmtDate(e.endDate)} - ${_fmtTime(e.endDate)}',
+                    ),
+                    const SizedBox(height: 8),
+                    _InfoRow(
+                      icon: Icons.location_on_outlined,
+                      label: 'Ubicación',
+                      value: e.location?.address ?? '—',
+                    ),
                     const SizedBox(height: 24),
 
                     if (_coordinates != null)
@@ -220,7 +248,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                                 ),
                                 children: [
                                   TileLayer(
-                                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                    urlTemplate:
+                                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                                     userAgentPackageName: 'com.eventmaster.app',
                                     maxZoom: 19,
                                   ),
@@ -256,7 +285,9 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                               icon: const Icon(Icons.map),
                               label: const Text('Abrir en Google Maps'),
                               style: OutlinedButton.styleFrom(
-                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 12,
+                                ),
                                 side: BorderSide(color: Colors.grey.shade300),
                               ),
                             ),
@@ -275,7 +306,11 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Icon(Icons.map_outlined, size: 48, color: Colors.grey.shade400),
+                              Icon(
+                                Icons.map_outlined,
+                                size: 48,
+                                color: Colors.grey.shade400,
+                              ),
                               const SizedBox(height: 8),
                               Text(
                                 'Cargando mapa...',
@@ -287,13 +322,23 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                       ),
                     const SizedBox(height: 24),
 
-                    const Text('Descripción',
-                        style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            fontSize: 18)),
+                    const Text(
+                      'Descripción',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.black,
+                        fontSize: 18,
+                      ),
+                    ),
                     const SizedBox(height: 8),
-                    Text(e.description, style: TextStyle(color: Colors.grey.shade700, fontSize: 15, height: 1.5)),
+                    Text(
+                      e.description,
+                      style: TextStyle(
+                        color: Colors.grey.shade700,
+                        fontSize: 15,
+                        height: 1.5,
+                      ),
+                    ),
                     const SizedBox(height: 24),
 
                     if (_isOrganizer && !_isCheckingOrganizer) ...[
@@ -303,11 +348,13 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                             child: _RoundedAction(
                               icon: Icons.people_outline,
                               label: 'Participantes',
-                              onTap: () => Get.toNamed('/participants',
-                                  arguments: {
-                                    'eventId': e.eventId,
-                                    'eventName': e.title,
-                                  }),
+                              onTap: () => Get.toNamed(
+                                '/participants',
+                                arguments: {
+                                  'eventId': e.eventId,
+                                  'eventName': e.title,
+                                },
+                              ),
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -315,15 +362,16 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                             child: _RoundedAction(
                               icon: Icons.person_add_outlined,
                               label: 'Invitar usuarios',
-                              onTap: () => Get.toNamed('/invite-users',
-                                  arguments: {'eventId': e.eventId}),
+                              onTap: () => Get.toNamed(
+                                '/invite-users',
+                                arguments: {'eventId': e.eventId},
+                              ),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 24),
                     ],
-
 
                     FutureBuilder<List<Resource>>(
                       future: _resourcesFuture,
@@ -332,11 +380,15 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                         final hasBackendResources = backendResources.isNotEmpty;
                         final hasLocalResources = e.resources.isNotEmpty;
 
-                        if (!hasBackendResources && !hasLocalResources && !_isOrganizer) {
+                        if (!hasBackendResources &&
+                            !hasLocalResources &&
+                            !_isOrganizer) {
                           return const SizedBox.shrink();
                         }
 
-                        final resources = hasBackendResources ? backendResources : e.resources;
+                        final resources = hasBackendResources
+                            ? backendResources
+                            : e.resources;
 
                         return Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -354,7 +406,8 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                               Padding(
                                 padding: const EdgeInsets.only(bottom: 12),
                                 child: OutlinedButton.icon(
-                                  onPressed: () => _openAddResourceFlow(e.eventId),
+                                  onPressed: () =>
+                                      _openAddResourceFlow(e.eventId),
                                   icon: const Icon(Icons.add),
                                   label: const Text('Agregar recurso'),
                                 ),
@@ -363,7 +416,10 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                               (resource) => _buildResourceItem(
                                 resource,
                                 onDelete: _isOrganizer && !_isCheckingOrganizer
-                                    ? () => _confirmDeleteResource(e.eventId, resource)
+                                    ? () => _confirmDeleteResource(
+                                        e.eventId,
+                                        resource,
+                                      )
                                     : null,
                               ),
                             ),
@@ -371,41 +427,54 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                         );
                       },
                     ),
-                  ]
-                )
-              )
-            ]
-          ),
-          bottomNavigationBar: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: isAttending ? Colors.red.shade50 : Colors.black,
-                  foregroundColor: isAttending ? Colors.red : Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  elevation: 0,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(16),
-                    side: isAttending ? BorderSide(color: Colors.red.shade100) : BorderSide.none,
-                  ),
-                ),
-                onPressed: () {
-                  if (isAttending) {
-                    controller.cancel(e.eventId);
-                  } else {
-                    controller.confirm(e.eventId);
-                  }
-                },
-                child: Text(
-                  isAttending ? 'Cancelar Asistencia' : 'Confirmar Asistencia',
-                  style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                  ],
                 ),
               ),
-            ),
+            ],
           ),
+          bottomNavigationBar: (!_isCheckingOrganizer && _isOrganizer)
+              ? null
+              : SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                    child: ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: isAttending
+                            ? Colors.red.shade50
+                            : Colors.black,
+                        foregroundColor: isAttending
+                            ? Colors.red
+                            : Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        elevation: 0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                          side: isAttending
+                              ? BorderSide(color: Colors.red.shade100)
+                              : BorderSide.none,
+                        ),
+                      ),
+                      onPressed: () {
+                        if (isAttending) {
+                          controller.cancel(e.eventId);
+                        } else {
+                          controller.confirm(e.eventId);
+                        }
+                      },
+                      child: Text(
+                        isAttending
+                            ? 'Cancelar Asistencia'
+                            : 'Confirmar Asistencia',
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
         );
-      }
+      },
     );
   }
 
@@ -487,21 +556,29 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     }
   }
 
-      static String _two(int x) => x.toString().padLeft(2, '0');
-      static String _fmtDate(DateTime d) => '${_two(d.day)}/${_two(d.month)}/${d.year}';
-      static String _fmtTime(DateTime d) => '${_two(d.hour)}:${_two(d.minute)}';
+  static String _two(int x) => x.toString().padLeft(2, '0');
+  static String _fmtDate(DateTime d) =>
+      '${_two(d.day)}/${_two(d.month)}/${d.year}';
+  static String _fmtTime(DateTime d) => '${_two(d.hour)}:${_two(d.minute)}';
 }
 
 class _InfoRow extends StatelessWidget {
-  const _InfoRow({required this.icon, required this.text});
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
   final IconData icon;
-  final String text;
+  final String label;
+  final String value;
 
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
             padding: const EdgeInsets.all(8),
@@ -512,7 +589,30 @@ class _InfoRow extends StatelessWidget {
             child: Icon(icon, size: 20, color: Colors.black),
           ),
           const SizedBox(width: 12),
-          Expanded(child: Text(text, style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500))),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: TextStyle(
+                    fontSize: 12,
+                    color: Colors.grey.shade600,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 15,
+                    color: Colors.black,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );
@@ -544,7 +644,11 @@ class _RoundedAction extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               label,
-              style: const TextStyle(color: Colors.black, fontWeight: FontWeight.w600, fontSize: 13),
+              style: const TextStyle(
+                color: Colors.black,
+                fontWeight: FontWeight.w600,
+                fontSize: 13,
+              ),
             ),
           ],
         ),
@@ -571,13 +675,21 @@ Widget _buildResourceItem(Resource resource, {VoidCallback? onDelete}) {
           borderRadius: BorderRadius.circular(8),
         ),
         child: Icon(
-          resource.isPDF ? Icons.picture_as_pdf_rounded : Icons.video_library_rounded,
+          resource.isPDF
+              ? Icons.picture_as_pdf_rounded
+              : Icons.video_library_rounded,
           color: resource.isPDF ? Colors.red : Colors.blue,
           size: 20,
         ),
       ),
-      title: Text(resource.name, style: const TextStyle(fontWeight: FontWeight.w600)),
-      subtitle: Text(resource.isPDF ? 'Archivo' : 'Enlace', style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
+      title: Text(
+        resource.name,
+        style: const TextStyle(fontWeight: FontWeight.w600),
+      ),
+      subtitle: Text(
+        resource.isPDF ? 'Archivo' : 'Enlace',
+        style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+      ),
       trailing: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -587,7 +699,11 @@ Widget _buildResourceItem(Resource resource, {VoidCallback? onDelete}) {
               color: Colors.red.shade400,
               onPressed: onDelete,
             ),
-          Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.grey.shade400),
+          Icon(
+            Icons.arrow_forward_ios_rounded,
+            size: 16,
+            color: Colors.grey.shade400,
+          ),
         ],
       ),
       onTap: () {
