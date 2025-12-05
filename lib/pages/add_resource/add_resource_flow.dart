@@ -3,16 +3,16 @@ import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
-/// Datos simples que devuelve el flujo de agregar recurso
-/// name: nombre del recurso
-/// url: enlace del recurso
-/// type: 1 = Archivo, 2 = Enlace
 class AddResourceResult {
   final String name;
   final String url;
   final int type;
 
-  AddResourceResult({required this.name, required this.url, required this.type});
+  AddResourceResult({
+    required this.name,
+    required this.url,
+    required this.type,
+  });
 }
 
 /// Pantalla inicial: elegir tipo de recurso
@@ -97,7 +97,7 @@ class _BigOptionButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onTap,
         style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 32),
+          padding: const EdgeInsets.symmetric(vertical: 50),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(16),
           ),
@@ -134,7 +134,8 @@ class _AddResourceLinkPageState extends State<AddResourceLinkPage> {
   void _updateState() {
     setState(() {
       _canSubmit =
-          _nameController.text.trim().isNotEmpty && _linkController.text.trim().isNotEmpty;
+          _nameController.text.trim().isNotEmpty &&
+          _linkController.text.trim().isNotEmpty;
     });
   }
 
@@ -285,7 +286,7 @@ class _AddResourceFilePageState extends State<AddResourceFilePage> {
             ),
             const SizedBox(height: 8),
             SizedBox(
-              height: 200,
+              height: 400,
               width: double.infinity,
               child: GestureDetector(
                 onTap: () async {
@@ -307,7 +308,9 @@ class _AddResourceFilePageState extends State<AddResourceFilePage> {
                     color: Colors.grey.shade50,
                     borderRadius: BorderRadius.circular(24),
                     border: Border.all(
-                      color: _pickedFile == null ? Colors.grey.shade300 : Colors.transparent,
+                      color: _pickedFile == null
+                          ? Colors.grey.shade300
+                          : Colors.transparent,
                       width: 1.5,
                     ),
                   ),
@@ -370,7 +373,10 @@ class _AddResourceFilePageState extends State<AddResourceFilePage> {
                                     ),
                                   ],
                                 ),
-                                child: const Icon(Icons.edit, color: Colors.black),
+                                child: const Icon(
+                                  Icons.edit,
+                                  color: Colors.black,
+                                ),
                               ),
                             ),
                           ],

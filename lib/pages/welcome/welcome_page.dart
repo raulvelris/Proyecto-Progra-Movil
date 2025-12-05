@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'dart:math' as math;
 
 class WelcomePage extends StatelessWidget {
   const WelcomePage({super.key});
@@ -23,10 +22,7 @@ class WelcomePage extends StatelessWidget {
                 child: Container(
                   width: 140,
                   height: 140,
-                  child: Image.asset(
-                    'images/icon.png',
-                    fit: BoxFit.contain,
-                  ),
+                  child: Image.asset('images/icon.png', fit: BoxFit.contain),
                 ),
               ),
               const SizedBox(height: 24),

@@ -39,8 +39,8 @@ class Resource {
     };
   }
 
-  bool get isPDF => resourceType == 1;
-  bool get isVideo => resourceType == 2;
+  bool get isFile => resourceType == 1;
+  bool get isLink => resourceType == 2;
 }
 
 class ResourceType {

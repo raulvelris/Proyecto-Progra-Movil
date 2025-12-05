@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -204,7 +203,10 @@ class EditEventPage extends StatelessWidget {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Colors.black, width: 1.5),
+                      borderSide: const BorderSide(
+                        color: Colors.black,
+                        width: 1.5,
+                      ),
                     ),
                   ),
                   dropdownColor: Colors.white,
@@ -303,7 +305,9 @@ class EditEventPage extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           borderSide: const BorderSide(color: Colors.black, width: 1.5),
         ),
-        suffixIcon: suffixIcon != null ? Icon(suffixIcon, color: Colors.grey.shade600) : null,
+        suffixIcon: suffixIcon != null
+            ? Icon(suffixIcon, color: Colors.grey.shade600)
+            : null,
       ),
     );
   }
@@ -353,13 +357,21 @@ class _ImageSection extends StatelessWidget {
                         fit: BoxFit.cover,
                         errorBuilder: (context, error, stackTrace) {
                           return Center(
-                            child: Icon(Icons.broken_image_outlined, size: 48, color: Colors.grey.shade400),
+                            child: Icon(
+                              Icons.broken_image_outlined,
+                              size: 48,
+                              color: Colors.grey.shade400,
+                            ),
                           );
                         },
                       );
                     }
                     return Center(
-                      child: Icon(Icons.image_outlined, size: 48, color: Colors.grey.shade400),
+                      child: Icon(
+                        Icons.image_outlined,
+                        size: 48,
+                        color: Colors.grey.shade400,
+                      ),
                     );
                   }),
                 ),
@@ -382,7 +394,11 @@ class _ImageSection extends StatelessWidget {
                           ),
                         ],
                       ),
-                      child: const Icon(Icons.edit, size: 20, color: Colors.black),
+                      child: const Icon(
+                        Icons.edit,
+                        size: 20,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
                 ),
@@ -483,15 +499,16 @@ class _DateTile extends StatelessWidget {
           children: [
             Text(
               label,
-              style: TextStyle(
-                fontSize: 12,
-                color: Colors.grey.shade600,
-              ),
+              style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
             ),
             const SizedBox(height: 4),
             Row(
               children: [
-                Icon(Icons.calendar_today_rounded, size: 16, color: Colors.grey.shade600),
+                Icon(
+                  Icons.calendar_today_rounded,
+                  size: 16,
+                  color: Colors.grey.shade600,
+                ),
                 const SizedBox(width: 8),
                 Expanded(
                   child: Text(
