@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
 import 'dart:io';
 import '../create_event_controller.dart';
 
@@ -173,20 +174,34 @@ class PreviewStep extends StatelessWidget {
                     ),
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(16),
-                      child: GoogleMap(
-                        initialCameraPosition: const CameraPosition(
-                          target: LatLng(-12.0464, -77.0428), // Lima, Perú
-                          zoom: 15,
-                        ),
-                        markers: {
-                          const Marker(
-                            markerId: MarkerId('event_location'),
-                            position: LatLng(-12.0464, -77.0428),
+                      child: FlutterMap(
+                        options: MapOptions(
+                          initialCenter: LatLng(-12.0464, -77.0428), // Lima, Perú
+                          initialZoom: 15,
+                          interactionOptions: const InteractionOptions(
+                            flags: InteractiveFlag.none, // Deshabilitar interacciones
                           ),
-                        },
-                        zoomControlsEnabled: false,
-                        mapToolbarEnabled: false,
-                        myLocationButtonEnabled: false,
+                        ),
+                        children: [
+                          TileLayer(
+                            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                            userAgentPackageName: 'com.eventmaster.app',
+                          ),
+                          MarkerLayer(
+                            markers: [
+                              Marker(
+                                point: LatLng(-12.0464, -77.0428),
+                                width: 40,
+                                height: 40,
+                                child: Icon(
+                                  Icons.location_on,
+                                  color: Colors.red.shade600,
+                                  size: 40,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),

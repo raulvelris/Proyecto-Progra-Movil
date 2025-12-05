@@ -21,6 +21,7 @@ import 'pages/sign_up/account_activated_page.dart';
 import 'pages/profile/edit_profile_options_page.dart';
 import 'pages/invite/invite_users_page.dart';
 import 'pages/invite/invite_list_page.dart';
+import 'pages/participants/list_participants_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -77,6 +78,16 @@ class MyApp extends StatelessWidget {
         ),
         GetPage(name: '/invite-users', page: () => const InviteUsersPage()),
         GetPage(name: '/invite-list', page: () => const InviteListPage()),
+        GetPage(
+          name: '/participants',
+          page: () {
+            final args = Get.arguments as Map<String, dynamic>;
+            return ListParticipantsPage(
+              eventId: args['eventId'] as int,
+              eventName: args['eventName'] as String,
+            );
+          },
+        ),
       ],
       debugShowCheckedModeBanner: false,
     );

@@ -13,12 +13,6 @@ class Env {
     }
   }
 
-  static String get googleMapsApiKey {
-    final key = dotenv.env['GOOGLE_MAPS_API_KEY'] ?? '';
-    if (key.isEmpty) debugPrint('GOOGLE_MAPS_API_KEY vacío');
-    return key;
-  }
-
   static String get apiUrl {
     final url = dotenv.env['API_URL'] ?? 'http://localhost:5000';
     if (url.isEmpty) debugPrint('API_URL vacío');

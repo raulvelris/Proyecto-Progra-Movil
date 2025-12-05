@@ -106,4 +106,41 @@ class EventParticipantsService {
       return false;
     }
   }
+
+  /// Elimina un participante del evento
+  Future<Map<String, dynamic>> deleteParticipant(int eventId, int userId) async {
+    try {
+      final url = '${Env.apiUrl}/api/eventos/$eventId/participantes/$userId/eliminar';
+      print('[EventParticipantsService] Eliminando participante: $url');
+      
+      final token = _sessionService.userToken;
+
+      final response = await http.post(
+        Uri.parse(url),
+        headers: {
+          'Content-Type': 'application/json',
+          if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
+        },
+      );
+
+      print('[EventParticipantsService] Status code: ${response.statusCode}');
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        print('[EventParticipantsService] Respuesta: $data');
+        return data;
+      } else {
+        final Map<String, dynamic> errorData = json.decode(response.body);
+        print('[EventParticipantsService] Error: $errorData');
+        return errorData;
+      }
+    } catch (e, stackTrace) {
+      print('[EventParticipantsService] Error al eliminar participante: $e');
+      print('[EventParticipantsService] Stack trace: $stackTrace');
+      return {
+        'success': false,
+        'message': 'Error al eliminar participante: $e'
+      };
+    }
+  }
 }

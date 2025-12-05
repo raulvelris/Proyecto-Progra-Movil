@@ -12,18 +12,6 @@ plugins {
     id("dev.flutter.flutter-gradle-plugin")
 }
 
-val dotenv = Properties().apply {
-    val envFile = rootProject.file("../../.env")
-    if (envFile.exists()) {
-        load(FileInputStream(envFile))
-        println("Archivo .env cargado correctamente desde: ${envFile.path}")
-    } else {
-        println("No se encontró el archivo .env en: ${envFile.path}")
-    }
-}
-
-val googleMapsApiKey: String = dotenv.getProperty("GOOGLE_MAPS_API_KEY", "")
-
 android {
     namespace = "com.eventmaster.app"
     compileSdk = flutter.compileSdkVersion
@@ -44,8 +32,6 @@ android {
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
         versionName = flutter.versionName
-
-        resValue("string", "google_maps_api_key", googleMapsApiKey)
     }
 }
 

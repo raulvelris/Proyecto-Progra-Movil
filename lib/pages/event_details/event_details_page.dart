@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../controllers/event_controller.dart';
 import '../../models/event.dart';
 import '../../models/resource.dart';
 import '../../services/event_details_service.dart';
 import '../../services/event_participants_service.dart';
+import '../../services/event_coordinates_service.dart';
 import '../../services/resource_service.dart';
 import '../add_resource/add_resource_flow.dart';
 
@@ -21,11 +23,13 @@ class EventDetailsPage extends StatefulWidget {
 
 class _EventDetailsPageState extends State<EventDetailsPage> {
   final EventParticipantsService _participantsService = EventParticipantsService();
+  final EventCoordinatesService _coordinatesService = EventCoordinatesService();
   final ResourceService _resourceService = ResourceService();
   bool _isOrganizer = false;
   bool _isCheckingOrganizer = true;
   late Future<Event?> _eventFuture;
   late Future<List<Resource>> _resourcesFuture;
+  Map<String, double>? _coordinates;
 
   @override
   void initState() {
@@ -33,6 +37,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
     _eventFuture = _getEvent();
     _resourcesFuture = _loadResources();
     _checkIfOrganizer();
+    _loadCoordinates();
   }
 
   Future<void> _checkIfOrganizer() async {
@@ -41,6 +46,28 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
       _isOrganizer = isOrg;
       _isCheckingOrganizer = false;
     });
+  }
+
+  Future<void> _loadCoordinates() async {
+    final coords = await _coordinatesService.getEventCoordinates(widget.eventId);
+    setState(() {
+      _coordinates = coords;
+    });
+  }
+
+  Future<void> _openInGoogleMaps(double lat, double lng) async {
+    final url = Uri.parse('https://www.google.com/maps/search/?api=1&query=$lat,$lng');
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      Get.snackbar(
+        'Error',
+        'No se pudo abrir Google Maps',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+      );
+    }
   }
 
   Future<List<Resource>> _loadResources() async {
@@ -168,39 +195,93 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                     _InfoRow(icon: Icons.location_on_outlined, text: e.location?.address ?? '—'),
                     const SizedBox(height: 24),
 
-                    Container(
-                      height: 200,
-                      decoration: BoxDecoration(
-                        color: Colors.grey.shade100,
-                        borderRadius: BorderRadius.circular(16),
-                        border: Border.all(color: Colors.grey.shade200),
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(16),
-                        child: GoogleMap(
-                          initialCameraPosition: CameraPosition(
-                            target: LatLng(
-                              e.location!.latitude,
-                              e.location!.longitude,
+                    if (_coordinates != null)
+                      Column(
+                        children: [
+                          Container(
+                            height: 200,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade100,
+                              borderRadius: BorderRadius.circular(16),
+                              border: Border.all(color: Colors.grey.shade200),
                             ),
-                            zoom: 15,
-                          ),
-                            markers: {
-                              Marker(
-                                markerId: const MarkerId('event_location'),
-                                position: LatLng(
-                                  e.location!.latitude,
-                                  e.location!.longitude,
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: FlutterMap(
+                                options: MapOptions(
+                                  initialCenter: LatLng(
+                                    _coordinates!['latitude']!,
+                                    _coordinates!['longitude']!,
+                                  ),
+                                  initialZoom: 15,
+                                  interactionOptions: const InteractionOptions(
+                                    flags: InteractiveFlag.all,
+                                  ),
                                 ),
-                                infoWindow: InfoWindow(
-                                  title: e.title,
-                                  snippet: e.location!.address,
-                                ),
+                                children: [
+                                  TileLayer(
+                                    urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                                    userAgentPackageName: 'com.eventmaster.app',
+                                    maxZoom: 19,
+                                  ),
+                                  MarkerLayer(
+                                    markers: [
+                                      Marker(
+                                        point: LatLng(
+                                          _coordinates!['latitude']!,
+                                          _coordinates!['longitude']!,
+                                        ),
+                                        width: 40,
+                                        height: 40,
+                                        child: Icon(
+                                          Icons.location_on,
+                                          color: Colors.red.shade600,
+                                          size: 40,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
                               ),
-                            },
-                            myLocationEnabled: true,
-                            myLocationButtonEnabled: true,
-                            zoomControlsEnabled: true,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          SizedBox(
+                            width: double.infinity,
+                            child: OutlinedButton.icon(
+                              onPressed: () => _openInGoogleMaps(
+                                _coordinates!['latitude']!,
+                                _coordinates!['longitude']!,
+                              ),
+                              icon: const Icon(Icons.map),
+                              label: const Text('Abrir en Google Maps'),
+                              style: OutlinedButton.styleFrom(
+                                padding: const EdgeInsets.symmetric(vertical: 12),
+                                side: BorderSide(color: Colors.grey.shade300),
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    else
+                      Container(
+                        height: 200,
+                        decoration: BoxDecoration(
+                          color: Colors.grey.shade100,
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: Colors.grey.shade200),
+                        ),
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.map_outlined, size: 48, color: Colors.grey.shade400),
+                              const SizedBox(height: 8),
+                              Text(
+                                'Cargando mapa...',
+                                style: TextStyle(color: Colors.grey.shade600),
+                              ),
+                            ],
                           ),
                         ),
                       ),
@@ -220,13 +301,16 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                         children: [
                           Expanded(
                             child: _RoundedAction(
-                              icon: Icons.list_alt_rounded,
-                              label: 'Lista invitados',
-                              onTap: () => Get.toNamed('/invite-list',
-                                  arguments: {'eventId': e.eventId}),
+                              icon: Icons.people_outline,
+                              label: 'Participantes',
+                              onTap: () => Get.toNamed('/participants',
+                                  arguments: {
+                                    'eventId': e.eventId,
+                                    'eventName': e.title,
+                                  }),
                             ),
                           ),
-                          const SizedBox(width: 16),
+                          const SizedBox(width: 12),
                           Expanded(
                             child: _RoundedAction(
                               icon: Icons.person_add_outlined,
@@ -239,6 +323,7 @@ class _EventDetailsPageState extends State<EventDetailsPage> {
                       ),
                       const SizedBox(height: 24),
                     ],
+
 
                     FutureBuilder<List<Resource>>(
                       future: _resourcesFuture,

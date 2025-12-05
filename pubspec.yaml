@@ -15,7 +15,8 @@ dependencies:
   cupertino_icons: ^1.0.8
   get: ^4.6.5
   shared_preferences: ^2.2.2
-  google_maps_flutter: ^2.5.0
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
   geolocator: ^14.0.2
   open_file: ^3.2.1
   url_launcher: ^6.1.11

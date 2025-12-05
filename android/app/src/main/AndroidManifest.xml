@@ -10,18 +10,10 @@
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" android:maxSdkVersion="32" />
 
-    <!-- OJO: sin READ/WRITE/MANAGE_EXTERNAL_STORAGE ni requestLegacyExternalStorage
-         (no son necesarios para Maps y generan problemas en Android nuevos). -->
-
     <application
         android:name="${applicationName}"
         android:label="EventMaster"
         android:icon="@mipmap/ic_launcher">
-
-        <!-- Clave de Google Maps (definida en res/values/secrets.xml) -->
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="@string/google_maps_api_key" />
 
         <activity
             android:name=".MainActivity"
@@ -49,8 +41,22 @@
             android:value="2" />
     </application>
 
-    <!-- Visibilidad de paquetes (está bien dejarlo) -->
+    <!-- Visibilidad de paquetes -->
     <queries>
+        <!-- Para abrir Google Maps -->
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="geo" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="https" />
+        </intent>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:scheme="http" />
+        </intent>
+        <!-- Para procesamiento de texto -->
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT" />
             <data android:mimeType="text/plain" />
