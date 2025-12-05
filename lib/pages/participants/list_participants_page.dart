@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import '../../services/event_participants_service.dart';
 import '../../services/session_service.dart';
 
@@ -184,7 +185,7 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
                 child: _buildStatCard(
                   'Organizador',
                   '${_participants.where((p) => p.rol.toLowerCase().contains('organizador')).length}',
-                  Colors.purple,
+                  Colors.red,
                   Icons.admin_panel_settings,
                 ),
               ),
@@ -409,12 +410,12 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
     
     if (rolLower.contains('organizador')) {
       label = 'Organizador';
-      bg = Colors.purple;
+      bg = Colors.red;
       fg = Colors.white;
       icon = Icons.admin_panel_settings;
     } else if (rolLower.contains('coorganizador')) {
       label = 'Co-org';
-      bg = Colors.purple;
+      bg = Colors.red;
       fg = Colors.white;
       icon = Icons.supervisor_account;
     } else {
@@ -507,9 +508,9 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
   Color _getRoleColor(String rol) {
     final rolLower = rol.toLowerCase();
     if (rolLower.contains('organizador')) {
-      return Colors.purple;
+      return Colors.red;
     } else if (rolLower.contains('coorganizador')) {
-      return Colors.purple;
+      return Colors.red;
     } else {
       return Colors.blue;
     }
@@ -710,89 +711,46 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
 
       if (result['success'] == true) {
         // Show success message
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                children: [
-                  const Icon(Icons.check_circle, color: Colors.white),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      result['message'] ?? 'Participante eliminado correctamente',
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  ),
-                ],
-              ),
-              backgroundColor: Colors.green.shade600,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              duration: const Duration(seconds: 3),
-            ),
-          );
-          
-          // Reload participants list
-          _loadParticipants();
-        }
+        Get.snackbar(
+          'Éxito',
+          result['message'] ?? 'Participante eliminado correctamente',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          margin: const EdgeInsets.all(16),
+          borderRadius: 12,
+        );
+        
+        // Reload participants list
+        _loadParticipants();
       } else {
         // Show error message
-        if (mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Row(
-                children: [
-                  const Icon(Icons.error_outline, color: Colors.white),
-                  const SizedBox(width: 12),
-                  Expanded(
-                    child: Text(
-                      result['message'] ?? 'Error al eliminar participante',
-                      style: const TextStyle(fontSize: 14),
-                    ),
-                  ),
-                ],
-              ),
-              backgroundColor: Colors.red.shade600,
-              behavior: SnackBarBehavior.floating,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10),
-              ),
-              duration: const Duration(seconds: 4),
-            ),
-          );
-        }
+        Get.snackbar(
+          'Error',
+          result['message'] ?? 'Error al eliminar participante',
+          snackPosition: SnackPosition.TOP,
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+          margin: const EdgeInsets.all(16),
+          borderRadius: 12,
+          duration: const Duration(seconds: 4),
+        );
       }
     } catch (e) {
       // Close loading dialog
       if (mounted) Navigator.of(context).pop();
       
       // Show error message
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Row(
-              children: [
-                const Icon(Icons.error_outline, color: Colors.white),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    'Error: $e',
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                ),
-              ],
-            ),
-            backgroundColor: Colors.red.shade600,
-            behavior: SnackBarBehavior.floating,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(10),
-            ),
-            duration: const Duration(seconds: 4),
-          ),
-        );
-      }
+      Get.snackbar(
+        'Error',
+        'Error: $e',
+        snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        margin: const EdgeInsets.all(16),
+        borderRadius: 12,
+        duration: const Duration(seconds: 4),
+      );
     }
   }
 }

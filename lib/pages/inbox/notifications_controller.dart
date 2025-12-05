@@ -1,5 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import '../../models/notificacion.dart';
+import '../../models/notificacion.dart' as models;
 import '../../models/invitation.dart';
 import '../../services/notification_service.dart';
 
@@ -9,7 +10,7 @@ class NotificationsController extends GetxController {
   final NotificationService _notificationService = NotificationService();
 
   // Lista observable de notificaciones
-  final RxList<Notification> notifications = <Notification>[].obs;
+  final RxList<models.Notification> notifications = <models.Notification>[].obs;
 
   // Estado de carga
   final RxBool isLoading = true.obs;
@@ -52,7 +53,12 @@ class NotificationsController extends GetxController {
           invitationId,
           InvitationStatus.accepted,
         ); // Actualizar estado
-        Get.snackbar('Éxito', 'Invitación aceptada'); // Mostrar mensaje
+        Get.snackbar(
+          'Éxito',
+          'Invitación aceptada',
+          backgroundColor: Colors.green,
+          colorText: Colors.white,
+        ); // Mostrar mensaje
       } else {
         Get.snackbar(
           'Error',
@@ -78,7 +84,12 @@ class NotificationsController extends GetxController {
           invitationId,
           InvitationStatus.declined,
         ); // Actualizar estado
-        Get.snackbar('Éxito', 'Invitación rechazada'); // Mostrar mensaje
+        Get.snackbar(
+          'Éxito',
+          'Invitación rechazada',
+          backgroundColor: Colors.red,
+          colorText: Colors.white,
+        ); // Mostrar mensaje
       } else {
         Get.snackbar(
           'Error',
@@ -110,8 +121,8 @@ class NotificationsController extends GetxController {
   }
 
   void _reorderNotifications() {
-    final pendingOrGeneral = <Notification>[];
-    final processed = <Notification>[];
+    final pendingOrGeneral = <models.Notification>[];
+    final processed = <models.Notification>[];
 
     for (final notification in notifications) {
       final status = notification.invitation?.status;

@@ -106,7 +106,7 @@ class EventItem extends StatelessWidget {
                             'Éxito',
                             'Evento eliminado correctamente',
                             snackPosition: SnackPosition.TOP,
-                            backgroundColor: Colors.black,
+                            backgroundColor: Colors.red,
                             colorText: Colors.white,
                             margin: const EdgeInsets.all(16),
                             borderRadius: 12,

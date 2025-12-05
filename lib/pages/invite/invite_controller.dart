@@ -115,6 +115,21 @@ class InviteUsersController extends GetxController {
     }
   }
 
+  /// Obtiene el color para el label según el tipo
+  Color getNonEligibleColor(int userId, {bool background = false}) {
+    final tipo = nonEligibleUsers[userId];
+    if (tipo == null) return background ? Colors.red.shade50 : Colors.red.shade700;
+    
+    switch (tipo) {
+      case 'participante':
+        return background ? Colors.green.shade50 : Colors.green.shade700;
+      case 'pendiente_asistente':
+        return background ? Colors.orange.shade50 : Colors.orange.shade700;
+      default:
+        return background ? Colors.red.shade50 : Colors.red.shade700;
+    }
+  }
+
   /// Alterna la selección de un usuario (solo si es elegible)
   void toggleSelection(int userId) {
     // No permitir seleccionar usuarios no elegibles
@@ -192,6 +207,8 @@ class InviteUsersController extends GetxController {
         'Éxito',
         'Invitaciones enviadas a ${selectedUserIds.length} usuario(s)',
         snackPosition: SnackPosition.TOP,
+        backgroundColor: Colors.green,
+        colorText: Colors.white,
       );
 
       // Limpiar estado después de enviar

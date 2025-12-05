@@ -240,14 +240,14 @@ class InviteUsersPage extends StatelessWidget {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: Colors.red.shade50,
+                                    color: controller.getNonEligibleColor(user.id, background: true),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
                                     controller.getNonEligibleLabel(user.id),
                                     style: TextStyle(
                                       fontSize: 11,
-                                      color: Colors.red.shade700,
+                                      color: controller.getNonEligibleColor(user.id),
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
