@@ -11,7 +11,6 @@ import 'controllers/event_controller.dart';
 
 // Páginas
 import 'pages/welcome/welcome_page.dart';
-import 'pages/welcome/splash_page.dart';
 import 'pages/sign_up/sign_up_page.dart';
 import 'pages/sign_in/sign_in_page.dart';
 import 'pages/home/home_page.dart';
@@ -49,9 +48,8 @@ class MyApp extends StatelessWidget {
       theme: materialTheme.light(),
       darkTheme: materialTheme.dark(),
       themeMode: ThemeMode.light,
-      initialRoute: '/splash',
+      initialRoute: '/welcome',
       getPages: [
-        GetPage(name: '/splash', page: () => const SplashPage()),
         GetPage(name: '/welcome', page: () => WelcomePage()),
         GetPage(name: '/sign-up', page: () => SignUpPage()),
         GetPage(name: '/sign-in', page: () => SignInPage()),
