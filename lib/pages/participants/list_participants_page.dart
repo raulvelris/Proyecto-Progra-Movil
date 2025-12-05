@@ -18,9 +18,10 @@ class ListParticipantsPage extends StatefulWidget {
 }
 
 class _ListParticipantsPageState extends State<ListParticipantsPage> {
-  final EventParticipantsService _participantsService = EventParticipantsService();
+  final EventParticipantsService _participantsService =
+      EventParticipantsService();
   final SessionService _sessionService = SessionService();
-  
+
   List<Participant> _participants = [];
   bool _isLoading = true;
   String? _errorMessage;
@@ -39,9 +40,13 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
     });
 
     try {
-      final participants = await _participantsService.getEventParticipants(widget.eventId);
-      final isOrganizer = await _participantsService.isUserOrganizer(widget.eventId);
-      
+      final participants = await _participantsService.getEventParticipants(
+        widget.eventId,
+      );
+      final isOrganizer = await _participantsService.isUserOrganizer(
+        widget.eventId,
+      );
+
       setState(() {
         _participants = participants;
         _isOrganizer = isOrganizer;
@@ -53,6 +58,55 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
         _isLoading = false;
       });
     }
+  }
+
+  Widget _buildAvatarImage(Participant participant, String displayName) {
+    final foto = participant.fotoPerfil;
+
+    if (foto != null && foto.isNotEmpty) {
+      // data URL (base64)
+      if (foto.startsWith('data:')) {
+        try {
+          final uriData = UriData.parse(foto);
+          final bytes = uriData.contentAsBytes();
+          return ClipOval(child: Image.memory(bytes, fit: BoxFit.cover));
+        } catch (_) {
+          // Si falla el parseo, caemos al fallback de iniciales
+        }
+      } else {
+        // URL normal
+        return ClipOval(
+          child: Image.network(
+            foto,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) {
+              return Center(
+                child: Text(
+                  _getInitials(displayName),
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      }
+    }
+
+    // Fallback: iniciales
+    return Center(
+      child: Text(
+        _getInitials(displayName),
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+        ),
+      ),
+    );
   }
 
   @override
@@ -118,10 +172,7 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
               Text(
                 _errorMessage!,
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.grey.shade700,
-                  fontSize: 16,
-                ),
+                style: TextStyle(color: Colors.grey.shade700, fontSize: 16),
               ),
               const SizedBox(height: 24),
               ElevatedButton.icon(
@@ -131,7 +182,10 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 12,
+                  ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                   ),
@@ -202,7 +256,7 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
           ),
         ),
         const SizedBox(height: 8),
-        
+
         // Participants list
         Expanded(
           child: RefreshIndicator(
@@ -223,7 +277,13 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
     );
   }
 
-  Widget _buildStatCard(String label, String value, Color color, IconData icon, {bool isTotal = false}) {
+  Widget _buildStatCard(
+    String label,
+    String value,
+    Color color,
+    IconData icon, {
+    bool isTotal = false,
+  }) {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -263,7 +323,7 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
     final displayName = fullName.isNotEmpty ? fullName : participant.correo;
     final currentUserId = _sessionService.userId;
     final isCurrentUser = currentUserId == participant.usuarioId.toString();
-    
+
     return Stack(
       clipBehavior: Clip.none,
       children: [
@@ -288,17 +348,14 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                // Avatar
+                // Avatar con foto real si existe (URL o data:), o iniciales como fallback
                 Container(
                   width: 56,
                   height: 56,
                   decoration: BoxDecoration(
                     color: _getRoleColor(participant.rol),
                     shape: BoxShape.circle,
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 2,
-                    ),
+                    border: Border.all(color: Colors.white, width: 2),
                     boxShadow: [
                       BoxShadow(
                         color: _getRoleColor(participant.rol).withOpacity(0.3),
@@ -307,19 +364,10 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
                       ),
                     ],
                   ),
-                  child: Center(
-                    child: Text(
-                      _getInitials(displayName),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                      ),
-                    ),
-                  ),
+                  child: _buildAvatarImage(participant, displayName),
                 ),
                 const SizedBox(width: 16),
-                
+
                 // Info
                 Expanded(
                   child: Column(
@@ -346,9 +394,11 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
                     ],
                   ),
                 ),
-                
+
                 // Delete button (only for organizers)
-                if (_isOrganizer && !participant.rol.toLowerCase().contains('organizador') && !isCurrentUser)
+                if (_isOrganizer &&
+                    !participant.rol.toLowerCase().contains('organizador') &&
+                    !isCurrentUser)
                   IconButton(
                     icon: const Icon(Icons.close, color: Colors.red, size: 24),
                     onPressed: () => _showDeleteConfirmation(participant),
@@ -360,7 +410,7 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
             ),
           ),
         ),
-        
+
         // Floating badges at the top
         Positioned(
           top: 0,
@@ -370,7 +420,10 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
             children: [
               if (isCurrentUser) ...[
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 6,
+                  ),
                   decoration: BoxDecoration(
                     color: Colors.black,
                     borderRadius: BorderRadius.circular(20),
@@ -407,7 +460,7 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
     late final IconData icon;
 
     final rolLower = rol.toLowerCase();
-    
+
     if (rolLower.contains('organizador')) {
       label = 'Organizador';
       bg = Colors.red;
@@ -462,7 +515,7 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
     late final IconData icon;
 
     final rolLower = rol.toLowerCase();
-    
+
     if (rolLower.contains('organizador')) {
       label = 'Organizador';
       bg = Colors.purple.shade50;
@@ -528,7 +581,7 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
   void _showDeleteConfirmation(Participant participant) {
     final fullName = '${participant.nombre} ${participant.apellido}'.trim();
     final displayName = fullName.isNotEmpty ? fullName : participant.correo;
-    
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -546,16 +599,17 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.grey.shade300, width: 2),
                 ),
-                child: Icon(Icons.warning_amber_rounded, color: Colors.red.shade700, size: 28),
+                child: Icon(
+                  Icons.warning_amber_rounded,
+                  color: Colors.red.shade700,
+                  size: 28,
+                ),
               ),
               const SizedBox(width: 12),
               const Expanded(
                 child: Text(
                   '¿Eliminar participante?',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 ),
               ),
             ],
@@ -566,10 +620,7 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
             children: [
               Text(
                 '¿Estás seguro de eliminar a este asistente del evento?',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.grey.shade700,
-                ),
+                style: TextStyle(fontSize: 16, color: Colors.grey.shade700),
               ),
               const SizedBox(height: 12),
               Container(
@@ -577,10 +628,7 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(12),
-                  border: Border.all(
-                    color: Colors.black,
-                    width: 2,
-                  ),
+                  border: Border.all(color: Colors.black, width: 2),
                 ),
                 child: Row(
                   children: [
@@ -661,13 +709,14 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 12,
+                ),
               ),
               child: const Text(
                 'Eliminar',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                ),
+                style: TextStyle(fontWeight: FontWeight.bold),
               ),
             ),
           ],
@@ -720,7 +769,7 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
           margin: const EdgeInsets.all(16),
           borderRadius: 12,
         );
-        
+
         // Reload participants list
         _loadParticipants();
       } else {
@@ -739,7 +788,7 @@ class _ListParticipantsPageState extends State<ListParticipantsPage> {
     } catch (e) {
       // Close loading dialog
       if (mounted) Navigator.of(context).pop();
-      
+
       // Show error message
       Get.snackbar(
         'Error',

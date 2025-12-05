@@ -10,6 +10,7 @@ class Participant {
   final String apellido;
   final String correo;
   final String rol;
+  final String? fotoPerfil;
 
   Participant({
     required this.participanteId,
@@ -18,9 +19,28 @@ class Participant {
     required this.apellido,
     required this.correo,
     required this.rol,
+    this.fotoPerfil,
   });
 
   factory Participant.fromJson(Map<String, dynamic> json) {
+    String? rawFoto = json['foto_perfil'] as String?;
+
+    // Normalizar foto_perfil: permitir http/https/data: o rutas relativas contra Env.apiUrl
+    String? normalizedFoto;
+    if (rawFoto != null && rawFoto.isNotEmpty) {
+      if (rawFoto.startsWith('http://') ||
+          rawFoto.startsWith('https://') ||
+          rawFoto.startsWith('data:')) {
+        normalizedFoto = rawFoto;
+      } else {
+        if (rawFoto.startsWith('/')) {
+          normalizedFoto = '${Env.apiUrl}$rawFoto';
+        } else {
+          normalizedFoto = '${Env.apiUrl}/$rawFoto';
+        }
+      }
+    }
+
     return Participant(
       participanteId: json['participante_id'] ?? 0,
       usuarioId: json['usuario_id'] ?? 0,
@@ -28,6 +48,7 @@ class Participant {
       apellido: json['apellido'] ?? '',
       correo: json['correo'] ?? '',
       rol: json['rol'] ?? '',
+      fotoPerfil: normalizedFoto,
     );
   }
 }
@@ -40,14 +61,15 @@ class EventParticipantsService {
     try {
       final url = '${Env.apiUrl}/api/eventos/$eventId/participantes';
       print('[EventParticipantsService] Iniciando petición a: $url');
-      
+
       final token = _sessionService.userToken;
 
       final response = await http.get(
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
-          if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
+          if (token != null && token.isNotEmpty)
+            'Authorization': 'Bearer $token',
         },
       );
 
@@ -55,12 +77,16 @@ class EventParticipantsService {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
-        
+
         if (data['success'] == true && data['participantes'] != null) {
           final List<dynamic> participantesJson = data['participantes'];
-          
-          final participants = participantesJson.map((p) => Participant.fromJson(p)).toList();
-          print('[EventParticipantsService] Participantes obtenidos: ${participants.length}');
+
+          final participants = participantesJson
+              .map((p) => Participant.fromJson(p))
+              .toList();
+          print(
+            '[EventParticipantsService] Participantes obtenidos: ${participants.length}',
+          );
           return participants;
         }
       }
@@ -84,10 +110,12 @@ class EventParticipantsService {
       }
 
       final participants = await getEventParticipants(eventId);
-      
+
       // Buscar si el usuario actual es organizador
       final organizer = participants.firstWhere(
-        (p) => p.rol.toLowerCase() == 'organizador' && p.usuarioId.toString() == userId,
+        (p) =>
+            p.rol.toLowerCase() == 'organizador' &&
+            p.usuarioId.toString() == userId,
         orElse: () => Participant(
           participanteId: 0,
           usuarioId: 0,
@@ -108,18 +136,23 @@ class EventParticipantsService {
   }
 
   /// Elimina un participante del evento
-  Future<Map<String, dynamic>> deleteParticipant(int eventId, int userId) async {
+  Future<Map<String, dynamic>> deleteParticipant(
+    int eventId,
+    int userId,
+  ) async {
     try {
-      final url = '${Env.apiUrl}/api/eventos/$eventId/participantes/$userId/eliminar';
+      final url =
+          '${Env.apiUrl}/api/eventos/$eventId/participantes/$userId/eliminar';
       print('[EventParticipantsService] Eliminando participante: $url');
-      
+
       final token = _sessionService.userToken;
 
       final response = await http.post(
         Uri.parse(url),
         headers: {
           'Content-Type': 'application/json',
-          if (token != null && token.isNotEmpty) 'Authorization': 'Bearer $token',
+          if (token != null && token.isNotEmpty)
+            'Authorization': 'Bearer $token',
         },
       );
 
@@ -139,7 +172,7 @@ class EventParticipantsService {
       print('[EventParticipantsService] Stack trace: $stackTrace');
       return {
         'success': false,
-        'message': 'Error al eliminar participante: $e'
+        'message': 'Error al eliminar participante: $e',
       };
     }
   }

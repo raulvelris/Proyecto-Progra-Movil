@@ -1,10 +1,6 @@
 import 'package:flutter/material.dart';
 
-enum InvitationStatus {
-  pending,
-  accepted,
-  declined,
-}
+enum InvitationStatus { pending, accepted, declined }
 
 class Invitation {
   final int notificacionId;
@@ -56,12 +52,14 @@ class Invitee {
   final int id;
   final String name;
   final String email;
+  final String? photoUrl;
   InvitationStatus status;
 
   Invitee({
     required this.id,
     required this.name,
     required this.email,
+    this.photoUrl,
     this.status = InvitationStatus.pending,
   });
 

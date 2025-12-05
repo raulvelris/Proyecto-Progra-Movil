@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../models/invitation.dart';
 import 'invite_controller.dart';
 
 class InviteUsersPage extends StatelessWidget {
@@ -10,7 +11,7 @@ class InviteUsersPage extends StatelessWidget {
     // Obtener el eventId de los argumentos
     final args = Get.arguments as Map<String, dynamic>?;
     final eventId = args?['eventId'] as int?;
-    
+
     // Crear el controller con el eventId
     final controller = Get.put(
       InviteUsersController(eventId: eventId),
@@ -60,7 +61,10 @@ class InviteUsersPage extends StatelessWidget {
                     ),
                     focusedBorder: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(12),
-                      borderSide: const BorderSide(color: Colors.black, width: 1.5),
+                      borderSide: const BorderSide(
+                        color: Colors.black,
+                        width: 1.5,
+                      ),
                     ),
                     contentPadding: const EdgeInsets.symmetric(vertical: 16),
                   ),
@@ -70,11 +74,14 @@ class InviteUsersPage extends StatelessWidget {
                 Obx(() {
                   final count = controller.pendingCount.value;
                   final limit = controller.pendingLimit.value;
-                  
+
                   if (limit == 0) return const SizedBox.shrink();
-                  
+
                   return Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12,
+                      vertical: 8,
+                    ),
                     decoration: BoxDecoration(
                       color: Colors.grey.shade100,
                       borderRadius: BorderRadius.circular(8),
@@ -84,9 +91,9 @@ class InviteUsersPage extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         const Icon(
-                          Icons.info_outline_rounded, 
-                          size: 18, 
-                          color: Colors.black
+                          Icons.info_outline_rounded,
+                          size: 18,
+                          color: Colors.black,
                         ),
                         const SizedBox(width: 8),
                         Text(
@@ -105,7 +112,7 @@ class InviteUsersPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 16),
-          
+
           // Resultados de búsqueda
           Expanded(
             child: Obx(() {
@@ -132,7 +139,11 @@ class InviteUsersPage extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.error_outline_rounded, size: 64, color: Colors.red.shade300),
+                      Icon(
+                        Icons.error_outline_rounded,
+                        size: 64,
+                        color: Colors.red.shade300,
+                      ),
                       const SizedBox(height: 16),
                       Text(
                         controller.error.value,
@@ -150,11 +161,18 @@ class InviteUsersPage extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.search_rounded, size: 64, color: Colors.grey.shade300),
+                      Icon(
+                        Icons.search_rounded,
+                        size: 64,
+                        color: Colors.grey.shade300,
+                      ),
                       const SizedBox(height: 16),
                       Text(
                         'Busca usuarios por email o nombre',
-                        style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 16,
+                        ),
                       ),
                     ],
                   ),
@@ -167,11 +185,18 @@ class InviteUsersPage extends StatelessWidget {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.person_off_outlined, size: 64, color: Colors.grey.shade300),
+                      Icon(
+                        Icons.person_off_outlined,
+                        size: 64,
+                        color: Colors.grey.shade300,
+                      ),
                       const SizedBox(height: 16),
                       Text(
                         'No se encontraron usuarios',
-                        style: TextStyle(color: Colors.grey.shade600, fontSize: 16),
+                        style: TextStyle(
+                          color: Colors.grey.shade600,
+                          fontSize: 16,
+                        ),
                       ),
                     ],
                   ),
@@ -184,37 +209,31 @@ class InviteUsersPage extends StatelessWidget {
                 separatorBuilder: (_, __) => const SizedBox(height: 12),
                 itemBuilder: (_, index) {
                   final user = controller.searchResults[index];
-                  
+
                   return Obx(() {
                     final isSelected = controller.isSelected(user.id);
                     final isEligible = controller.isEligible(user.id);
-                    
+
                     return Container(
                       decoration: BoxDecoration(
-                        color: isEligible 
+                        color: isEligible
                             ? (isSelected ? Colors.grey.shade50 : Colors.white)
                             : Colors.grey.shade50,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: isSelected ? Colors.black : Colors.grey.shade200,
+                          color: isSelected
+                              ? Colors.black
+                              : Colors.grey.shade200,
                           width: isSelected ? 1.5 : 1,
                         ),
                       ),
                       child: ListTile(
                         enabled: isEligible,
-                        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                        leading: CircleAvatar(
-                          backgroundColor: isEligible
-                              ? Colors.black
-                              : Colors.grey.shade300,
-                          child: Text(
-                            user.initials,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
+                        contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 16,
+                          vertical: 8,
                         ),
+                        leading: _buildUserAvatar(user, isEligible),
                         title: Text(
                           user.name,
                           style: TextStyle(
@@ -228,7 +247,9 @@ class InviteUsersPage extends StatelessWidget {
                             Text(
                               user.email,
                               style: TextStyle(
-                                color: isEligible ? Colors.grey.shade700 : Colors.grey.shade400,
+                                color: isEligible
+                                    ? Colors.grey.shade700
+                                    : Colors.grey.shade400,
                               ),
                             ),
                             if (!isEligible)
@@ -240,14 +261,19 @@ class InviteUsersPage extends StatelessWidget {
                                     vertical: 4,
                                   ),
                                   decoration: BoxDecoration(
-                                    color: controller.getNonEligibleColor(user.id, background: true),
+                                    color: controller.getNonEligibleColor(
+                                      user.id,
+                                      background: true,
+                                    ),
                                     borderRadius: BorderRadius.circular(8),
                                   ),
                                   child: Text(
                                     controller.getNonEligibleLabel(user.id),
                                     style: TextStyle(
                                       fontSize: 11,
-                                      color: controller.getNonEligibleColor(user.id),
+                                      color: controller.getNonEligibleColor(
+                                        user.id,
+                                      ),
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
@@ -265,7 +291,10 @@ class InviteUsersPage extends StatelessWidget {
                                     : Colors.grey.shade400,
                                 size: 28,
                               )
-                            : Icon(Icons.lock_outline_rounded, color: Colors.grey.shade400),
+                            : Icon(
+                                Icons.lock_outline_rounded,
+                                color: Colors.grey.shade400,
+                              ),
                         onTap: () => controller.toggleSelection(user.id),
                       ),
                     );
@@ -282,7 +311,7 @@ class InviteUsersPage extends StatelessWidget {
           child: Obx(() {
             final selectedCount = controller.selectedUserIds.length;
             final isLoading = controller.isLoading.value;
-            
+
             return ElevatedButton(
               onPressed: isLoading ? null : () => controller.sendInvitations(),
               style: ElevatedButton.styleFrom(
@@ -315,6 +344,59 @@ class InviteUsersPage extends StatelessWidget {
                     ),
             );
           }),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildUserAvatar(Invitee user, bool isEligible) {
+    final foto = user.photoUrl;
+    final bgColor = isEligible ? Colors.black : Colors.grey.shade300;
+
+    if (foto != null && foto.isNotEmpty) {
+      // data URL (base64)
+      if (foto.startsWith('data:')) {
+        try {
+          final uriData = UriData.parse(foto);
+          final bytes = uriData.contentAsBytes();
+          return CircleAvatar(
+            backgroundColor: bgColor,
+            child: ClipOval(child: Image.memory(bytes, fit: BoxFit.cover)),
+          );
+        } catch (_) {
+          // Si falla el parseo, se cae al fallback de iniciales
+        }
+      } else {
+        // URL normal
+        return CircleAvatar(
+          backgroundColor: bgColor,
+          child: ClipOval(
+            child: Image.network(
+              foto,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) {
+                return Text(
+                  user.initials,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.bold,
+                  ),
+                );
+              },
+            ),
+          ),
+        );
+      }
+    }
+
+    // Fallback: iniciales
+    return CircleAvatar(
+      backgroundColor: bgColor,
+      child: Text(
+        user.initials,
+        style: const TextStyle(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
         ),
       ),
     );

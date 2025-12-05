@@ -8,7 +8,7 @@ import 'session_service.dart';
 
 class InvitationService extends GetxService {
   final SessionService _sessionService = SessionService();
-  
+
   // Debounce timer for search
   Timer? _debounceTimer;
 
@@ -28,7 +28,9 @@ class InvitationService extends GetxService {
       }
 
       // Construir la URL del endpoint
-      final url = Uri.parse('${Env.apiUrl}/api/send-invitations/search?query=${Uri.encodeComponent(query)}');
+      final url = Uri.parse(
+        '${Env.apiUrl}/api/send-invitations/search?query=${Uri.encodeComponent(query)}',
+      );
 
       print('Searching users with query: $query');
 
@@ -56,17 +58,34 @@ class InvitationService extends GetxService {
       if (response.statusCode == 200) {
         if (data['success'] == true) {
           final List<dynamic> usuariosJson = data['usuarios'] ?? [];
-          
+
           // Mapear los usuarios del backend al modelo Invitee del frontend
           return usuariosJson.map<Invitee>((userData) {
             final nombre = userData['nombre'] ?? '';
             final apellido = userData['apellido'] ?? '';
             final fullName = '$nombre $apellido'.trim();
-            
+
+            String? rawFoto = userData['foto_perfil'] as String?;
+            String? normalizedFoto;
+            if (rawFoto != null && rawFoto.isNotEmpty) {
+              if (rawFoto.startsWith('http://') ||
+                  rawFoto.startsWith('https://') ||
+                  rawFoto.startsWith('data:')) {
+                normalizedFoto = rawFoto;
+              } else {
+                if (rawFoto.startsWith('/')) {
+                  normalizedFoto = '${Env.apiUrl}$rawFoto';
+                } else {
+                  normalizedFoto = '${Env.apiUrl}/$rawFoto';
+                }
+              }
+            }
+
             return Invitee(
               id: userData['usuario_id'],
               name: fullName.isNotEmpty ? fullName : userData['correo'],
               email: userData['correo'] ?? '',
+              photoUrl: normalizedFoto,
             );
           }).toList();
         } else {
@@ -86,13 +105,16 @@ class InvitationService extends GetxService {
   }
 
   /// Busca usuarios con debounce para evitar llamadas excesivas
-  Future<List<Invitee>> searchUsersDebounced(String query, {Duration delay = const Duration(milliseconds: 500)}) async {
+  Future<List<Invitee>> searchUsersDebounced(
+    String query, {
+    Duration delay = const Duration(milliseconds: 500),
+  }) async {
     // Cancelar el timer anterior si existe
     _debounceTimer?.cancel();
-    
+
     // Crear un Completer para manejar el resultado
     final completer = Completer<List<Invitee>>();
-    
+
     // Crear nuevo timer
     _debounceTimer = Timer(delay, () async {
       try {
@@ -102,7 +124,7 @@ class InvitationService extends GetxService {
         completer.completeError(e);
       }
     });
-    
+
     return completer.future;
   }
 
@@ -148,7 +170,9 @@ class InvitationService extends GetxService {
       } else if (response.statusCode == 401) {
         throw Exception('Sesión expirada. Por favor inicia sesión nuevamente.');
       } else if (response.statusCode == 403) {
-        throw Exception(data['message'] ?? 'No tienes permisos para enviar invitaciones');
+        throw Exception(
+          data['message'] ?? 'No tienes permisos para enviar invitaciones',
+        );
       } else {
         throw Exception(data['message'] ?? 'Error del servidor');
       }
@@ -169,7 +193,9 @@ class InvitationService extends GetxService {
         throw Exception('Usuario no autenticado');
       }
 
-      final url = Uri.parse('${Env.apiUrl}/api/send-invitations/no-eligible/$eventId');
+      final url = Uri.parse(
+        '${Env.apiUrl}/api/send-invitations/no-eligible/$eventId',
+      );
 
       print('Getting non-eligible users for event: $eventId');
 
@@ -195,7 +221,7 @@ class InvitationService extends GetxService {
       if (response.statusCode == 200) {
         if (data['success'] == true) {
           final List<dynamic> noElegiblesJson = data['noElegibles'] ?? [];
-          
+
           // Crear un mapa de usuario_id -> tipo
           final Map<int, String> nonEligibleMap = {};
           for (var userData in noElegiblesJson) {
@@ -203,10 +229,12 @@ class InvitationService extends GetxService {
             final tipo = userData['tipo'] as String;
             nonEligibleMap[userId] = tipo;
           }
-          
+
           return nonEligibleMap;
         } else {
-          throw Exception(data['message'] ?? 'Error al obtener usuarios no elegibles');
+          throw Exception(
+            data['message'] ?? 'Error al obtener usuarios no elegibles',
+          );
         }
       } else if (response.statusCode == 401) {
         throw Exception('Sesión expirada. Por favor inicia sesión nuevamente.');
@@ -229,7 +257,9 @@ class InvitationService extends GetxService {
         throw Exception('Usuario no autenticado');
       }
 
-      final url = Uri.parse('${Env.apiUrl}/api/send-invitations/count/$eventId');
+      final url = Uri.parse(
+        '${Env.apiUrl}/api/send-invitations/count/$eventId',
+      );
 
       final response = await http.get(
         url,
